@@ -49,7 +49,7 @@ public abstract class BaseView extends AppCompatActivity implements IBaseView , 
             mImmersionBar.statusBarDarkFont(true);
             if (changeStatusColor()){
                 mImmersionBar.statusBarDarkFont(false);
-                mImmersionBar.statusBarColor("#ffffff");
+                mImmersionBar.statusBarColor("#0ED26B");
             }
             mImmersionBar.init();
         }
@@ -61,7 +61,7 @@ public abstract class BaseView extends AppCompatActivity implements IBaseView , 
     }
 
     protected boolean changeStatusColor() {
-        return false;
+        return true;
     }
 
     /**

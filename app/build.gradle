@@ -12,6 +12,7 @@ android {
         targetSdkVersion 29
         versionCode 100
         versionName "1.0.0"
+        multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -20,6 +21,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    compileOptions {
+        sourceCompatibility '1.8'
+        targetCompatibility '1.8'
+    }
 }
 
 dependencies {
@@ -27,11 +33,10 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 //    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta4'
-//    testImplementation 'junit:junit:4.12'
-//    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-//    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
     implementation project(':http_lib')
+
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
 
     //私有依赖
     implementation 'me.jessyan:autosize:1.1.2'
