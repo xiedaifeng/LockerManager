@@ -1,0 +1,28 @@
+<resources>
+
+
+    <style name="def_switch_view">
+
+    </style>
+
+    <style name="BottomDialog" parent="@style/Theme.AppCompat.Dialog">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowSoftInputMode">adjustResize|stateAlwaysHidden</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.6</item>
+    </style>
+
+    <!--弹窗底部上来，下滑消失的动画-->
+    <style name="dialog_style" parent="android:Animation">
+        <!--//进入时的动画-->
+        <item name="@android:windowEnterAnimation">@anim/dialog_enter</item>
+        <!--//退出时的动画-->
+        <item name="@android:windowExitAnimation">@anim/dialog_exit</item>
+    </style>
+
+</resources>

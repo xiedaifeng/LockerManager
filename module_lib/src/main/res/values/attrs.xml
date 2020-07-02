@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SlideBar">
+        <attr name="android:textSize"/>
+        <attr name="android:textColor"/>
+        <attr name="slideBar_chooseTextColor" format="color"/>
+        <attr name="slideBar_backgroundColor" format="color"/>
+        <attr name="slideBar_chooseBackgroundColor" format="color"/>
+        <attr name="slideBar_style">
+            <enum name="default_" value="0"/>
+            <enum name="none" value="1"/>
+            <enum name="circle" value="2"/>
+            <enum name="stretch" value="3"/>
+        </attr>
+    </declare-styleable>
+
+    <!--侧滑菜单的属性-->
+    <declare-styleable name="SlideMenuLayout">
+        <attr format="enum" name="slideMode">
+            <enum name="left" value="1001"/>
+            <enum name="right" value="1002"/>
+            <enum name="both" value="1003"/>
+            <enum name="none" value="1004"/>
+        </attr>
+        <attr format="dimension" name="slidePadding"/>
+        <attr format="integer" name="slideTime"/>
+        <attr format="boolean" name="parallax"/>
+        <attr format="float" name="contentAlpha"/>
+        <attr format="color" name="contentShadowColor"/>
+        <attr format="boolean" name="contentToggle"/>
+        <attr format="boolean" name="allowDragging"/>
+    </declare-styleable>
+
+    <declare-styleable name="WaveSideBar">
+        <attr name="sidebar_lazy_respond" format="boolean"/>
+        <attr name="sidebar_text_size" format="dimension"/>
+        <attr name="sidebar_text_color" format="color"/>
+        <attr name="sidebar_max_offset" format="dimension"/>
+        <attr name="sidebar_position" format="enum">
+            <enum name="right" value="0"/>
+            <enum name="left" value="1"/>
+        </attr>
+        <attr name="sidebar_text_alignment" format="enum">
+            <enum name="center" value="0"/>
+            <enum name="left" value="1"/>
+            <enum name="right" value="2" />
+        </attr>
+    </declare-styleable>
+
+    <!-- 垂直方向的虚线 -->
+    <declare-styleable name="DividerView">
+        <!-- 虚线颜色 -->
+        <attr name="divider_line_color" format="color"/>
+        <!-- 虚线宽度 -->
+        <attr name="dashThickness" format="dimension"/>
+        <!-- 虚线dash宽度 -->
+        <attr name="dashLength" format="dimension"/>
+        <!-- 虚线dash间隔 -->
+        <attr name="dashGap" format="dimension"/>
+        <!-- 虚线朝向 -->
+        <attr name="divider_orientation" format="enum">
+            <enum name="horizontal" value="0"/>
+            <enum name="vertical" value="1"/>
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="custom_edit_text_attr">
+        <attr name="customLength" format="integer"/>
+        <attr name="customInputType" format="enum">
+            <enum name="normal" value="0"/>
+            <enum name="phone" value="1"/>
+            <enum name="email" value="2"/>
+            <enum name="password" value="3"/>
+            <enum name="verifyCode" value="4"/>
+            <enum name="IDCard" value="5"/>
+            <enum name="bankCard" value="6"/>
+        </attr>
+
+    </declare-styleable>
+
+</resources>

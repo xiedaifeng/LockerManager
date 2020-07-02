@@ -1,0 +1,6 @@
+<resources>
+
+    <string name="et_digits_number">0123456789</string>
+
+    <string name="et_digits">0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
+</resources>
