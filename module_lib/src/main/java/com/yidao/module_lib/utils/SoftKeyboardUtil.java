@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 public class SoftKeyboardUtil {
@@ -48,6 +49,22 @@ public class SoftKeyboardUtil {
     public static void hideSoftKeyboard1(Activity context){
         InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(context.getWindow().getDecorView().getWindowToken(), 0);
+    }
+
+
+    /**
+     * 设置不能弹出系统输入法，但是可获得焦点
+     * @param et
+     */
+    public static void disableShowInput(EditText et) {
+        Class<EditText> cls = EditText.class;
+        Method method;
+        try {
+            method = cls.getMethod("setShowSoftInputOnFocus", boolean.class);
+            method.setAccessible(true);
+            method.invoke(et, false);
+        } catch (Exception e) {//TODO: handle exception
+        }
     }
 
 }

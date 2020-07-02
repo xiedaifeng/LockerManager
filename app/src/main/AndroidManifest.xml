@@ -27,13 +27,24 @@
             android:name="design_height_in_dp"
             android:value="600" />
 
-        <activity android:name=".activity.SaveFirstActivity"
+        <activity android:name=".activity.SaveSecondActivity" />
+        <activity android:name=".activity.SaveDepositActivity"
             android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+        </activity>
+
+        <activity android:name=".activity.SaveFirstActivity"
+            android:screenOrientation="landscape">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
 
         </activity>
     </application>
