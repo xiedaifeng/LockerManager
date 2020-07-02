@@ -4,8 +4,7 @@ package com.fmt.launch.starter.sort;
 
 
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
+
 import android.util.ArraySet;
 
 import com.fmt.launch.starter.task.Task;
@@ -14,6 +13,9 @@ import com.fmt.launch.starter.utils.DispatcherLog;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 
 
 public class TaskSortUtil {

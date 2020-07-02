@@ -2,12 +2,14 @@ package com.fmt.launch.starter.task;
 
 import android.os.Looper;
 import android.os.Process;
-import android.support.v4.os.TraceCompat;
+
 
 
 import com.fmt.launch.starter.TaskDispatcher;
 import com.fmt.launch.starter.stat.TaskStat;
 import com.fmt.launch.starter.utils.DispatcherLog;
+
+import androidx.core.os.TraceCompat;
 
 
 /**

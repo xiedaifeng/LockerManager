@@ -1,11 +1,13 @@
 package com.fmt.launch.starter.task;
 
 import android.os.Process;
-import android.support.annotation.IntRange;
+
 
 
 import java.util.List;
 import java.util.concurrent.Executor;
+
+import androidx.annotation.IntRange;
 
 public interface ITask {
 
