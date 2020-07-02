@@ -43,4 +43,5 @@ dependencies {
     //共有依赖
     api 'me.jessyan:autosize:1.1.2'
     implementation 'androidx.appcompat:appcompat:1.0.0-alpha1'
+    implementation project(path: ':LaunchStarter')
 }

@@ -1,3 +1,4 @@
+include ':LaunchStarter'
 include ':app'
 include ':http_lib'
 include ':module_lib'
