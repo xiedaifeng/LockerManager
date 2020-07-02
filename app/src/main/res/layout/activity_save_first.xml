@@ -5,30 +5,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:fitsSystemWindows="true">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@color/color_0ED26B">
+    <include layout="@layout/item_head_title"/>
 
-       <ImageView
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:src="@mipmap/back"
-           android:layout_centerVertical="true"
-           android:layout_marginLeft="60dp"
-           android:padding="10dp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="5月29日  星期五  09:27"
-            android:textSize="18sp"
-            android:textColor="@color/white"
-            android:layout_centerInParent="true"/>
-
-    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -39,9 +20,9 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:gravity="center_vertical"
+            android:layout_marginTop="60dp"
             android:paddingLeft="115dp"
-            android:paddingRight="10dp">
+            android:paddingRight="40dp">
 
             <EditText
                 android:layout_width="match_parent"
@@ -49,10 +30,15 @@
                 android:background="@drawable/et_shape"
                 android:hint="输入存件人手机号"
                 android:textSize="18sp"
+                android:paddingLeft="20dp"
+                android:maxLength="11"
+                android:inputType="number"
+                android:singleLine="true"
                 android:textColorHint="@color/color_999999"
                 android:textColor="@color/color_333333"/>
 
             <TextView
+                android:id="@+id/tv_post_msg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="验证信息：张三"
@@ -72,6 +58,10 @@
                     android:background="@drawable/et_shape"
                     android:hint="输入取件人手机号"
                     android:textSize="18sp"
+                    android:paddingLeft="20dp"
+                    android:maxLength="11"
+                    android:inputType="number"
+                    android:singleLine="true"
                     android:textColorHint="@color/color_999999"
                     android:textColor="@color/color_333333"/>
 
@@ -90,6 +80,7 @@
             </RelativeLayout>
 
             <TextView
+                android:id="@+id/tv_fetch_msg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="验证信息：张三"
@@ -114,7 +105,9 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:paddingRight="115dp">
+            android:paddingRight="115dp"
+            android:paddingLeft="40dp"
+            android:layout_marginTop="60dp">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
@@ -129,7 +122,9 @@
                 android:layout_height="wrap_content"
                 android:src="@mipmap/ic_launcher"
                 android:layout_below="@+id/recyclerView"
-                android:layout_alignParentRight="true"/>
+                android:layout_alignParentRight="true"
+                android:layout_alignRight="@+id/recyclerView"
+                android:layout_marginTop="20dp"/>
 
         </RelativeLayout>
     </LinearLayout>
