@@ -1,4 +1,4 @@
-package com.fmt.launch.starter.utils;
+package com.qiao.launch.starter.utils;
 
 import android.app.ActivityManager;
 import android.content.Context;

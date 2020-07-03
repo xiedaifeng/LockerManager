@@ -1,4 +1,4 @@
-package com.fmt.launch.starter.task;
+package com.qiao.launch.starter.task;
 
 public interface TaskCallBack {
 

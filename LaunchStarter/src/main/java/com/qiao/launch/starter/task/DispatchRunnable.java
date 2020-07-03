@@ -1,11 +1,11 @@
-package com.fmt.launch.starter.task;
+package com.qiao.launch.starter.task;
 
 import android.os.Looper;
 import android.os.Process;
 
-import com.fmt.launch.starter.TaskDispatcher;
-import com.fmt.launch.starter.stat.TaskStat;
-import com.fmt.launch.starter.utils.DispatcherLog;
+import com.qiao.launch.starter.TaskDispatcher;
+import com.qiao.launch.starter.stat.TaskStat;
+import com.qiao.launch.starter.utils.DispatcherLog;
 
 import androidx.core.os.TraceCompat;
 

@@ -1,16 +1,16 @@
-package com.fmt.launch.starter;
+package com.qiao.launch.starter;
 
 import android.content.Context;
 import android.os.Looper;
 import android.util.Log;
 
-import com.fmt.launch.starter.sort.TaskSortUtil;
-import com.fmt.launch.starter.stat.TaskStat;
-import com.fmt.launch.starter.task.DispatchRunnable;
-import com.fmt.launch.starter.task.Task;
-import com.fmt.launch.starter.task.TaskCallBack;
-import com.fmt.launch.starter.utils.DispatcherLog;
-import com.fmt.launch.starter.utils.Utils;
+import com.qiao.launch.starter.sort.TaskSortUtil;
+import com.qiao.launch.starter.stat.TaskStat;
+import com.qiao.launch.starter.task.DispatchRunnable;
+import com.qiao.launch.starter.task.Task;
+import com.qiao.launch.starter.task.TaskCallBack;
+import com.qiao.launch.starter.utils.DispatcherLog;
+import com.qiao.launch.starter.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;

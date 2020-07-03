@@ -1,9 +1,9 @@
-package com.fmt.launch.starter;
+package com.qiao.launch.starter;
 
 import android.os.Looper;
 import android.os.MessageQueue;
-import com.fmt.launch.starter.task.DispatchRunnable;
-import com.fmt.launch.starter.task.Task;
+import com.qiao.launch.starter.task.DispatchRunnable;
+import com.qiao.launch.starter.task.Task;
 import java.util.LinkedList;
 import java.util.Queue;
 

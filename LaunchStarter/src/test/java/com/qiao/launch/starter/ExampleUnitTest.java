@@ -1,4 +1,4 @@
-package com.fmt.launch.starter;
+package com.qiao.launch.starter;
 
 import org.junit.Test;
 

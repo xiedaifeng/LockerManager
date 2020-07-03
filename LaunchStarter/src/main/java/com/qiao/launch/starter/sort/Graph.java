@@ -1,4 +1,4 @@
-package com.fmt.launch.starter.sort;
+package com.qiao.launch.starter.sort;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

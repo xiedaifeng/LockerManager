@@ -1,4 +1,4 @@
-package com.fmt.launch.starter.stat;
+package com.qiao.launch.starter.stat;
 
 class TaskStatBean {
 

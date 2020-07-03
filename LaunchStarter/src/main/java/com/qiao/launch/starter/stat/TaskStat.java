@@ -1,7 +1,7 @@
-package com.fmt.launch.starter.stat;
+package com.qiao.launch.starter.stat;
 
 
-import com.fmt.launch.starter.utils.DispatcherLog;
+import com.qiao.launch.starter.utils.DispatcherLog;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,11 +1,11 @@
-package com.fmt.launch.starter.task;
+package com.qiao.launch.starter.task;
 
 import android.content.Context;
 import android.os.Process;
 
 
-import com.fmt.launch.starter.TaskDispatcher;
-import com.fmt.launch.starter.utils.DispatcherExecutor;
+import com.qiao.launch.starter.TaskDispatcher;
+import com.qiao.launch.starter.utils.DispatcherExecutor;
 
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
