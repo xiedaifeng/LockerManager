@@ -1,8 +1,11 @@
 package com.qiao.launch.starter;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Looper;
+
 import android.util.Log;
+
 
 import com.qiao.launch.starter.sort.TaskSortUtil;
 import com.qiao.launch.starter.stat.TaskStat;
@@ -20,6 +23,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import androidx.annotation.RequiresApi;
 import androidx.annotation.UiThread;
 
 /**
@@ -98,6 +102,7 @@ public class TaskDispatcher {
         return !task.runOnMainThread() && task.needWait();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @UiThread
     public void start() {
         mStartTime = System.currentTimeMillis();
