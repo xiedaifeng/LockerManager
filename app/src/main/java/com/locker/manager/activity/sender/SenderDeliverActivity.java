@@ -1,11 +1,12 @@
-package com.locker.manager.activity;
+package com.locker.manager.activity.sender;
 
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.locker.manager.R;
-import com.locker.manager.activity.sender.SenderPickUpSuccessActivity;
+import com.locker.manager.activity.SaveAppScanActivity;
+import com.locker.manager.activity.SaveHelpActivity;
 import com.locker.manager.adapter.NumAdapter;
 import com.locker.manager.base.BaseUrlView;
 import com.locker.manager.callback.OnItemCallBack;
@@ -17,7 +18,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 
-public class SaveDepositActivity extends BaseUrlView {
+public class SenderDeliverActivity extends BaseUrlView {
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
@@ -33,7 +34,7 @@ public class SaveDepositActivity extends BaseUrlView {
 
     @Override
     protected int getView() {
-        return R.layout.activity_save_deposit;
+        return R.layout.activity_sender_deliver;
     }
 
     @Override
@@ -88,7 +89,8 @@ public class SaveDepositActivity extends BaseUrlView {
                 ViewManager.getInstance().finishView();
                 break;
             case R.id.tv_save:
-                skipActivity(SenderPickUpSuccessActivity.class);
+                // TODO: 2020/7/3 判断付费、免费和付费成功自动跳转
+                skipActivity(SenderDeliverSuccessActivity.class);
                 break;
         }
     }

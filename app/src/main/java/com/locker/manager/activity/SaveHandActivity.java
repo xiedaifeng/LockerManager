@@ -4,7 +4,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.locker.manager.R;
-import com.locker.manager.activity.sender.SenderActivity;
 import com.locker.manager.base.BaseUrlView;
 import com.yidao.module_lib.manager.ViewManager;
 
@@ -12,7 +11,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 
-public class SaveSecondActivity extends BaseUrlView {
+public class SaveHandActivity extends BaseUrlView {
 
 
     @BindView(R.id.tv_title)
@@ -20,7 +19,7 @@ public class SaveSecondActivity extends BaseUrlView {
 
     @Override
     protected int getView() {
-        return R.layout.activity_save_second;
+        return R.layout.activity_save_hand;
     }
 
 
@@ -38,10 +37,10 @@ public class SaveSecondActivity extends BaseUrlView {
                 skipActivity(SaveAppScanActivity.class);
                 break;
             case R.id.rl_parcel:
-                skipActivity(SaveFirstActivity.class);
+                skipActivity(SaveSecondActivity.class);
                 break;
             case R.id.rl_sender:
-                skipActivity(SenderActivity.class);
+                skipActivity(SenderPickUpActivity.class);
                 break;
         }
     }

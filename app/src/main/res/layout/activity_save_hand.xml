@@ -36,13 +36,15 @@
                     android:id="@+id/iv1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@mipmap/parcel"/>
+                    android:src="@mipmap/save_parcel"
+                    android:layout_centerHorizontal="true"/>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="其他包裹"
+                    android:text="存件"
                     android:textSize="30sp"
+                    android:gravity="center_horizontal"
                     android:textColor="@color/white"
                     android:layout_below="@+id/iv1"
                     android:textStyle="bold"
@@ -61,7 +63,6 @@
             android:paddingLeft="40dp"
             android:gravity="center_vertical">
 
-
             <RelativeLayout
                 android:id="@+id/rl_sender"
                 android:layout_width="290dp"
@@ -73,16 +74,18 @@
                     android:id="@+id/iv2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@mipmap/sender"/>
+                    android:src="@mipmap/fetch"
+                    android:layout_centerHorizontal="true"/>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="快递员"
+                    android:text="取件"
                     android:textSize="30sp"
+                    android:textStyle="bold"
+                    android:gravity="center_horizontal"
                     android:textColor="@color/white"
                     android:layout_below="@+id/iv2"
-                    android:textStyle="bold"
                     android:layout_marginTop="20dp"/>
 
             </RelativeLayout>

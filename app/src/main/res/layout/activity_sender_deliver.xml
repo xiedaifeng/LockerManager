@@ -9,14 +9,6 @@
 
     <include layout="@layout/item_head_title" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:gravity="center_horizontal"
-        android:text="请根据您的具体需求选择箱子大小，不然会造成收费不同的问题"
-        android:textColor="@color/color_333333"
-        android:textSize="18sp" />
 
 
     <LinearLayout
@@ -120,7 +112,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/text_shape"
                     android:gravity="center"
-                    android:text="开箱存放"
+                    android:text="立即投递"
                     android:textColor="@color/white"
                     android:textSize="24sp" />
 

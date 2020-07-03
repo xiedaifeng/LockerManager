@@ -36,17 +36,19 @@
                     android:id="@+id/iv1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@mipmap/parcel"/>
+                    android:src="@mipmap/sender_deliver"
+                    android:layout_centerHorizontal="true"/>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="其他包裹"
+                    android:text="投递"
                     android:textSize="30sp"
                     android:textColor="@color/white"
                     android:layout_below="@+id/iv1"
+                    android:layout_marginTop="20dp"
                     android:textStyle="bold"
-                    android:layout_marginTop="20dp"/>
+                    android:gravity="center_horizontal"/>
 
             </RelativeLayout>
 
@@ -73,16 +75,18 @@
                     android:id="@+id/iv2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@mipmap/sender"/>
+                    android:src="@mipmap/sender_back"
+                    android:layout_centerHorizontal="true"/>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="快递员"
+                    android:text="取回"
                     android:textSize="30sp"
+                    android:textStyle="bold"
                     android:textColor="@color/white"
                     android:layout_below="@+id/iv2"
-                    android:textStyle="bold"
+                    android:gravity="center_horizontal"
                     android:layout_marginTop="20dp"/>
 
             </RelativeLayout>

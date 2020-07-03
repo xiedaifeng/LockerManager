@@ -2,11 +2,7 @@ package com.fmt.launch.starter;
 
 import android.content.Context;
 import android.os.Looper;
-import android.support.annotation.UiThread;
 import android.util.Log;
-
-
-
 
 import com.fmt.launch.starter.sort.TaskSortUtil;
 import com.fmt.launch.starter.stat.TaskStat;
@@ -23,6 +19,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import androidx.annotation.UiThread;
 
 /**
  * 异步初始化启动器调用类
