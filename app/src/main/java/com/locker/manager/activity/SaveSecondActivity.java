@@ -1,14 +1,14 @@
 package com.locker.manager.activity;
 
-import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
 import com.locker.manager.R;
+import com.locker.manager.activity.sender.SenderActivity;
 import com.locker.manager.base.BaseUrlView;
+import com.yidao.module_lib.manager.ViewManager;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
@@ -34,10 +34,14 @@ public class SaveSecondActivity extends BaseUrlView {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_left:
+                ViewManager.getInstance().finishAllView();
+                skipActivity(SaveAppScanActivity.class);
                 break;
             case R.id.rl_parcel:
+                skipActivity(SaveFirstActivity.class);
                 break;
             case R.id.rl_sender:
+                skipActivity(SenderActivity.class);
                 break;
         }
     }

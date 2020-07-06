@@ -30,7 +30,7 @@
                 android:layout_width="290dp"
                 android:layout_height="290dp"
                 android:gravity="center"
-                android:background="@drawable/text_0ed26b_shape">
+                android:background="@drawable/text_84d603_shape">
 
                 <ImageView
                     android:id="@+id/iv1"
@@ -45,6 +45,7 @@
                     android:textSize="30sp"
                     android:textColor="@color/white"
                     android:layout_below="@+id/iv1"
+                    android:textStyle="bold"
                     android:layout_marginTop="20dp"/>
 
             </RelativeLayout>
@@ -81,6 +82,7 @@
                     android:textSize="30sp"
                     android:textColor="@color/white"
                     android:layout_below="@+id/iv2"
+                    android:textStyle="bold"
                     android:layout_marginTop="20dp"/>
 
             </RelativeLayout>

@@ -13,11 +13,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".MainActivity">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
         </activity>
 
         <meta-data
@@ -27,19 +23,28 @@
             android:name="design_height_in_dp"
             android:value="600" />
 
-        <activity android:name=".activity.SaveSecondActivity" />
-        <activity android:name=".activity.SaveDepositActivity"
+        <activity android:name=".activity.SaveSecondActivity" android:screenOrientation="landscape" />
+        <activity android:name=".activity.sender.SenderDeliverActivity" android:screenOrientation="landscape"/>
+        <activity android:name=".activity.sender.SenderDeliverSuccessActivity" android:screenOrientation="landscape"/>
+        <activity android:name=".activity.sender.SenderPickUpSuccessActivity" android:screenOrientation="landscape"/>
+        <activity android:name=".activity.sender.SenderDeliverAndBackActivity" android:screenOrientation="landscape"/>
+        <activity android:name=".activity.sender.SenderActivity" android:screenOrientation="landscape"/>
+        <activity android:name=".activity.SaveHelpActivity" android:screenOrientation="landscape"/>
+        <activity android:name=".activity.SaveHandActivity" android:screenOrientation="landscape"/>
+        <activity android:name=".activity.user.UserPickUpSuccessActivity" android:screenOrientation="landscape"/>
+
+        <activity android:name=".activity.SaveAppScanActivity"
             android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
 
-        <activity android:name=".activity.SaveFirstActivity"
-            android:screenOrientation="landscape">
+        <activity android:name=".activity.SenderPickUpActivity" android:screenOrientation="landscape"/>
+
+        <activity android:name=".activity.SaveDepositActivity" android:screenOrientation="landscape">
             <!--<intent-filter>-->
                 <!--<action android:name="android.intent.action.MAIN" />-->
 
@@ -47,6 +52,9 @@
             <!--</intent-filter>-->
 
         </activity>
+
+        <activity android:name=".activity.SaveFirstActivity" android:screenOrientation="landscape"/>
+
     </application>
 
 </manifest>

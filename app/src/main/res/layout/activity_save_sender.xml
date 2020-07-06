@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true">
+
+    <include layout="@layout/item_head_title"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginTop="60dp"
+            android:paddingLeft="115dp"
+            android:paddingRight="40dp">
+
+            <EditText
+                android:id="@+id/et_post_phone"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:background="@drawable/et_shape"
+                android:hint="输入存件人手机号"
+                android:textSize="18sp"
+                android:paddingLeft="20dp"
+                android:maxLength="11"
+                android:inputType="number"
+                android:singleLine="true"
+                android:textColorHint="@color/color_999999"
+                android:textColor="@color/color_333333"/>
+
+            <TextView
+                android:id="@+id/tv_post_msg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="验证信息：张三"
+                android:textSize="18sp"
+                android:textColor="@color/color_333333"
+                android:layout_marginTop="10dp"/>
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp">
+
+                <EditText
+                    android:id="@+id/et_fetch_phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="70dp"
+                    android:background="@drawable/et_shape"
+                    android:hint="输入取件人手机号"
+                    android:textSize="18sp"
+                    android:paddingLeft="20dp"
+                    android:maxLength="11"
+                    android:inputType="number"
+                    android:singleLine="true"
+                    android:textColorHint="@color/color_999999"
+                    android:textColor="@color/color_333333"/>
+
+                <TextView
+                    android:id="@+id/tv_agree"
+                    android:layout_width="130dp"
+                    android:layout_height="55dp"
+                    android:text="与存件人一致"
+                    android:textSize="18sp"
+                    android:textColor="@color/white"
+                    android:gravity="center"
+                    android:background="@drawable/text_shape"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="8dp"
+                    android:layout_centerVertical="true"/>
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/tv_fetch_msg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="验证信息：张三"
+                android:textSize="18sp"
+                android:textColor="@color/color_333333"
+                android:layout_marginTop="10dp"/>
+
+            <EditText
+                android:id="@+id/et_parcel_num"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:background="@drawable/et_shape"
+                android:hint="输入包裹单号"
+                android:textSize="18sp"
+                android:paddingLeft="20dp"
+                android:inputType="number"
+                android:singleLine="true"
+                android:layout_marginTop="15dp"
+                android:textColorHint="@color/color_999999"
+                android:textColor="@color/color_333333"/>
+
+            <TextView
+                android:id="@+id/tv_next"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:text="下一步"
+                android:textSize="24sp"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:background="@drawable/text_shape"
+                android:layout_marginTop="15dp"/>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingRight="115dp"
+            android:paddingLeft="40dp"
+            android:layout_marginTop="60dp">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+            </androidx.recyclerview.widget.RecyclerView>
+
+            <ImageView
+                android:id="@+id/iv_help"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/help"
+                android:layout_below="@+id/recyclerView"
+                android:layout_alignRight="@+id/recyclerView"
+                android:layout_marginTop="20dp"/>
+
+        </RelativeLayout>
+    </LinearLayout>
+</LinearLayout>

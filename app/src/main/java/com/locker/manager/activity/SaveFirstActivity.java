@@ -11,6 +11,7 @@ import com.locker.manager.R;
 import com.locker.manager.adapter.NumAdapter;
 import com.locker.manager.base.BaseUrlView;
 import com.locker.manager.callback.OnItemCallBack;
+import com.yidao.module_lib.manager.ViewManager;
 import com.yidao.module_lib.utils.EditTextInputUtils;
 import com.yidao.module_lib.utils.SoftKeyboardUtil;
 
@@ -87,14 +88,20 @@ public class SaveFirstActivity extends BaseUrlView {
     }
 
 
-    @OnClick({R.id.iv_left, R.id.tv_agree, R.id.iv_help})
+    @OnClick({R.id.iv_left, R.id.tv_agree, R.id.iv_help,R.id.tv_next})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_left:
+                ViewManager.getInstance().finishAllView();
+                skipActivity(SaveAppScanActivity.class);
                 break;
             case R.id.tv_agree:
                 break;
             case R.id.iv_help:
+                skipActivity(SaveHelpActivity.class);
+                break;
+            case R.id.tv_next:
+                skipActivity(SaveDepositActivity.class);
                 break;
         }
     }

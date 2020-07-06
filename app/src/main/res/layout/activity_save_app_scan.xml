@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <include layout="@layout/item_head_title" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="60dp"
+        android:layout_marginBottom="60dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <RelativeLayout
+                android:layout_width="265dp"
+                android:layout_height="265dp"
+                android:background="@drawable/iv_shape">
+
+                <ImageView
+                    android:id="@+id/iv_qrcode"
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:src="@color/color_EEEEEE"
+                    android:layout_centerInParent="true"/>
+
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="APP扫码存件取件"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="@color/color_333333"
+                android:layout_marginTop="35dp"/>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingLeft="40dp">
+
+            <TextView
+                android:id="@+id/tv_hand_save"
+                android:layout_width="228dp"
+                android:layout_height="95dp"
+                android:layout_marginLeft="15dp"
+                android:layout_weight="1"
+                android:background="@drawable/text_shape"
+                android:gravity="center"
+                android:text="手动存取"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:layout_centerInParent="true"/>
+
+        </RelativeLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/color_0ED26B"
+        android:layout_alignParentBottom="true">
+
+        <TextView
+            android:id="@+id/tv_help"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="帮助"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:drawableLeft="@mipmap/help_white"
+            android:layout_marginLeft="60dp"
+            android:drawablePadding="10dp"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"/>
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="我是公告我是公告我是公告我是公告我是公告我是公告"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:layout_centerInParent="true"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="客服热线：98525"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="60dp"/>
+
+    </RelativeLayout>
+</RelativeLayout>
