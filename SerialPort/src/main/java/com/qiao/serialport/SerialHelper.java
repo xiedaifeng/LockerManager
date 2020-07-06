@@ -6,6 +6,7 @@ import android.util.Log;
 import com.qiao.serialport.bean.ComBean;
 import com.qiao.serialport.stick.AbsStickPackageHelper;
 import com.qiao.serialport.stick.BaseStickPackageHelper;
+import com.qiao.serialport.stick.SerialPortOnReceiver;
 import com.qiao.serialport.utils.ByteUtil;
 
 import java.io.File;
@@ -16,7 +17,7 @@ import java.security.InvalidParameterException;
 
 import android_serialport_api.SerialPort;
 
-public abstract class SerialHelper {
+public  class SerialHelper {
     private SerialPort mSerialPort;
     private OutputStream mOutputStream;
     private InputStream mInputStream;
@@ -33,10 +34,27 @@ public abstract class SerialHelper {
     private byte[] _bLoopData = {48};
     private int iDelay = 500;
 
+    private SerialPortOnReceiver listener=null;
+
+    public void setListener(SerialPortOnReceiver listener) {
+        this.listener = listener;
+    }
 
     public SerialHelper(String sPort, int iBaudRate) {
         this.sPort = sPort;
         this.iBaudRate = iBaudRate;
+    }
+
+    public void setsPort(String sPort) {
+        this.sPort = sPort;
+    }
+
+    public void setiBaudRate(int iBaudRate) {
+        this.iBaudRate = iBaudRate;
+    }
+
+    public SerialHelper() {
+
     }
 
     public void open()
@@ -86,6 +104,7 @@ public abstract class SerialHelper {
         private ReadThread() {
         }
 
+        @Override
         public void run() {
             super.run();
             while (!isInterrupted()) {
@@ -93,25 +112,13 @@ public abstract class SerialHelper {
                     if (SerialHelper.this.mInputStream == null) {
                         return;
                     }
-
                     byte[] buffer = getStickPackageHelper().execute(SerialHelper.this.mInputStream);
                     if (buffer != null && buffer.length > 0) {
-                        ComBean ComRecData = new ComBean(SerialHelper.this.sPort, buffer, buffer.length);
-                        SerialHelper.this.onDataReceived(ComRecData);
+                        ComBean comRecData = new ComBean(SerialHelper.this.sPort, buffer, buffer.length);
+                        if (listener!=null){
+                            listener.onDataReceived(comRecData);
+                        }
                     }
-//                    int available = SerialHelper.this.mInputStream.available();
-//
-//                    if (available > 0) {
-//                        byte[] buffer = new byte['?'];
-//                        int size = SerialHelper.this.mInputStream.read(buffer);
-//                        if (size > 0) {
-//                            ComBean ComRecData = new ComBean(SerialHelper.this.sPort, buffer, size);
-//                            SerialHelper.this.onDataReceived(ComRecData);
-//                        }
-//                    } else {
-//                        SystemClock.sleep(50);
-//                    }
-
                 } catch (Throwable e) {
                     Log.e("error", e.getMessage());
                     return;
@@ -127,6 +134,7 @@ public abstract class SerialHelper {
         private SendThread() {
         }
 
+        @Override
         public void run() {
             super.run();
             while (!isInterrupted()) {
@@ -275,7 +283,14 @@ public abstract class SerialHelper {
         }
     }
 
-    protected abstract void onDataReceived(ComBean paramComBean);
+
+    public void setFlags(int flags) {
+        this.flags = flags;
+    }
+
+    public int getFlags() {
+        return flags;
+    }
 
     private AbsStickPackageHelper mStickPackageHelper = new BaseStickPackageHelper();  // 默认不处理粘包，直接读取返回
 
