@@ -33,7 +33,7 @@ public class SerialPortOpenSDK {
         return instance;
     }
     private Context mContext=null;
-    public void initialize(Context mContex){
+    public void initialize(Context mContex)throws Exception{
         this.mContext=mContex;
         MMKV.initialize(mContext);
         Consts.Utils.packageName=mContext.getPackageName();

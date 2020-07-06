@@ -1,14 +1,16 @@
 package com.qiao.serialport.service;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.IBinder;
 import android.os.Parcel;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
+import android.util.Log;
 
-import com.qiao.serialport.SerialHelper;
+
 import com.qiao.serialport.bean.ComBean;
 import com.qiao.serialport.stick.SerialPortOnReceiver;
 import com.qiao.serialport.utils.Consts;
@@ -20,6 +22,7 @@ import androidx.annotation.Nullable;
 
 public class SerialPortService extends Service{
 
+    private Context mContext=null;
     private AtomicBoolean serviceStop = new AtomicBoolean(false);
 
     private RemoteCallbackList<SerialPortReceiverMessage> listenerList = new RemoteCallbackList<>();
@@ -40,6 +43,11 @@ public class SerialPortService extends Service{
             serialHelper.setParity(parity);
             serialHelper.setFlowCon(flowCon);
             serialHelper.setFlags(flags);
+            try {
+                serialHelper.open();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         @Override
@@ -106,16 +114,30 @@ public class SerialPortService extends Service{
             if (packages != null && packages.length > 0) {
                 packageName = packages[0];
             }
-            if (packageName == null || !packageName.startsWith(Consts.Utils.packageName)) {
+            if (packageName == null || !packageName.startsWith(mContext.getPackageName())) {
                 return false;
             }
             return super.onTransact(code, data, reply, flags);
         }
     };
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        mContext=this;
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return super.onStartCommand(intent, flags, startId);
+    }
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        if (checkCallingOrSelfPermission(Consts.Utils.packageName+Consts.Utils.PERMISSION) == PackageManager.PERMISSION_DENIED) {
+        Log.e("IBinder", "------"+this.getPackageName()+Consts.Utils.PERMISSION);
+        if (checkCallingOrSelfPermission(this.getPackageName()+Consts.Utils.PERMISSION) == PackageManager.PERMISSION_DENIED) {
+            Log.e("IBinder", "------");
             return null;
         }
         return iBinder;
