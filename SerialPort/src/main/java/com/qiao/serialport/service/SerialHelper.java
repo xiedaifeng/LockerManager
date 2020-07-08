@@ -2,7 +2,6 @@ package com.qiao.serialport.service;
 
 import android.util.Log;
 
-import com.qiao.serialport.bean.ComBean;
 import com.qiao.serialport.stick.AbsStickPackageHelper;
 import com.qiao.serialport.stick.BaseStickPackageHelper;
 import com.qiao.serialport.stick.SerialPortOnReceiver;

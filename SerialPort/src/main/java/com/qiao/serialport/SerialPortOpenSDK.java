@@ -7,6 +7,7 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.RemoteException;
 
+import com.qiao.serialport.service.ComBean;
 import com.qiao.serialport.service.SerialPortReceiverMessage;
 import com.qiao.serialport.service.SerialPortSendMessage;
 import com.qiao.serialport.utils.Consts;
@@ -118,16 +119,12 @@ public class SerialPortOpenSDK {
 
 
     SerialPortReceiverMessage messageReceiver=new SerialPortReceiverMessage.Stub() {
-        @Override
-        public void onSerialPortReceiverByte(byte[] bs, int len) throws RemoteException {
 
-        }
 
         @Override
-        public void onSerialPortReceiverHexString(String uartdata) throws RemoteException {
+        public void onSerialPortReceiver(ComBean bean) throws RemoteException {
 
         }
-
     };
 
     IBinder.DeathRecipient deathRecipient = new IBinder.DeathRecipient() {

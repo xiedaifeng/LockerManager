@@ -11,14 +11,22 @@ import android.os.RemoteException;
 import android.util.Log;
 
 
-import com.qiao.serialport.bean.ComBean;
+import com.qiao.serialport.rx.BaseObserver;
+import com.qiao.serialport.rx.RxSchedulers;
 import com.qiao.serialport.stick.SerialPortOnReceiver;
 import com.qiao.serialport.utils.Consts;
 
-import java.io.IOException;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import androidx.annotation.Nullable;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 
 public class SerialPortService extends Service{
 
@@ -28,6 +36,7 @@ public class SerialPortService extends Service{
     private RemoteCallbackList<SerialPortReceiverMessage> listenerList = new RemoteCallbackList<>();
 
     private SerialHelper serialHelper=null;
+
 
     IBinder iBinder=new SerialPortSendMessage.Stub() {
         @Override
@@ -121,10 +130,44 @@ public class SerialPortService extends Service{
         }
     };
 
+    private int Time = 1000*3;//周期时间
+    private Timer timer = new Timer();
+
+
     @Override
     public void onCreate() {
         super.onCreate();
         mContext=this;
+        serialHelper=new SerialHelper();
+        ScheduledThreadPoolExecutor  scheduled = new ScheduledThreadPoolExecutor(1);
+        scheduled.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                Observable.create(new ObservableOnSubscribe<Boolean>() {
+                    @Override
+                    public void subscribe(ObservableEmitter<Boolean> emitter) throws Exception {
+                        if (serialHelper==null){
+                            serialHelper=new SerialHelper();
+                        }
+                        if (!serialHelper.isOpen()){
+                            try {
+                                serialHelper.open();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }).compose(RxSchedulers.<Boolean>compose()).subscribe(new BaseObserver<Boolean>());
+
+            }
+        }, 5, 5, TimeUnit.SECONDS);
+
+
+
+
+
+
+
     }
 
     @Override
@@ -135,9 +178,7 @@ public class SerialPortService extends Service{
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        Log.e("IBinder", "------"+this.getPackageName()+Consts.Utils.PERMISSION);
         if (checkCallingOrSelfPermission(this.getPackageName()+Consts.Utils.PERMISSION) == PackageManager.PERMISSION_DENIED) {
-            Log.e("IBinder", "------");
             return null;
         }
         return iBinder;
@@ -150,7 +191,7 @@ public class SerialPortService extends Service{
                 SerialPortReceiverMessage messageReceiver = listenerList.getBroadcastItem(i);
                 if (messageReceiver != null) {
                     try {
-                        messageReceiver.onSerialPortReceiverByte(comBean.bRec,comBean.bRec.length);
+                        messageReceiver.onSerialPortReceiver(comBean);
                     } catch (RemoteException e) {
                         e.printStackTrace();
                     }

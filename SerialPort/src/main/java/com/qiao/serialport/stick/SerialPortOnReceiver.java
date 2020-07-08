@@ -1,6 +1,6 @@
 package com.qiao.serialport.stick;
 
-import com.qiao.serialport.bean.ComBean;
+import com.qiao.serialport.service.ComBean;
 
 public interface SerialPortOnReceiver {
 

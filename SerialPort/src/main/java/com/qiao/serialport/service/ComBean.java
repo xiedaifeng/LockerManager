@@ -1,4 +1,4 @@
-package com.qiao.serialport.bean;
+package com.qiao.serialport.service;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -46,8 +46,12 @@ public class ComBean implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+
         dest.writeByteArray(bRec);
         dest.writeString(sRecTime);
         dest.writeString(sComPort);
     }
+
+
+
 }
