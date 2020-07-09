@@ -76,8 +76,7 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="@color/color_0ED26B"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="45dp">
+        android:layout_alignParentBottom="true">
 
         <TextView
             android:id="@+id/tv_help"
