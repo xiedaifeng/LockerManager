@@ -1,0 +1,20 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.qiao.serialport">
+    <permission
+        android:name="${applicationId}.SerialPort.Permission.REMOTE_SERVICE_PERMISSION"
+        android:protectionLevel="normal"
+         />
+    <uses-permission android:name="${applicationId}.SerialPort.Permission.REMOTE_SERVICE_PERMISSION" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <application android:requestLegacyExternalStorage ="true">
+        <service
+            android:name="com.qiao.serialport.service.SerialPortService"
+            android:enabled="true"
+            android:exported="true"
+            android:process=":SerialPort" >
+            <intent-filter>
+                <action android:name="${applicationId}.SerialPort.MessageService"/>
+            </intent-filter>
+        </service>
+    </application>
+</manifest>
