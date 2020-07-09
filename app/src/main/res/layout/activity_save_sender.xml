@@ -20,7 +20,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="45dp"
             android:paddingLeft="115dp"
             android:paddingRight="40dp">
 
@@ -125,7 +125,7 @@
             android:orientation="vertical"
             android:paddingRight="115dp"
             android:paddingLeft="40dp"
-            android:layout_marginTop="60dp">
+            android:layout_marginTop="45dp">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"

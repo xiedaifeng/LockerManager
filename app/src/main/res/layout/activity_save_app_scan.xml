@@ -24,8 +24,8 @@
             android:gravity="center">
 
             <RelativeLayout
-                android:layout_width="265dp"
-                android:layout_height="265dp"
+                android:layout_width="250dp"
+                android:layout_height="250dp"
                 android:background="@drawable/iv_shape">
 
                 <ImageView
@@ -76,7 +76,8 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="@color/color_0ED26B"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="45dp">
 
         <TextView
             android:id="@+id/tv_help"
