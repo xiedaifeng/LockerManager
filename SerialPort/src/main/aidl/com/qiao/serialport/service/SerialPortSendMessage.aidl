@@ -22,6 +22,7 @@ interface SerialPortSendMessage {
     void setSerilaPort(String path, int baudrate, int stopBits, int dataBits, int parity, int flowCon, int flags);
     boolean openSerilaPort();
     boolean closeSerilaPort();
+    boolean isOpen();
     void sendUartData(in byte[] bs);
     void sendHexUartData(String uartdata);
     void registerReceiveListener(in SerialPortReceiverMessage messageReceiver);

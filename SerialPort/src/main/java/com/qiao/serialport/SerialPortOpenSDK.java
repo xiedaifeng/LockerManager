@@ -7,12 +7,17 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.RemoteException;
 
+import com.qiao.serialport.listener.SerialPortMessageListener;
 import com.qiao.serialport.listener.SerianPortSDKListener;
 import com.qiao.serialport.service.ComBean;
 import com.qiao.serialport.service.SerialPortReceiverMessage;
 import com.qiao.serialport.service.SerialPortSendMessage;
 import com.qiao.serialport.utils.Consts;
 import com.tencent.mmkv.MMKV;
+
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import android_serialport_api.SerialPortFinder;
 
@@ -36,6 +41,7 @@ public class SerialPortOpenSDK {
     }
     private Context mContext=null;
     private SerianPortSDKListener listener=null;
+    private List<SerialPortMessageListener> listenerList=new ArrayList<>();
 
     public void setListener(SerianPortSDKListener listener) {
         this.listener = listener;
@@ -52,6 +58,23 @@ public class SerialPortOpenSDK {
             serviceConnection=new MyServiceConnection();
         }
         mContext.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+    }
+
+
+    public void regirster(SerialPortMessageListener listener){
+        if (listenerList!=null&&!listenerList.contains(listener)){
+            synchronized (SerialPortOpenSDK.class){
+                listenerList.add(listener);
+            }
+
+        }
+    }
+    public void unRegirster(SerialPortMessageListener listener){
+        if (listenerList!=null&&listenerList.contains(listener)){
+            synchronized (SerialPortOpenSDK.class){
+                listenerList.remove(listener);
+            }
+        }
     }
 
     /**
@@ -117,12 +140,18 @@ public class SerialPortOpenSDK {
 
     public boolean openSerialPort() throws Exception{
         if (serialPortSendMessage!=null){
+            if (serialPortSendMessage.isOpen()){
+                return true;
+            }
            return serialPortSendMessage.openSerilaPort();
         }
         return false;
     }
     public boolean closeSerialPort() throws Exception{
         if (serialPortSendMessage!=null){
+            if (!serialPortSendMessage.isOpen()){
+                return true;
+            }
             return serialPortSendMessage.closeSerilaPort();
         }
         return false;
@@ -131,12 +160,40 @@ public class SerialPortOpenSDK {
 
     public void send(byte[] bs)throws Exception{
         if (serialPortSendMessage!=null){
-            serialPortSendMessage.sendUartData(bs);
+            if (serialPortSendMessage.isOpen()){
+                serialPortSendMessage.sendUartData(bs);
+                return;
+            }
+            if (listenerList!=null){
+                for (SerialPortMessageListener listener: listenerList){
+                    listener.onMessage(0x0B, "串口打开失败", "");
+                }
+            }
+            return;
+        }
+        if (listenerList!=null){
+            for (SerialPortMessageListener listener: listenerList){
+                listener.onMessage(0x0A, "未初始化", "");
+            }
         }
     }
     public void send(String hexString)throws Exception{
         if (serialPortSendMessage!=null){
-            serialPortSendMessage.sendHexUartData(hexString);
+            if (serialPortSendMessage.isOpen()){
+                serialPortSendMessage.sendHexUartData(hexString);
+                return;
+            }
+            if (listenerList!=null){
+                for (SerialPortMessageListener listener: listenerList){
+                    listener.onMessage(0x0B, "串口打开失败", "");
+                }
+            }
+            return;
+        }
+        if (listenerList!=null){
+            for (SerialPortMessageListener listener: listenerList){
+                listener.onMessage(0x0A, "未初始化", "");
+            }
         }
     }
 
@@ -146,6 +203,16 @@ public class SerialPortOpenSDK {
 
         @Override
         public void onSerialPortReceiver(ComBean bean) throws RemoteException {
+            if (listenerList!=null){
+                for (SerialPortMessageListener listener: listenerList){
+                    try {
+                        listener.onMessage(0x01, "success", new String(bean.bRec,"UTF-8"));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
 
         }
     };

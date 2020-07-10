@@ -86,6 +86,14 @@ public class SerialPortService extends Service{
         }
 
         @Override
+        public boolean isOpen() throws RemoteException {
+            if (serialHelper!=null){
+                return serialHelper.isOpen();
+            }
+            return false;
+        }
+
+        @Override
         public void sendUartData(byte[] bs) throws RemoteException {
             if (serialHelper!=null){
                 try {
