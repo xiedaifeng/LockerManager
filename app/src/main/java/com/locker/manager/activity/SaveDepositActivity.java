@@ -19,7 +19,6 @@ import java.util.List;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
@@ -145,17 +144,17 @@ public class SaveDepositActivity extends BaseUrlView {
             mViews.get(i).setSelected(position==i);
         }
 
-        tvSmallPrice.setTextColor(getResources().getColor(position==0?R.color.color_0ED26B:R.color.color_999999));
-        tvSmallSize.setTextColor(getResources().getColor(position==0?R.color.color_0ED26B:R.color.color_999999));
-        tvSmallRemain.setTextColor(getResources().getColor(position==0?R.color.color_0ED26B:R.color.color_999999));
+        tvSmallPrice.setTextColor(getCtx().getResources().getColor(position==0?R.color.color_0ED26B:R.color.color_999999));
+        tvSmallSize.setTextColor(getCtx().getResources().getColor(position==0?R.color.color_0ED26B:R.color.color_999999));
+        tvSmallRemain.setTextColor(getCtx().getResources().getColor(position==0?R.color.color_0ED26B:R.color.color_999999));
 
-        tvMiddlePrice.setTextColor(getResources().getColor(position==1?R.color.color_0ED26B:R.color.color_999999));
-        tvMiddleSize.setTextColor(getResources().getColor(position==1?R.color.color_0ED26B:R.color.color_999999));
-        tvMiddleRemain.setTextColor(getResources().getColor(position==1?R.color.color_0ED26B:R.color.color_999999));
+        tvMiddlePrice.setTextColor(getCtx().getResources().getColor(position==1?R.color.color_0ED26B:R.color.color_999999));
+        tvMiddleSize.setTextColor(getCtx().getResources().getColor(position==1?R.color.color_0ED26B:R.color.color_999999));
+        tvMiddleRemain.setTextColor(getCtx().getResources().getColor(position==1?R.color.color_0ED26B:R.color.color_999999));
 
-        tvLargePrice.setTextColor(getResources().getColor(position==2?R.color.color_0ED26B:R.color.color_999999));
-        tvLargeSize.setTextColor(getResources().getColor(position==2?R.color.color_0ED26B:R.color.color_999999));
-        tvLargeRemain.setTextColor(getResources().getColor(position==2?R.color.color_0ED26B:R.color.color_999999));
+        tvLargePrice.setTextColor(getCtx().getResources().getColor(position==2?R.color.color_0ED26B:R.color.color_999999));
+        tvLargeSize.setTextColor(getCtx().getResources().getColor(position==2?R.color.color_0ED26B:R.color.color_999999));
+        tvLargeRemain.setTextColor(getCtx().getResources().getColor(position==2?R.color.color_0ED26B:R.color.color_999999));
 
     }
 }
