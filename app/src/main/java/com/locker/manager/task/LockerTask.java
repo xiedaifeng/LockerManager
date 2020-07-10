@@ -10,11 +10,14 @@ public class LockerTask extends Task {
     @Override
     public void run() {
         try {
+            SerialPortOpenSDK.getInstance().setSerialPort("ttyS1",9600,1,8,0,0,0);
             SerialPortOpenSDK.getInstance().initialize(mContext);
             String [] strings=SerialPortOpenSDK.getInstance().getDevices();
-            Log.e("locker", strings.toString()+"---");
-            if (strings!=null&&strings.length>0){
 
+            if (strings!=null&&strings.length>0){
+              for (String s:strings){
+                  Log.e("locker", s+"");
+              }
             }
         } catch (Exception e) {
             e.printStackTrace();
