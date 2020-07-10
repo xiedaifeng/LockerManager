@@ -66,7 +66,7 @@ class SerialHelper {
       this.mSendThread.setSuspendFlag();
       this.mSendThread.start();
       this._isOpen = true;
-  }
+}
 
   public void close() {
       if (this.mReadThread != null) {
