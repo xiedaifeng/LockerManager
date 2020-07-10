@@ -90,6 +90,7 @@ public class SerialPortService extends Service{
             if (serialHelper!=null){
                 try {
                     serialHelper.send(bs);
+                    Log.d("sendUartData","data:"+new String(bs)+"-success");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -101,6 +102,7 @@ public class SerialPortService extends Service{
             if (serialHelper!=null){
                 try {
                     serialHelper.sendHex(uartdata);
+                    Log.d("sendHexUartData","data:"+uartdata+"-success");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

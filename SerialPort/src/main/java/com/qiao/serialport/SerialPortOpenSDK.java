@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.util.Log;
 
 import com.qiao.serialport.listener.SerianPortSDKListener;
 import com.qiao.serialport.service.ComBean;
@@ -146,6 +147,7 @@ public class SerialPortOpenSDK {
 
         @Override
         public void onSerialPortReceiver(ComBean bean) throws RemoteException {
+            Log.e("onSerialPortReceiver",bean.toString());
 
         }
     };
