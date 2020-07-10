@@ -106,6 +106,14 @@ public class SerialPortOpenSDK {
      * @param flowCon
      * @param flags
      */
+    private String path;
+    private int baudrate;
+    private int stopBits;
+    private int dataBits;
+    private int parity;
+    private int flowCon;
+    private int flags;
+
     public void setSerialPort(String path,
                               int baudrate,
                               int stopBits,
@@ -113,14 +121,25 @@ public class SerialPortOpenSDK {
                               int parity,
                               int flowCon,
                               int flags){
-
+        this.path=path;
+        this.baudrate=baudrate;
+        this.stopBits=stopBits;
+        this.dataBits=dataBits;
+        this.parity=parity;
+        this.flowCon=flowCon;
+        this.flags=flags;
+        MMKV.mmkvWithID("serialport", MMKV.MULTI_PROCESS_MODE).putString(Consts.Utils.PATH, path);
+        MMKV.mmkvWithID("serialport", MMKV.MULTI_PROCESS_MODE).putInt(Consts.Utils.BAUDRATE, baudrate);
+        MMKV.mmkvWithID("serialport", MMKV.MULTI_PROCESS_MODE).putInt(Consts.Utils.STOPBITS, stopBits);
+        MMKV.mmkvWithID("serialport", MMKV.MULTI_PROCESS_MODE).putInt(Consts.Utils.DATABITS, dataBits);
+        MMKV.mmkvWithID("serialport", MMKV.MULTI_PROCESS_MODE).putInt(Consts.Utils.FLOWCON, flowCon);
+        MMKV.mmkvWithID("serialport", MMKV.MULTI_PROCESS_MODE).putInt(Consts.Utils.FLAGS, flags);
         MMKV.defaultMMKV().putString(Consts.Utils.PATH, path);
         MMKV.defaultMMKV().putInt(Consts.Utils.BAUDRATE, baudrate);
         MMKV.defaultMMKV().putInt(Consts.Utils.STOPBITS, stopBits);
         MMKV.defaultMMKV().putInt(Consts.Utils.DATABITS, dataBits);
         MMKV.defaultMMKV().putInt(Consts.Utils.FLOWCON, flowCon);
         MMKV.defaultMMKV().putInt(Consts.Utils.FLAGS, flags);
-
         if (serialPortSendMessage!=null){
             try {
                 serialPortSendMessage.setSerilaPort(
@@ -185,7 +204,7 @@ public class SerialPortOpenSDK {
             }
             if (listenerList!=null){
                 for (SerialPortMessageListener listener: listenerList){
-                    listener.onMessage(0x0B, "串口打开失败", "");
+                    listener.onMessage(0x0B, "串口未打开", "");
                 }
             }
             return;

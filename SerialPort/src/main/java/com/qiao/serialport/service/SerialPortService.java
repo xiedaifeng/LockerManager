@@ -15,6 +15,7 @@ import com.qiao.serialport.rx.BaseObserver;
 import com.qiao.serialport.rx.RxSchedulers;
 import com.qiao.serialport.stick.SerialPortOnReceiver;
 import com.qiao.serialport.utils.Consts;
+import com.tencent.mmkv.MMKV;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -149,7 +150,10 @@ public class SerialPortService extends Service{
         super.onCreate();
         mContext=this;
         serialHelper=new SerialHelper();
+        MMKV.initialize(mContext);
         ScheduledThreadPoolExecutor  scheduled = new ScheduledThreadPoolExecutor(1);
+        Log.e("---",MMKV.mmkvWithID("serialport").getString(Consts.Utils.PATH, "dev/ttyS1"));
+        Log.e("---",MMKV.defaultMMKV().getString(Consts.Utils.PATH, "dev/ttyS1"));
         scheduled.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
@@ -158,6 +162,13 @@ public class SerialPortService extends Service{
                     public void subscribe(ObservableEmitter<Boolean> emitter) throws Exception {
                         if (serialHelper==null){
                             serialHelper=new SerialHelper();
+                            serialHelper.setsPort( MMKV.mmkvWithID("serialport").getString(Consts.Utils.PATH, "dev/ttyS1"));
+                            serialHelper.setiBaudRate(MMKV.mmkvWithID("serialport").getInt(Consts.Utils.BAUDRATE,9600));
+                            serialHelper.setStopBits(MMKV.mmkvWithID("serialport").getInt(Consts.Utils.STOPBITS,1));
+                            serialHelper.setDataBits(MMKV.mmkvWithID("serialport").getInt(Consts.Utils.DATABITS,8));
+                            serialHelper.setParity(MMKV.mmkvWithID("serialport").getInt(Consts.Utils.PARITY,0));
+                            serialHelper.setFlowCon(MMKV.mmkvWithID("serialport").getInt(Consts.Utils.FLOWCON,0));
+                            serialHelper.setFlags(MMKV.mmkvWithID("serialport").getInt(Consts.Utils.FLAGS,0));
                         }
                         if (!serialHelper.isOpen()){
                             try {
