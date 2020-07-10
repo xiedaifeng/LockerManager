@@ -7,6 +7,7 @@ import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.RemoteException;
 
+import com.qiao.serialport.listener.SerianPortSDKListener;
 import com.qiao.serialport.service.ComBean;
 import com.qiao.serialport.service.SerialPortReceiverMessage;
 import com.qiao.serialport.service.SerialPortSendMessage;
@@ -34,6 +35,12 @@ public class SerialPortOpenSDK {
         return instance;
     }
     private Context mContext=null;
+    private SerianPortSDKListener listener=null;
+
+    public void setListener(SerianPortSDKListener listener) {
+        this.listener = listener;
+    }
+
     public void initialize(Context mContex)throws Exception{
         this.mContext=mContex;
         MMKV.initialize(mContext);
@@ -83,12 +90,28 @@ public class SerialPortOpenSDK {
                               int parity,
                               int flowCon,
                               int flags){
+
         MMKV.defaultMMKV().putString(Consts.Utils.PATH, path);
         MMKV.defaultMMKV().putInt(Consts.Utils.BAUDRATE, baudrate);
         MMKV.defaultMMKV().putInt(Consts.Utils.STOPBITS, stopBits);
         MMKV.defaultMMKV().putInt(Consts.Utils.DATABITS, dataBits);
         MMKV.defaultMMKV().putInt(Consts.Utils.FLOWCON, flowCon);
         MMKV.defaultMMKV().putInt(Consts.Utils.FLAGS, flags);
+
+        if (serialPortSendMessage!=null){
+            try {
+                serialPortSendMessage.setSerilaPort(
+                        MMKV.defaultMMKV().getString(Consts.Utils.PATH, "dev/ttyS1"),
+                        MMKV.defaultMMKV().getInt(Consts.Utils.BAUDRATE,9600),
+                        MMKV.defaultMMKV().getInt(Consts.Utils.STOPBITS,1),
+                        MMKV.defaultMMKV().getInt(Consts.Utils.DATABITS,8),
+                        MMKV.defaultMMKV().getInt(Consts.Utils.PARITY,0),
+                        MMKV.defaultMMKV().getInt(Consts.Utils.FLOWCON,0),
+                        MMKV.defaultMMKV().getInt(Consts.Utils.FLAGS,0));
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
 
     }
 
@@ -152,16 +175,10 @@ public class SerialPortOpenSDK {
                 serialPortSendMessage.asBinder().linkToDeath(deathRecipient, 0);
                 //把接收消息的回调接口注册到服务端
                 serialPortSendMessage.registerReceiveListener(messageReceiver);
-                if (serialPortSendMessage!=null){
-                    serialPortSendMessage.setSerilaPort(
-                            MMKV.defaultMMKV().getString(Consts.Utils.PATH, "dev/ttyS1"),
-                            MMKV.defaultMMKV().getInt(Consts.Utils.BAUDRATE,9600),
-                            MMKV.defaultMMKV().getInt(Consts.Utils.STOPBITS,1),
-                            MMKV.defaultMMKV().getInt(Consts.Utils.DATABITS,8),
-                            MMKV.defaultMMKV().getInt(Consts.Utils.PARITY,0),
-                            MMKV.defaultMMKV().getInt(Consts.Utils.FLOWCON,0),
-                            MMKV.defaultMMKV().getInt(Consts.Utils.FLAGS,0));
+                if (listener!=null){
+                    listener.initListener(0x01, "初始化成功");
                 }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -169,7 +186,9 @@ public class SerialPortOpenSDK {
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-
+            if (listener!=null){
+                listener.initListener(0x02, "远端服务断开连接");
+            }
         }
 
     }
