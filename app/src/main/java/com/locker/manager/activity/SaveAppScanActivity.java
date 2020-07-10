@@ -53,7 +53,8 @@ public class SaveAppScanActivity extends BaseUrlView implements SerialPortMessag
             case R.id.iv_left:
                 try {
                     SerialPortOpenSDK.getInstance().regirster(this);
-                    SerialPortOpenSDK.getInstance().send("574B4C5908018686");
+                    SerialPortOpenSDK.getInstance().send("57 4B 4C 59 08 01 86 86".replace(" ",""));
+                    SerialPortOpenSDK.getInstance().send("0B0040FF7A000B0000004933C3A36B".replace(" ",""));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

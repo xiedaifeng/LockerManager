@@ -18,7 +18,7 @@ public class LockerTask extends Task {
                 public void initListener(int error, String errorMessage) {
                     LogUtils.e("initListener:"+error+",errorMessage:"+errorMessage);
                     if (error==0x01){
-                        SerialPortOpenSDK.getInstance().setSerialPort("/dev/ttyS2",9600,1,8,0,0,0);
+                        SerialPortOpenSDK.getInstance().setSerialPort("/dev/ttyS3",9600,1,8,0,0,0);
                     }
 
                 }
