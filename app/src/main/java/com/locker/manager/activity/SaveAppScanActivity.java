@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.locker.manager.R;
 import com.locker.manager.base.BaseUrlView;
 import com.qiao.serialport.SerialPortOpenSDK;
+import com.yidao.module_lib.utils.LogUtils;
 
 import butterknife.BindView;
 import butterknife.OnClick;
