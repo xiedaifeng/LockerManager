@@ -8,12 +8,14 @@ import android.widget.TextView;
 import com.locker.manager.R;
 import com.locker.manager.base.BaseUrlView;
 import com.qiao.serialport.SerialPortOpenSDK;
+import com.qiao.serialport.listener.SerialPortMessageListener;
+import com.yidao.module_lib.utils.ToastUtil;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
 
-public class SaveAppScanActivity extends BaseUrlView {
+public class SaveAppScanActivity extends BaseUrlView implements SerialPortMessageListener {
 
     @BindView(R.id.iv_left)
     ImageView ivLeft;
@@ -50,7 +52,8 @@ public class SaveAppScanActivity extends BaseUrlView {
         switch (view.getId()) {
             case R.id.iv_left:
                 try {
-                    SerialPortOpenSDK.getInstance().send("57 4B 4C 59 08 01 86 86".replace(" ",""));
+                    SerialPortOpenSDK.getInstance().regirster(this);
+                    SerialPortOpenSDK.getInstance().send("574B4C5908018686");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -62,5 +65,10 @@ public class SaveAppScanActivity extends BaseUrlView {
                 skipActivity(SaveHelpActivity.class);
                 break;
         }
+    }
+
+    @Override
+    public void onMessage(int error, String errorMessage, String data) throws Exception {
+        ToastUtil.showShortToast(errorMessage);
     }
 }
