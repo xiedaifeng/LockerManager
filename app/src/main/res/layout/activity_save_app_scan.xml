@@ -24,8 +24,8 @@
             android:gravity="center">
 
             <RelativeLayout
-                android:layout_width="265dp"
-                android:layout_height="265dp"
+                android:layout_width="250dp"
+                android:layout_height="250dp"
                 android:background="@drawable/iv_shape">
 
                 <ImageView
