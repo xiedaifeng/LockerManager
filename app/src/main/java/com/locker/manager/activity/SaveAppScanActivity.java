@@ -22,7 +22,6 @@ public class SaveAppScanActivity extends BaseUrlView {
     @BindView(R.id.iv_qrcode)
     ImageView ivQrcode;
 
-    private SerialPortOpenSDK mInstance;
 
     @Override
     protected int getView() {
@@ -33,29 +32,25 @@ public class SaveAppScanActivity extends BaseUrlView {
     public void init() {
 //        ivLeft.setVisibility(View.GONE);
 
-        try {
-            mInstance = SerialPortOpenSDK.getInstance();
-            mInstance.setSerialPort("/dev/ttyS3",9600,1,8,0,0,0);
-            SerialPortOpenSDK.getInstance().initialize(getCtx());
-            String[] devices = SerialPortOpenSDK.getInstance().getDevices();
-            for(String str:devices){
-                Log.e("devices", str);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            mInstance = SerialPortOpenSDK.getInstance();
+//            mInstance.setSerialPort("/dev/ttyS1",9600,1,8,0,0,0);
+//            SerialPortOpenSDK.getInstance().initialize(getCtx());
+//            String[] devices = SerialPortOpenSDK.getInstance().getDevices();
+//            for(String str:devices){
+//                Log.e("devices", str);
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
-
-    /**
-     * @param view
-     */
     @OnClick({R.id.iv_left, R.id.tv_hand_save,R.id.tv_help})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_left:
                 try {
-                    mInstance.send("574B4C590901820281");
+                    SerialPortOpenSDK.getInstance().send("57 4B 4C 59 08 01 86 86".replace(" ",""));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
