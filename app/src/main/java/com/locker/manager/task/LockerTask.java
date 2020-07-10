@@ -10,7 +10,7 @@ public class LockerTask extends Task {
     @Override
     public void run() {
         try {
-            SerialPortOpenSDK.getInstance().setSerialPort("ttyS1",9600,1,8,0,0,0);
+            SerialPortOpenSDK.getInstance().setSerialPort("/dev/ttyS1",9600,1,8,0,0,0);
             SerialPortOpenSDK.getInstance().initialize(mContext);
             String [] strings=SerialPortOpenSDK.getInstance().getDevices();
 
