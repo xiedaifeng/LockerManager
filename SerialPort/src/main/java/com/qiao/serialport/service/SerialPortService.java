@@ -111,7 +111,7 @@ public class SerialPortService extends Service{
             if (serialHelper!=null){
                 try {
                     serialHelper.sendHex(uartdata);
-                    Log.d("sendHexUartData","data:"+uartdata+"-success");
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

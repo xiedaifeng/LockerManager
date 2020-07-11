@@ -9,11 +9,18 @@ import android.os.RemoteException;
 
 import com.qiao.serialport.listener.SerialPortMessageListener;
 import com.qiao.serialport.listener.SerianPortSDKListener;
+import com.qiao.serialport.rx.BaseObserver;
+import com.qiao.serialport.rx.RxSchedulers;
 import com.qiao.serialport.service.ComBean;
+
 import com.qiao.serialport.service.SerialPortReceiverMessage;
 import com.qiao.serialport.service.SerialPortSendMessage;
+import com.qiao.serialport.utils.ByteUtil;
 import com.qiao.serialport.utils.Consts;
 import com.tencent.mmkv.MMKV;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -185,35 +192,43 @@ public class SerialPortOpenSDK {
             }
             if (listenerList!=null){
                 for (SerialPortMessageListener listener: listenerList){
-                    listener.onMessage(0x0B, "串口打开失败", "");
+                    listener.onMessage(0x0B, "串口打开失败", new byte[0]);
                 }
             }
             return;
         }
         if (listenerList!=null){
             for (SerialPortMessageListener listener: listenerList){
-                listener.onMessage(0x0A, "未初始化", "");
+                listener.onMessage(0x0A, "未初始化", new byte[0]);
             }
         }
     }
-    public void send(String hexString)throws Exception{
-        if (serialPortSendMessage!=null){
-            if (serialPortSendMessage.isOpen()){
-                serialPortSendMessage.sendHexUartData(hexString);
-                return;
-            }
-            if (listenerList!=null){
-                for (SerialPortMessageListener listener: listenerList){
-                    listener.onMessage(0x0B, "串口未打开", "");
+    public void send(final String hexString)throws Exception{
+        Observable.create(new ObservableOnSubscribe<Boolean>() {
+            @Override
+            public void subscribe(ObservableEmitter<Boolean> emitter) throws Exception {
+                if (serialPortSendMessage!=null){
+                    if (serialPortSendMessage.isOpen()){
+                        serialPortSendMessage.sendHexUartData(hexString);
+                        return;
+                    }
+                    if (listenerList!=null){
+                        for (SerialPortMessageListener listener: listenerList){
+                            listener.onMessage(0x0B, "串口未打开", new byte[0]);
+                        }
+                    }
+                    return;
                 }
+                if (listenerList!=null){
+                    for (SerialPortMessageListener listener: listenerList){
+                        listener.onMessage(0x0A, "未初始化", new byte[0]);
+                    }
+                }
+
             }
-            return;
-        }
-        if (listenerList!=null){
-            for (SerialPortMessageListener listener: listenerList){
-                listener.onMessage(0x0A, "未初始化", "");
-            }
-        }
+        }).compose(RxSchedulers.<Boolean>compose()).subscribe(new BaseObserver<Boolean>());
+
+
     }
 
 
@@ -225,7 +240,7 @@ public class SerialPortOpenSDK {
             if (listenerList!=null){
                 for (SerialPortMessageListener listener: listenerList){
                     try {
-                        listener.onMessage(0x01, "success", new String(bean.bRec,"UTF-8"));
+                        listener.onMessage(0x01, bean.sComPort, bean.bRec);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
