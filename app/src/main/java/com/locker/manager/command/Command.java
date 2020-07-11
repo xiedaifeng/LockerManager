@@ -1,5 +1,6 @@
 package com.locker.manager.command;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.qiao.serialport.utils.ByteUtil;
@@ -34,42 +35,62 @@ public class Command {
     }
 
 
+    /**
+     * 解析数据错误码
+     * 0x01 1代表成功
+     * 0x0A 10 代表byte数组为空
+     * 0x0B 11 代表校验和错误
+     *
+     */
 
     private int error=0x00;
 
 
+    public static Command getInstance(Builder builder){
+        return new Command(builder);
+    }
 
     private static String command_header="55";
 
     private byte[]bytes=null;
 
-    private String fixed_1="00";
-    private String fixed_2="00";
-    private String box="01";
+    private String commandFixed_1="00";
+    private String commandFixed_2="00";
+    private String commmandChannel="01";
+    private String commandState="关";
     /**
      * 命令
      */
     private String command="01";
 
 
+
+
     public int getError() {
         return error;
     }
 
-    public String getBox() {
-        return box;
-    }
+
 
     public String getCommand() {
         return command;
     }
 
-    public String getFixed_1() {
-        return fixed_1;
+
+    public String getCommandFixed_1() {
+        return commandFixed_1;
     }
 
-    public String getFixed_2() {
-        return fixed_2;
+    public String getCommandFixed_2() {
+        return commandFixed_2;
+    }
+
+    public String getCommandState() {
+        return commandState;
+    }
+
+    public String getCommmandChannel() {
+        return commmandChannel;
     }
 
     @Override
@@ -77,19 +98,22 @@ public class Command {
         return "Command{" +
                 "error=" + error +
                 ", bytes=" + Arrays.toString(bytes) +
-                ", fixed_1='" + fixed_1 + '\'' +
-                ", fixed_2='" + fixed_2 + '\'' +
-                ", box='" + box + '\'' +
+                ", fixed_1='" + commandFixed_1 + '\'' +
+                ", fixed_2='" + commandFixed_2 + '\'' +
+                ", box='" + commmandChannel + '\'' +
                 ", command='" + command + '\'' +
+                ", state='" + commandState + '\'' +
                 '}';
     }
 
     public Command (Builder builder){
-        box=builder.box;
-        fixed_1=builder.fixed_1;
-        fixed_2=builder.fixed_2;
+        commmandChannel=builder.commmand_channel;
+        commandFixed_1=builder.command_fixed_1;
+        commandFixed_2=builder.command_fixed_2;
         command=builder.command;
         bytes=builder.bytes;
+        commandState=builder.command_state;
+        error=builder.error;
     }
 
 
@@ -99,26 +123,7 @@ public class Command {
 
         public Builder setBytes(byte[] bytes) {
             this.bytes = bytes;
-            if (bytes==null){
-                this.error=0x10;
-            }
-            byte sum=0;
 
-
-            if (bytes.length>0){
-                for (int i=0;i<bytes.length-1;i++){
-                    sum^=bytes[i];
-                }
-
-                if (sum==bytes[bytes.length-1]){
-                    this.error=0x01;
-                    this.command=String.format("%02x", new Object[]{bytes[2]}).toUpperCase();
-                    this.box=String.format("%02x", new Object[]{bytes[1]}).toUpperCase();
-                    this.fixed_1=String.format("%02x", new Object[]{bytes[3]}).toUpperCase();
-                    this.fixed_2=String.format("%02x", new Object[]{bytes[4]}).toUpperCase();
-
-                }
-            }
 
 
             return this;
@@ -126,9 +131,11 @@ public class Command {
 
         private int error=0x00;
 
-        private String fixed_1="00";
-        private String fixed_2="00";
-        private String box="01";
+
+        private String command_fixed_1="00";
+        private String command_fixed_2="00";
+        private String commmand_channel="01";
+        private String command_state="关";
         /**
          * 命令
          */
@@ -139,42 +146,91 @@ public class Command {
             return this;
         }
 
-        public Builder setBox(String box) {
-            this.box = box;
+        public Builder setCommmandChannel(String commmand_channel) {
+            this.commmand_channel = commmand_channel;
             return this;
         }
+
+        public Builder setCommandFixed_1(String command_fixed_1) {
+            this.command_fixed_1 = command_fixed_1;
+            return this;
+        }
+
+        public Builder setCommandFixed_2(String command_fixed_2) {
+            this.command_fixed_2 = command_fixed_2;
+            return this;
+        }
+
+        public Builder setCommandState(String command_state) {
+            this.command_state = command_state;
+            return this;
+        }
+
+
 
         public Builder setCommand(String command) {
             this.command = command;
             return this;
         }
 
-        public Builder setFixed_1(String fixed_1) {
-            this.fixed_1 = fixed_1;
-            return this;
-        }
 
-        public Builder setFixed_2(String fixed_2) {
-            this.fixed_2 = fixed_2;
-            return this;
-        }
 
         public Command build() {
+            try {
+                String [] strings=new String[]{command_header,commmand_channel,command,command_fixed_1,command_fixed_2};
+                byte[] bytes=new byte[strings.length+1];
+                byte sum=0;
+                for(int i=0;i<strings.length;i++){
+                    bytes[i]=(byte)Integer.parseInt(strings[i],16);
+                    sum^=((byte)Integer.parseInt(strings[i],16));
+
+                }
+                bytes[strings.length]=sum;
+                this.bytes=bytes;
+            }catch (Exception e){
+                e.printStackTrace();
+            }
             return new Command(this);
         }
 
-        public Builder getBulider(){
-            String [] strings=new String[]{command_header,box,command,fixed_1,fixed_2};
-            byte[] bytes=new byte[strings.length+1];
-            byte sum=0;
-            for(int i=0;i<strings.length;i++){
-                bytes[i]=(byte)Integer.parseInt(strings[i],16);
-                sum^=((byte)Integer.parseInt(strings[i],16));
 
+
+        public Command parse(){
+
+            try {
+
+                if (bytes==null){
+                    this.error=0x0A;
+                }
+                byte sum=0;
+                if (bytes.length>0){
+                    for (int i=0;i<bytes.length-1;i++){
+                        sum^=bytes[i];
+                    }
+                    if (sum==bytes[bytes.length-1]){
+                        this.error=0x01;
+                        this.command=String.format("%02x", new Object[]{bytes[2]}).toUpperCase();
+                        this.commmand_channel=String.format("%02x", new Object[]{bytes[1]}).toUpperCase();
+                        this.command_fixed_1=String.format("%02x", new Object[]{bytes[3]}).toUpperCase();
+                        this.command_fixed_2=String.format("%02x", new Object[]{bytes[4]}).toUpperCase();
+                        if (TextUtils.equals(command_fixed_2,"70")){
+                            this.command_state="开";
+                        }else if (TextUtils.equals(command_fixed_2,"7F")){
+                            this.command_state="关";
+                        }
+                    }else {
+                        this.error=0x0B;
+                    }
+                }else {
+                    this.error=0x0A;
+                }
+            }catch (Exception e){
+                e.printStackTrace();
             }
-            bytes[strings.length]=sum;
-            this.bytes=bytes;
-            return this;
+
+
+            return new Command(this);
+
         }
 
 
