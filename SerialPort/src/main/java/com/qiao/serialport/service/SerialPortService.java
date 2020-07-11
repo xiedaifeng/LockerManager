@@ -8,22 +8,14 @@ import android.os.IBinder;
 import android.os.Parcel;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
-import android.util.Log;
-
-
 import com.qiao.serialport.rx.BaseObserver;
 import com.qiao.serialport.rx.RxSchedulers;
 import com.qiao.serialport.stick.SerialPortOnReceiver;
 import com.qiao.serialport.utils.Consts;
 import com.tencent.mmkv.MMKV;
-
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-
 import androidx.annotation.Nullable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -99,7 +91,6 @@ public class SerialPortService extends Service{
             if (serialHelper!=null){
                 try {
                     serialHelper.send(bs);
-                    Log.d("sendUartData","data:"+new String(bs)+"-success");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -141,8 +132,6 @@ public class SerialPortService extends Service{
         }
     };
 
-    private int Time = 1000*3;//周期时间
-    private Timer timer = new Timer();
 
 
     @Override
@@ -152,8 +141,6 @@ public class SerialPortService extends Service{
         serialHelper=new SerialHelper();
         MMKV.initialize(mContext);
         ScheduledThreadPoolExecutor  scheduled = new ScheduledThreadPoolExecutor(1);
-        Log.e("---",MMKV.mmkvWithID("serialport").getString(Consts.Utils.PATH, "dev/ttyS1"));
-        Log.e("---",MMKV.defaultMMKV().getString(Consts.Utils.PATH, "dev/ttyS1"));
         scheduled.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
@@ -162,8 +149,8 @@ public class SerialPortService extends Service{
                     public void subscribe(ObservableEmitter<Boolean> emitter) throws Exception {
                         if (serialHelper==null){
                             serialHelper=new SerialHelper();
-                            serialHelper.setsPort( MMKV.mmkvWithID("serialport").getString(Consts.Utils.PATH, "dev/ttyS1"));
-                            serialHelper.setiBaudRate(MMKV.mmkvWithID("serialport").getInt(Consts.Utils.BAUDRATE,9600));
+                            serialHelper.setsPort( MMKV.mmkvWithID("serialport").getString(Consts.Utils.PATH, "dev/ttyS3"));
+                            serialHelper.setiBaudRate(MMKV.mmkvWithID("serialport").getInt(Consts.Utils.BAUDRATE,19200));
                             serialHelper.setStopBits(MMKV.mmkvWithID("serialport").getInt(Consts.Utils.STOPBITS,1));
                             serialHelper.setDataBits(MMKV.mmkvWithID("serialport").getInt(Consts.Utils.DATABITS,8));
                             serialHelper.setParity(MMKV.mmkvWithID("serialport").getInt(Consts.Utils.PARITY,0));
@@ -204,6 +191,13 @@ public class SerialPortService extends Service{
         }
         return iBinder;
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        serviceStop.set(false);
+    }
+
     SerialPortOnReceiver serialPortOnReceiver=new SerialPortOnReceiver() {
         @Override
         public void onDataReceived(ComBean comBean) throws Exception {
@@ -219,6 +213,8 @@ public class SerialPortService extends Service{
                 }
             }
             listenerList.finishBroadcast();
+
+
         }
     };
 
