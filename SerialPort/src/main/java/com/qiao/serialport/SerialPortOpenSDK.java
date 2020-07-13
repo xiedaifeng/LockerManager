@@ -76,7 +76,7 @@ public class SerialPortOpenSDK {
 
         }
     }
-    public void unRegirster(SerialPortMessageListener listener){
+    public void unregirster(SerialPortMessageListener listener){
         if (listenerList!=null&&listenerList.contains(listener)){
             synchronized (SerialPortOpenSDK.class){
                 listenerList.remove(listener);
@@ -135,32 +135,8 @@ public class SerialPortOpenSDK {
         this.parity=parity;
         this.flowCon=flowCon;
         this.flags=flags;
-        MMKV.mmkvWithID("serialport", MMKV.MULTI_PROCESS_MODE).putString(Consts.Utils.PATH, path);
-        MMKV.mmkvWithID("serialport", MMKV.MULTI_PROCESS_MODE).putInt(Consts.Utils.BAUDRATE, baudrate);
-        MMKV.mmkvWithID("serialport", MMKV.MULTI_PROCESS_MODE).putInt(Consts.Utils.STOPBITS, stopBits);
-        MMKV.mmkvWithID("serialport", MMKV.MULTI_PROCESS_MODE).putInt(Consts.Utils.DATABITS, dataBits);
-        MMKV.mmkvWithID("serialport", MMKV.MULTI_PROCESS_MODE).putInt(Consts.Utils.FLOWCON, flowCon);
-        MMKV.mmkvWithID("serialport", MMKV.MULTI_PROCESS_MODE).putInt(Consts.Utils.FLAGS, flags);
-        MMKV.defaultMMKV().putString(Consts.Utils.PATH, path);
-        MMKV.defaultMMKV().putInt(Consts.Utils.BAUDRATE, baudrate);
-        MMKV.defaultMMKV().putInt(Consts.Utils.STOPBITS, stopBits);
-        MMKV.defaultMMKV().putInt(Consts.Utils.DATABITS, dataBits);
-        MMKV.defaultMMKV().putInt(Consts.Utils.FLOWCON, flowCon);
-        MMKV.defaultMMKV().putInt(Consts.Utils.FLAGS, flags);
-        if (serialPortSendMessage!=null){
-            try {
-                serialPortSendMessage.setSerilaPort(
-                        MMKV.defaultMMKV().getString(Consts.Utils.PATH, "dev/ttyS1"),
-                        MMKV.defaultMMKV().getInt(Consts.Utils.BAUDRATE,9600),
-                        MMKV.defaultMMKV().getInt(Consts.Utils.STOPBITS,1),
-                        MMKV.defaultMMKV().getInt(Consts.Utils.DATABITS,8),
-                        MMKV.defaultMMKV().getInt(Consts.Utils.PARITY,0),
-                        MMKV.defaultMMKV().getInt(Consts.Utils.FLOWCON,0),
-                        MMKV.defaultMMKV().getInt(Consts.Utils.FLAGS,0));
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-        }
+
+
 
     }
 
@@ -280,6 +256,32 @@ public class SerialPortOpenSDK {
                     listener.initListener(0x01, "初始化成功");
                 }
 
+                MMKV.mmkvWithID("serialport", MMKV.MULTI_PROCESS_MODE).putString(Consts.Utils.PATH, path);
+                MMKV.mmkvWithID("serialport", MMKV.MULTI_PROCESS_MODE).putInt(Consts.Utils.BAUDRATE, baudrate);
+                MMKV.mmkvWithID("serialport", MMKV.MULTI_PROCESS_MODE).putInt(Consts.Utils.STOPBITS, stopBits);
+                MMKV.mmkvWithID("serialport", MMKV.MULTI_PROCESS_MODE).putInt(Consts.Utils.DATABITS, dataBits);
+                MMKV.mmkvWithID("serialport", MMKV.MULTI_PROCESS_MODE).putInt(Consts.Utils.FLOWCON, flowCon);
+                MMKV.mmkvWithID("serialport", MMKV.MULTI_PROCESS_MODE).putInt(Consts.Utils.FLAGS, flags);
+                MMKV.defaultMMKV().putString(Consts.Utils.PATH, path);
+                MMKV.defaultMMKV().putInt(Consts.Utils.BAUDRATE, baudrate);
+                MMKV.defaultMMKV().putInt(Consts.Utils.STOPBITS, stopBits);
+                MMKV.defaultMMKV().putInt(Consts.Utils.DATABITS, dataBits);
+                MMKV.defaultMMKV().putInt(Consts.Utils.FLOWCON, flowCon);
+                MMKV.defaultMMKV().putInt(Consts.Utils.FLAGS, flags);
+                if (serialPortSendMessage!=null){
+                    try {
+                        serialPortSendMessage.setSerilaPort(
+                                MMKV.defaultMMKV().getString(Consts.Utils.PATH, "dev/ttyS3"),
+                                MMKV.defaultMMKV().getInt(Consts.Utils.BAUDRATE,19200),
+                                MMKV.defaultMMKV().getInt(Consts.Utils.STOPBITS,1),
+                                MMKV.defaultMMKV().getInt(Consts.Utils.DATABITS,8),
+                                MMKV.defaultMMKV().getInt(Consts.Utils.PARITY,0),
+                                MMKV.defaultMMKV().getInt(Consts.Utils.FLOWCON,0),
+                                MMKV.defaultMMKV().getInt(Consts.Utils.FLAGS,0));
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }

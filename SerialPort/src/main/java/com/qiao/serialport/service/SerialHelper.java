@@ -112,7 +112,7 @@ class SerialHelper {
                   }
                   byte[] buffer = getStickPackageHelper().execute(SerialHelper.this.mInputStream);
                   if (buffer != null && buffer.length > 0) {
-                      Log.e("receiver","------");
+
                       ComBean comRecData = new ComBean(SerialHelper.this.sPort, buffer, buffer.length);
                       if (listener!=null){
                           listener.onDataReceived(comRecData);
