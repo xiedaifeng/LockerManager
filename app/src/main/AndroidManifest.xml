@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.locker.manager">
 
+    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+
     <application
         android:name=".app.LockerApplication"
         android:allowBackup="true"
@@ -11,7 +13,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-
         tools:ignore="GoogleAppIndexingWarning">
 
         <meta-data
@@ -41,16 +42,13 @@
 
         <activity android:name=".activity.SenderPickUpActivity" android:screenOrientation="landscape"/>
 
-        <activity android:name=".activity.SaveDepositActivity" android:screenOrientation="landscape">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
-
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
-
-        </activity>
+        <activity android:name=".activity.SaveDepositActivity" android:screenOrientation="landscape"/>
 
         <activity android:name=".activity.SaveFirstActivity" android:screenOrientation="landscape"/>
+
+        <receiver android:name=".activity.receiver.TimerReceiver">
+
+        </receiver>
 
     </application>
 

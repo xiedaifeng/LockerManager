@@ -1,6 +1,6 @@
 package com.locker.manager.activity;
 
-import android.util.Log;
+
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -9,7 +9,8 @@ import com.locker.manager.R;
 import com.locker.manager.base.BaseUrlView;
 import com.qiao.serialport.SerialPortOpenSDK;
 import com.qiao.serialport.listener.SerialPortMessageListener;
-import com.yidao.module_lib.utils.ToastUtil;
+import com.yidao.module_lib.utils.DateUtils;
+import com.yidao.module_lib.utils.LogUtils;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -34,17 +35,7 @@ public class SaveAppScanActivity extends BaseUrlView implements SerialPortMessag
     public void init() {
 //        ivLeft.setVisibility(View.GONE);
 
-//        try {
-//            mInstance = SerialPortOpenSDK.getInstance();
-//            mInstance.setSerialPort("/dev/ttyS1",9600,1,8,0,0,0);
-//            SerialPortOpenSDK.getInstance().initialize(getCtx());
-//            String[] devices = SerialPortOpenSDK.getInstance().getDevices();
-//            for(String str:devices){
-//                Log.e("devices", str);
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        setCurrentTime(tvTitle,System.currentTimeMillis());
     }
 
     @OnClick({R.id.iv_left, R.id.tv_hand_save,R.id.tv_help})
@@ -69,7 +60,6 @@ public class SaveAppScanActivity extends BaseUrlView implements SerialPortMessag
     }
 
     @Override
-    public void onMessage(int error, String errorMessage, String data) throws Exception {
-        ToastUtil.showShortToast(errorMessage);
+    public void onMessage(int error, String errorMessage, byte[] data) throws Exception {
     }
 }
