@@ -8,6 +8,9 @@ import com.qiao.serialport.utils.Consts;
 
 import java.util.Arrays;
 
+/**
+ * 此类用于锁的智能化解析
+ */
 public class Command {
 
     public static interface Consts{
@@ -42,21 +45,26 @@ public class Command {
      * 0x0B 11 代表校验和错误
      *
      */
-
     private int error=0x00;
 
 
-    public static Command getInstance(Builder builder){
-        return new Command(builder);
-    }
-
+    /**
+     * 锁的通讯协议头
+     */
     private static String command_header="55";
 
     private byte[]bytes=null;
 
+
     private String commandFixed_1="00";
     private String commandFixed_2="00";
+    /**
+     * 锁的通道号
+     */
     private String commmandChannel="01";
+    /**
+     * 锁的开关状态
+     */
     private String commandState="关";
     /**
      * 命令
@@ -198,7 +206,6 @@ public class Command {
         public Command parse(){
 
             try {
-
                 if (bytes==null){
                     this.error=0x0A;
                 }
@@ -227,8 +234,6 @@ public class Command {
             }catch (Exception e){
                 e.printStackTrace();
             }
-
-
             return new Command(this);
 
         }
