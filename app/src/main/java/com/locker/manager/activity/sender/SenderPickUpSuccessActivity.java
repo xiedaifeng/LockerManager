@@ -33,6 +33,7 @@ public class SenderPickUpSuccessActivity extends BaseUrlView {
 
     @Override
     public void init() {
+        setCurrentTime(tvTitle,System.currentTimeMillis());
     }
 
     @OnClick({R.id.iv_left, R.id.tv_pick_success, R.id.tv_hand_continue})
@@ -43,6 +44,9 @@ public class SenderPickUpSuccessActivity extends BaseUrlView {
                 skipActivity(SaveAppScanActivity.class);
                 break;
             case R.id.tv_pick_success:
+                // TODO: 2020/7/13 倒计时结束或者柜门关闭都返回首页 
+                ViewManager.getInstance().finishAllView();
+                skipActivity(SaveAppScanActivity.class);
                 break;
             case R.id.tv_hand_continue:
                 ViewManager.getInstance().finishAllView();

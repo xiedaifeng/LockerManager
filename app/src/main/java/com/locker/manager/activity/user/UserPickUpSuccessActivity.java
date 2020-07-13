@@ -32,7 +32,7 @@ public class UserPickUpSuccessActivity extends BaseUrlView {
 
     @Override
     public void init() {
-
+        setCurrentTime(tvTitle,System.currentTimeMillis());
     }
 
 

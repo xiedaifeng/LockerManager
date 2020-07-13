@@ -29,7 +29,7 @@ public class SaveHelpActivity extends BaseUrlView {
 
     @Override
     public void init() {
-
+        setCurrentTime(tvTitle,System.currentTimeMillis());
     }
 
 

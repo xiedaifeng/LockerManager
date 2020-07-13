@@ -69,6 +69,8 @@ public class SaveDepositActivity extends BaseUrlView {
 
     @Override
     public void init() {
+        setCurrentTime(tvTitle,System.currentTimeMillis());
+
         recyclerView.setLayoutManager(new GridLayoutManager(getCtx(), 3));
         NumAdapter adapter = new NumAdapter(getCtx());
         recyclerView.setAdapter(adapter);
@@ -125,6 +127,7 @@ public class SaveDepositActivity extends BaseUrlView {
                 ViewManager.getInstance().finishView();
                 break;
             case R.id.tv_save:
+
                 skipActivity(SenderPickUpSuccessActivity.class);
                 break;
             case R.id.ll_small:
