@@ -44,6 +44,11 @@ public abstract class BaseModel<T extends IBasePress> implements IBaseModel<T> {
         HttpClient.request(getBean(), isEncrypt, this);
     }
 
+
+    public void request(BaseBean baseBean,boolean isEncrypt) {
+        HttpClient.request(baseBean, isEncrypt, this);
+    }
+
     @Override
     public void success(ResponseBean responseBean) {
         getPress().success(responseBean);
@@ -52,33 +57,6 @@ public abstract class BaseModel<T extends IBasePress> implements IBaseModel<T> {
     @Override
     public void failed(ResponseBean responseBean) {
         getPress().failed(responseBean);
-        if (responseBean.getCode() == 10000) {
-//            keepCookie();
-        }
-    }
-
-    private void keepCookie() {
-
-//        LoginBean loginBean = new LoginBean();
-//        loginBean.setImei(PhoneInfoUtils.getPhoneSign());
-//        String moblie = SharedPreferencesUtils.getString("MOBLIE", "");
-//        loginBean.setMobile(moblie);
-//        loginBean.setPhoneModel(PhoneInfoUtils.getSystemModel());
-//        loginBean.setPhoneType(1);
-//        loginBean.setType(0);
-//        loginBean.setVersion(String.valueOf(PackageUtils.getVersionCode(BaseApplication.getApplication())));
-//        setBean(loginBean);
-//        HttpClient.request(getBean(), false, new IHttpCallBack() {
-//            @Override
-//            public void success(ResponseBean responseBean) {
-//
-//            }
-//
-//            @Override
-//            public void failed(ResponseBean responseBean) {
-//
-//            }
-//        });
     }
 
 }
