@@ -7,6 +7,7 @@ import com.qiao.serialport.utils.ByteUtil;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +59,18 @@ public class CommandProtocol {
         return state;
     }
 
+    @Override
+    public String toString() {
+        return "CommandProtocol{" +
+                "error=" + error +
+                ", command='" + command + '\'' +
+                ", commandChannel='" + commandChannel + '\'' +
+                ", state='" + state + '\'' +
+                ", bytes=" + Arrays.toString(bytes) +
+                ", maps=" + maps +
+                '}';
+    }
+
     /**
      * 设备状态参数
      */
@@ -68,6 +81,7 @@ public class CommandProtocol {
         this.commandChannel=builder.commandChannel;
         this.maps=builder.data;
         this.error=builder.error;
+        this.state=builder.state;
     }
 
     public static class Builder{
@@ -112,26 +126,29 @@ public class CommandProtocol {
             return this;
         }
         public CommandProtocol builder(){
-           byte[] bytes= ByteUtil.decStr2bytes(commandChannel);
-            ByteBuffer byteBuffer=ByteBuffer.allocate(1+bytes.length);
-            if (bytes==null){
+           byte[] bytes= ByteUtil.intTo2Byte(Integer.parseInt(commandChannel,16));
+            ByteBuffer byteBuffer=ByteBuffer.allocate(1+bytes.length+1);
+            if (bytes!=null){
                 byteBuffer.put(HEAD_PROTOCOL);
                 byteBuffer.put((byte)Integer.parseInt(command, 16));
                 byteBuffer.put(bytes);
                 byte[] byteArray= byteBuffer.array();
-                byteBuffer.put( ByteUtil.getXor(byteArray,byteArray.length));
-                byteBuffer.flip();
-               this.bytes= byteBuffer.array();
+                ByteBuffer buffer=ByteBuffer.allocate(byteArray.length+1);
+                buffer.put(byteArray);
+                buffer.put(ByteUtil.getXor(byteArray,byteArray.length));
+
+               this.bytes= buffer.array();
             }
             return new CommandProtocol(this);
         }
 
         public CommandProtocol parseMessage(){
+
             if (bytes==null){
                 this.error=0x0A;
                 return new CommandProtocol(this);
             }
-            if (ByteUtil.getXor(bytes, bytes.length)!=bytes[bytes.length-1]){
+            if (ByteUtil.getXor(bytes, bytes.length-1)!=bytes[bytes.length-1]){
                 this.error=0x0B;
                 return new CommandProtocol(this);
             }
