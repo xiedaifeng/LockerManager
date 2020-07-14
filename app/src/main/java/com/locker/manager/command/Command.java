@@ -26,11 +26,20 @@ public class Command {
         public static String COMMAND_11="0B";
         public static String COMMAND_12="0C";
         /**
-         *
+         *查询状态指令
          */
         public static String COMMAND_READ="A2";
+        /**
+         * 开锁指令
+         */
         public static String COMMAND_WRITE="A1";
+        /**
+         * 设置开始指令
+         */
         public static String COMMAND_SETTING_START="A6";
+        /**
+         * 设置结束指令
+         */
         public static String COMMAND_SETTING_END="A4";
     }
 
