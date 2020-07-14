@@ -12,7 +12,6 @@ import java.util.Arrays;
  * 此类用于锁的智能化解析
  */
 public class Command {
-
     public static interface Consts{
         public static String COMMAND_1="01";
         public static String COMMAND_2="02";
@@ -26,7 +25,6 @@ public class Command {
         public static String COMMAND_10="0A";
         public static String COMMAND_11="0B";
         public static String COMMAND_12="0C";
-
         /**
          *
          */
@@ -34,7 +32,6 @@ public class Command {
         public static String COMMAND_WRITE="A1";
         public static String COMMAND_SETTING_START="A6";
         public static String COMMAND_SETTING_END="A4";
-
     }
 
 
