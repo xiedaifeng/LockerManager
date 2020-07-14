@@ -103,11 +103,11 @@ public class Command {
         return "Command{" +
                 "error=" + error +
                 ", bytes=" + Arrays.toString(bytes) +
-                ", fixed_1='" + commandFixed_1 + '\'' +
-                ", fixed_2='" + commandFixed_2 + '\'' +
-                ", box='" + commmandChannel + '\'' +
+                ", commandFixed_1='" + commandFixed_1 + '\'' +
+                ", commandFixed_2='" + commandFixed_2 + '\'' +
+                ", commmandChannel='" + commmandChannel + '\'' +
+                ", commandState='" + commandState + '\'' +
                 ", command='" + command + '\'' +
-                ", state='" + commandState + '\'' +
                 '}';
     }
 
@@ -151,6 +151,11 @@ public class Command {
             return this;
         }
 
+        /**
+         * 开箱号
+         * @param commmand_channel
+         * @return
+         */
         public Builder setCommmandChannel(String commmand_channel) {
             this.commmand_channel = commmand_channel;
             return this;
@@ -230,6 +235,7 @@ public class Command {
                 }
             }catch (Exception e){
                 e.printStackTrace();
+                this.error=0x0A;
             }
             return new Command(this);
 
