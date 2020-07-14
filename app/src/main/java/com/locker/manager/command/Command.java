@@ -11,6 +11,7 @@ import java.util.Arrays;
 /**
  * 此类用于锁的智能化解析
  */
+@Deprecated
 public class Command {
     public static interface Consts{
         public static String COMMAND_1="01";
