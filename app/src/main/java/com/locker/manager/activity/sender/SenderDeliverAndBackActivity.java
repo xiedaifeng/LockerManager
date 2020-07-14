@@ -28,7 +28,7 @@ public class SenderDeliverAndBackActivity extends BaseUrlView {
 
     @Override
     public void init() {
-
+        setCurrentTime(tvTitle,System.currentTimeMillis());
     }
 
     @OnClick({R.id.iv_left, R.id.rl_parcel, R.id.rl_sender})

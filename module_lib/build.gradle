@@ -9,7 +9,7 @@ android {
 
 
     defaultConfig {
-        minSdkVersion 19
+        minSdkVersion 18
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -38,13 +38,14 @@ dependencies {
 
     //布局注解工具
     api 'com.jakewharton:butterknife:10.2.1'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
 
     api 'com.github.bumptech.glide:glide:4.10.0'
 
     // RxJava
     api 'io.reactivex.rxjava2:rxjava:2.1.9'
-    api 'io.reactivex.rxjava2:rxandroid:2.0.2'
+    api 'io.reactivex.rxjava2:rxandroid:2.1.1'
     api 'com.tbruyelle.rxpermissions2:rxpermissions:0.9.4@aar'
     //三级选择控件
     api 'com.contrarywind:Android-PickerView:4.1.8'

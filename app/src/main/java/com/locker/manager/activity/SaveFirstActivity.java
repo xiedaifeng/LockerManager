@@ -51,6 +51,8 @@ public class SaveFirstActivity extends BaseUrlView {
 
     @Override
     public void init() {
+        setCurrentTime(tvTitle,System.currentTimeMillis());
+
         recyclerView.setLayoutManager(new GridLayoutManager(getCtx(), 3));
         NumAdapter adapter = new NumAdapter(getCtx());
         recyclerView.setAdapter(adapter);

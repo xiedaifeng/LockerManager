@@ -15,7 +15,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:paddingLeft="115dp"
-        android:paddingTop="60dp">
+        android:paddingTop="45dp">
 
         <TextView
             android:id="@+id/tv_case_state"

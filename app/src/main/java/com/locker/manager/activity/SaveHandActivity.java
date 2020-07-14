@@ -25,7 +25,7 @@ public class SaveHandActivity extends BaseUrlView {
 
     @Override
     public void init() {
-
+        setCurrentTime(tvTitle,System.currentTimeMillis());
     }
 
 

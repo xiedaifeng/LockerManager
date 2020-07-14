@@ -1,5 +1,7 @@
 package com.qiao.serialport.utils;
 
+import android.util.Log;
+
 public class ByteUtil {
     public static int isOdd(int num) {
         return num & 0x1;
@@ -46,11 +48,18 @@ public class ByteUtil {
         } else {
             result = new byte[hexlen / 2];
         }
+
         int j = 0;
         for (int i = 0; i < hexlen; i += 2) {
             result[j] = HexToByte(inHex.substring(i, i + 2));
             j++;
         }
+//        int sum=0;
+//        for (int i=0;i<result.length;i++){
+//            sum^=result[i];
+//        }
+//        Log.e("res",sum+"");
+
         return result;
     }
 }

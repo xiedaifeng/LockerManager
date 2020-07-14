@@ -220,6 +220,7 @@ public class SerialPort {
                 throw new SecurityException();
             }
         }
+        Log.e("ss","device.getAbsolutePath()"+device.getAbsolutePath()+baudrate+"st"+stopBits+"da"+dataBits);
 
         mFd = open(device.getAbsolutePath(), baudrate, stopBits, dataBits, parity, flowCon, flags);
         if (mFd == null) {

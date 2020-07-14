@@ -37,7 +37,7 @@ public class SenderDeliverSuccessActivity extends BaseUrlView {
 
     @Override
     public void init() {
-
+        setCurrentTime(tvTitle,System.currentTimeMillis());
     }
 
 
@@ -54,7 +54,8 @@ public class SenderDeliverSuccessActivity extends BaseUrlView {
                 break;
             case R.id.tv_hand_continue:
                 ViewManager.getInstance().finishAllView();
-                skipActivity(SaveFirstActivity.class);
+                skipActivity(SenderActivity.class);
+//                skipActivity(SenderDeliverAndBackActivity.class);
                 break;
         }
     }

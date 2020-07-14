@@ -98,6 +98,7 @@ public class SerialPortFinder {
 				while(itdev.hasNext()) {
 					String device = itdev.next().getName();
 					String value = String.format("%s (%s)", device, driver.getName());
+					Log.e("serialport",value);
 					devices.add(value);
 				}
 			}

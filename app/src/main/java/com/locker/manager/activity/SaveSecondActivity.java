@@ -26,7 +26,7 @@ public class SaveSecondActivity extends BaseUrlView {
 
     @Override
     public void init() {
-
+        setCurrentTime(tvTitle,System.currentTimeMillis());
     }
 
 
@@ -41,6 +41,7 @@ public class SaveSecondActivity extends BaseUrlView {
                 skipActivity(SaveFirstActivity.class);
                 break;
             case R.id.rl_sender:
+//                skipActivity(SenderDeliverAndBackActivity.class);
                 skipActivity(SenderActivity.class);
                 break;
         }
