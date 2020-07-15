@@ -142,7 +142,7 @@ public class CommandProtocol {
                 ret[0] = HEAD_PROTOCOL;
                 ret[1] = command;
                 System.arraycopy(bytesBox, 0, ret, 2, bytesBox.length);
-                ret[bytes.length + 2] = ByteUtil.getXor(ret, bytesBox.length + 2);
+                ret[bytesBox.length + 2] = ByteUtil.getXor(ret, bytesBox.length + 2);
                this.bytes= ret;
             }
             Log.e("bulider",ByteUtil.ByteArrToHex(this.bytes));
