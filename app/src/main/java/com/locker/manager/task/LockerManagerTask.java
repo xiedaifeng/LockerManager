@@ -8,7 +8,7 @@ import com.qiao.serialport.SerialPortOpenSDK;
 import com.qiao.serialport.listener.SerianPortSDKListener;
 import com.yidao.module_lib.utils.LogUtils;
 
-public class LockerTask extends Task {
+public class LockerManagerTask extends Task {
     @Override
     public void run() {
         try {
