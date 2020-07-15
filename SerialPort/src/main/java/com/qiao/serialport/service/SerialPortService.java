@@ -8,6 +8,8 @@ import android.os.IBinder;
 import android.os.Parcel;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
+import android.util.Log;
+
 import com.qiao.serialport.rx.BaseObserver;
 import com.qiao.serialport.rx.RxSchedulers;
 import com.qiao.serialport.stick.SerialPortOnReceiver;
@@ -158,11 +160,14 @@ public class SerialPortService extends Service{
                             serialHelper.setFlags(MMKV.mmkvWithID("serialport").getInt(Consts.Utils.FLAGS,0));
                         }
                         if (!serialHelper.isOpen()){
+                            Log.i("serilport", "串口未打开");
                             try {
                                 serialHelper.open();
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
+                        }else {
+                            Log.i("serilport", "串口已经打开");
                         }
                     }
                 }).compose(RxSchedulers.<Boolean>compose()).subscribe(new BaseObserver<Boolean>());
