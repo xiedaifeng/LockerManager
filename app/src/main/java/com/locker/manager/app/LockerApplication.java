@@ -1,9 +1,6 @@
 package com.locker.manager.app;
 
-import android.content.Intent;
-import android.content.IntentFilter;
-
-import com.locker.manager.task.LockerTask;
+import com.locker.manager.task.LockerManagerTask;
 import com.qiao.launch.starter.TaskDispatcher;
 import com.yidao.module_lib.base.BaseApplication;
 
@@ -16,7 +13,7 @@ public class LockerApplication extends BaseApplication {
     public void onCreate() {
         super.onCreate();
         TaskDispatcher.init(this);
-        TaskDispatcher.createInstance().addTask(new LockerTask()).start();
+        TaskDispatcher.createInstance().addTask(new LockerManagerTask()).start();
 
 
     }
