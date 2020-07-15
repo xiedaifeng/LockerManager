@@ -2,20 +2,26 @@ package com.locker.manager.command;
 
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.qiao.serialport.utils.ByteUtil;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.reactivex.ObservableOnSubscribe;
+
 public class CommandProtocol {
 
     private static final byte HEAD_PROTOCOL=0x5A;
-
+    public static final byte COMMAND_OPEN=0x21;
+    public static final byte COMMAND_SELECT_BOX_STATE=0x22;
+    public static final byte COMMAND_SELECT_DEPOSIT_STATE= (byte) 0xA2;
+    public static final byte COMMAND_SET_BOX_START=  0x23;
+    public static final byte COMMAND_SET_BOX_END=(byte)0xA3;
 //    命令字	功能说明
 //0x21	开指定箱门
 //0xA1	回应开门结果
@@ -25,11 +31,13 @@ public class CommandProtocol {
 //0xA5	回应查询的存物状态结果，data为起始箱号+所有的箱门存物状态
 //0x23	设置锁板的起始箱号
 //0xA3	回应设置锁板起始箱号
-    private int error=0x0A;
+    private int error=0x01;
 
-    private String command="";
+    private byte command=0x00;
 
-    private String commandChannel="";
+    private String commandStr="";
+
+    private Object commandChannel="";
 
     private String state="";
 
@@ -47,28 +55,16 @@ public class CommandProtocol {
         return maps;
     }
 
-    public String getCommand() {
+    public byte getCommand() {
         return command;
     }
 
-    public String getCommandChannel() {
+    public Object getCommandChannel() {
         return commandChannel;
     }
 
     public String getState() {
         return state;
-    }
-
-    @Override
-    public String toString() {
-        return "CommandProtocol{" +
-                "error=" + error +
-                ", command='" + command + '\'' +
-                ", commandChannel='" + commandChannel + '\'' +
-                ", state='" + state + '\'' +
-                ", bytes=" + Arrays.toString(bytes) +
-                ", maps=" + maps +
-                '}';
     }
 
     /**
@@ -80,17 +76,19 @@ public class CommandProtocol {
         this.bytes=builder.bytes;
         this.commandChannel=builder.commandChannel;
         this.maps=builder.data;
-        this.error=builder.error;
         this.state=builder.state;
+        this.error=builder.error;
+        this.commandStr=builder.commandStr;
     }
 
     public static class Builder{
 
+        public String commandStr="";
         private int error=0x0A;
 
-        private String command="";
+        private byte command=0x00;
 
-        private String commandChannel="";
+        private Object commandChannel="";
 
         private byte[] bytes=null;
         private String state="";
@@ -117,46 +115,59 @@ public class CommandProtocol {
             return this;
         }
 
-        public Builder setCommand(String command) {
+        public Builder setCommand(byte command) {
             this.command = command;
             return this;
         }
-        public Builder setCommandChannel(String commandChannel) {
+
+        /**
+         * 箱号
+         * @param commandChannel
+         * @return
+         */
+        public Builder setCommandChannel(Object commandChannel) {
             this.commandChannel = commandChannel;
             return this;
         }
         public CommandProtocol builder(){
-           byte[] bytes= ByteUtil.intTo2Byte(Integer.parseInt(commandChannel,16));
-            ByteBuffer byteBuffer=ByteBuffer.allocate(1+bytes.length+1);
-            if (bytes!=null){
-                byteBuffer.put(HEAD_PROTOCOL);
-                byteBuffer.put((byte)Integer.parseInt(command, 16));
-                byteBuffer.put(bytes);
-                byte[] byteArray= byteBuffer.array();
-                ByteBuffer buffer=ByteBuffer.allocate(byteArray.length+1);
-                buffer.put(byteArray);
-                buffer.put(ByteUtil.getXor(byteArray,byteArray.length));
-
-               this.bytes= buffer.array();
+            int boxCh=0;
+            if (commandChannel instanceof Integer){
+                boxCh=(int)commandChannel;
+            }else if (commandChannel instanceof String){
+                boxCh=Integer.parseInt((String) commandChannel, 16);
             }
+           byte[] bytesBox= new byte[]{(byte)(boxCh / 256), (byte)(boxCh % 256)};
+            if (bytesBox!=null){
+                byte[] ret = new byte[bytesBox.length + 3];
+                ret[0] = HEAD_PROTOCOL;
+                ret[1] = command;
+                System.arraycopy(bytesBox, 0, ret, 2, bytesBox.length);
+                ret[bytes.length + 2] = ByteUtil.getXor(ret, bytesBox.length + 2);
+               this.bytes= ret;
+            }
+            Log.e("bulider",ByteUtil.ByteArrToHex(this.bytes));
             return new CommandProtocol(this);
         }
 
         public CommandProtocol parseMessage(){
-
             if (bytes==null){
                 this.error=0x0A;
                 return new CommandProtocol(this);
             }
-            if (ByteUtil.getXor(bytes, bytes.length-1)!=bytes[bytes.length-1]){
+            if ( bytes.length < 4) {
                 this.error=0x0B;
                 return new CommandProtocol(this);
             }
-            this.command=String.format("%02x", new Object[]{bytes[1]}).toUpperCase();
-            if (!TextUtils.isEmpty(command)){
-                if (TextUtils.equals("A1", command)){
+            if (ByteUtil.getXor(bytes, bytes.length-1)!=bytes[bytes.length-1]){
+                this.error=0x0C;
+                return new CommandProtocol(this);
+            }
+            this.command=bytes[1];
+            this.commandStr=String.format("%02x", new Object[]{bytes[1]}).toUpperCase();
+            if (!TextUtils.isEmpty(commandStr)){
+                if (TextUtils.equals("A1", commandStr)){
                     this.state=String.format("%02x", new Object[]{bytes[2]}).toUpperCase();
-                }else if (TextUtils.equals("A2", command)){
+                }else if (TextUtils.equals("A2", commandStr)){
                     int start = (bytes[2] & 255) * 256 + (bytes[3] & 255);
                     int end = (bytes[4] & 255) * 256 + (bytes[5] & 255);
                     int pos = 0;
@@ -166,9 +177,9 @@ public class CommandProtocol {
                         data.put(i+"", (stat[pos / 8] & 1 << pos % 8) > 0 ? 1+"" : 0+"");
                         ++pos;
                     }
-                }else if (TextUtils.equals("A3", command)){
+                }else if (TextUtils.equals("A3", commandStr)){
                     this.state=String.format("%02x", new Object[]{bytes[2]}).toUpperCase();
-                }else if (TextUtils.equals("A5", command)){
+                }else if (TextUtils.equals("A5", commandStr)){
                     int start = (bytes[2] & 255) * 256 + (bytes[3] & 255);
                     int end = (bytes[4] & 255) * 256 + (bytes[5] & 255);
                     int pos = 0;
@@ -184,32 +195,4 @@ public class CommandProtocol {
         }
     }
 
-    public static HashMap<Integer, Integer> ParseGetBoxStatus(byte[] bytes, int len) {
-        HashMap<Integer, Integer> status = new HashMap();
-        if (ParseProtocol(bytes, len, (byte)-94)) {
-            int start = (bytes[2] & 255) * 256 + (bytes[3] & 255);
-            int end = (bytes[4] & 255) * 256 + (bytes[5] & 255);
-            int pos = 0;
-            byte[] stat = new byte[len - 7];
-            System.arraycopy(bytes, 6, stat, 0, len - 7);
-            for(int i = start; i <= end; ++i) {
-                status.put(i, (stat[pos / 8] & 1 << pos % 8) > 0 ? 1 : 0);
-                ++pos;
-            }
-        }
-
-        return status;
-    }
-
-    private static boolean ParseProtocol(byte[] dat, int len, byte cmd) {
-        if (dat != null && len >= 4 && dat.length >= len) {
-            if (ByteUtil.getXor(dat, len) != 0) {
-                return false;
-            } else {
-                return dat[1] == cmd;
-            }
-        } else {
-            return false;
-        }
-    }
 }
