@@ -161,47 +161,47 @@ public class SerialPortOpenSDK {
 
 
     public void send(byte[] bs)throws Exception{
-        if (serialPortSendMessage!=null){
-            if (serialPortSendMessage.isOpen()){
-                serialPortSendMessage.sendUartData(bs);
-                return;
-            }
-            if (listenerList!=null){
-                for (SerialPortMessageListener listener: listenerList){
-                    listener.onMessage(0x0B, "串口打开失败", new byte[0]);
-                }
-            }
-            return;
-        }
-        if (listenerList!=null){
-            for (SerialPortMessageListener listener: listenerList){
-                listener.onMessage(0x0A, "未初始化", new byte[0]);
-            }
-        }
-    }
-    public void send(final String hexString)throws Exception{
-        Observable.create(new ObservableOnSubscribe<Boolean>() {
-            @Override
-            public void subscribe(ObservableEmitter<Boolean> emitter) throws Exception {
-                if (serialPortSendMessage!=null){
-                    if (serialPortSendMessage.isOpen()){
-                        serialPortSendMessage.sendHexUartData(hexString);
-                        return;
-                    }
-                    if (listenerList!=null){
-                        for (SerialPortMessageListener listener: listenerList){
-                            listener.onMessage(0x0B, "串口未打开", new byte[0]);
-                        }
-                    }
+        Observable.create((ObservableOnSubscribe<Boolean>) emitter -> {
+            if (serialPortSendMessage!=null){
+                if (serialPortSendMessage.isOpen()){
+                    serialPortSendMessage.sendUartData(bs);
                     return;
                 }
                 if (listenerList!=null){
                     for (SerialPortMessageListener listener: listenerList){
-                        listener.onMessage(0x0A, "未初始化", new byte[0]);
+                        listener.onMessage(0x0B, "串口未打开", new byte[0]);
                     }
                 }
-
+                return;
             }
+            if (listenerList!=null){
+                for (SerialPortMessageListener listener: listenerList){
+                    listener.onMessage(0x0A, "未初始化", new byte[0]);
+                }
+            }
+
+        }).compose(RxSchedulers.<Boolean>compose()).subscribe(new BaseObserver<Boolean>());
+    }
+    public void send(final String hexString)throws Exception{
+        Observable.create((ObservableOnSubscribe<Boolean>) emitter -> {
+            if (serialPortSendMessage!=null){
+                if (serialPortSendMessage.isOpen()){
+                    serialPortSendMessage.sendHexUartData(hexString);
+                    return;
+                }
+                if (listenerList!=null){
+                    for (SerialPortMessageListener listener: listenerList){
+                        listener.onMessage(0x0B, "串口未打开", new byte[0]);
+                    }
+                }
+                return;
+            }
+            if (listenerList!=null){
+                for (SerialPortMessageListener listener: listenerList){
+                    listener.onMessage(0x0A, "未初始化", new byte[0]);
+                }
+            }
+
         }).compose(RxSchedulers.<Boolean>compose()).subscribe(new BaseObserver<Boolean>());
 
 
