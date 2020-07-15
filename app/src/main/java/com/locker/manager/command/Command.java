@@ -143,10 +143,7 @@ public class Command {
 
             return this;
         }
-
         private int error=0x00;
-
-
         private String command_fixed_1="00";
         private String command_fixed_2="00";
         private String commmand_channel="01";
