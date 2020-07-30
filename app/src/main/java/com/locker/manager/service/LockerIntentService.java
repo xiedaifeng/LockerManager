@@ -38,7 +38,7 @@ public class LockerIntentService extends GTIntentService {
         PushManager.getInstance().bindAlias(context, PhoneInfoUtils.getLocalMacAddressFromWifiInfo(context).replace(":",""));
     }
 
-    // 处理透传消息
+    // 处理透传消息{"order_id":"xx"}
     @Override
     public void onReceiveMessageData(Context context, GTTransmitMessage gtTransmitMessage) {
         String content = gtTransmitMessage.getMessageId()+gtTransmitMessage.getPayloadId()+gtTransmitMessage.getTaskId();

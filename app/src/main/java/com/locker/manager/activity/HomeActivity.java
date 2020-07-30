@@ -90,11 +90,11 @@ public class HomeActivity extends BaseUrlView implements SerialPortMessageListen
         switch (view.getId()) {
             case R.id.iv_left:
                 try {
-                    new CommandProtocol.Builder().setCommand(CommandProtocol.COMMAND_OPEN).setCommandChannel(5).builder();
+//                    new CommandProtocol.Builder().setCommand(CommandProtocol.COMMAND_OPEN).setCommandChannel(5).builder();
                     SerialPortOpenSDK.getInstance().send(
                             new CommandProtocol.Builder()
                                     .setCommand(CommandProtocol.COMMAND_OPEN)
-                                    .setCommandChannel(1)
+                                    .setCommandChannel(5)
                                     .builder()
                                     .getBytes());
                 } catch (Exception e) {
