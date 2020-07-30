@@ -8,6 +8,15 @@ import android.text.TextUtils;
 
 import com.yidao.module_lib.base.BaseApplication;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 public class PhoneInfoUtils {
@@ -143,10 +152,10 @@ public class PhoneInfoUtils {
      * @param context
      * @return
      */
-    public static String getLocalMacAddressFromWifiInfo(Context context){
+    public static String getLocalMacAddressFromWifiInfo(Context context) {
         WifiManager wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         WifiInfo winfo = wifi.getConnectionInfo();
-        String mac =  winfo.getMacAddress();
+        String mac = winfo.getMacAddress();
         return mac;
     }
 

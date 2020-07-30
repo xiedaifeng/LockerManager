@@ -41,7 +41,7 @@ public abstract class BaseUrlView extends BaseView {
     }
 
     protected void onReceiveTime(long time){
-        LogUtils.e("onReceiveTime");
+//        LogUtils.e("onReceiveTime");
         if(tvTitle!=null){
             setCurrentTime(tvTitle,time);
         }
