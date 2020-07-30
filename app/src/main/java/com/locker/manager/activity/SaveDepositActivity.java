@@ -10,7 +10,9 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
 import com.example.http_lib.bean.CreateOrderRequestBean;
 import com.example.http_lib.bean.GetAllBoxDetailRequestBean;
+import com.example.http_lib.bean.GetOrderInfoRequestBean;
 import com.example.http_lib.response.DeviceBoxDetailBean;
+import com.example.http_lib.response.OrderInfoBean;
 import com.locker.manager.R;
 import com.locker.manager.activity.sender.SenderPickUpSuccessActivity;
 import com.locker.manager.adapter.NumAdapter;
@@ -83,6 +85,8 @@ public class SaveDepositActivity extends BaseUrlView {
     private int smallBoxNum = 0;
     private int middleBoxNum = 0;
     private int largeBoxNum = 0;
+
+    private String orderId;
 
 
     @Override
@@ -167,13 +171,17 @@ public class SaveDepositActivity extends BaseUrlView {
                     ToastUtil.showShortToast("暂无相应型号的箱子可用");
                     return;
                 }
-                String boxSize = mPosition == 0 ? "small" : mPosition == 1 ? "medium" : "big";
-                CreateOrderRequestBean requestBean = new CreateOrderRequestBean();
-                requestBean.cun_phone = postPhone;
-                requestBean.qu_phone = fetchPhone;
-                requestBean.device_id = PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx());
-                requestBean.boxsize = boxSize;
-                mPresenter.createOrder(requestBean);
+                if(TextUtils.isEmpty(orderId)){
+                    String boxSize = mPosition == 0 ? "small" : mPosition == 1 ? "medium" : "big";
+                    CreateOrderRequestBean requestBean = new CreateOrderRequestBean();
+                    requestBean.cun_phone = postPhone;
+                    requestBean.qu_phone = fetchPhone;
+                    requestBean.device_id = PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx());
+                    requestBean.boxsize = boxSize;
+                    mPresenter.createOrder(requestBean);
+                } else {
+                    mPresenter.getOrderInfo(orderId);
+                }
                 break;
             case R.id.ll_small:
                 chooseCase(0);
@@ -239,12 +247,22 @@ public class SaveDepositActivity extends BaseUrlView {
                 tvTip.setText(String.format(tvTip.getText().toString(),"xx",smallBoxNum,middleBoxNum,largeBoxNum));
             }
             if(requestCls == CreateOrderRequestBean.class){
-                SaveOverTimeDialog timeDialog = new SaveOverTimeDialog(getCtx(),responseBean.getData());
+                orderId = responseBean.getData();
+                mPresenter.getOrderInfo(orderId);
+
+                SaveOverTimeDialog timeDialog = new SaveOverTimeDialog(getCtx(), orderId);
+                timeDialog.hidePayView();
                 timeDialog.show();
 
 //                Bundle bundle = new Bundle();
 //                bundle.putString(Constant.OrderInfoKey,responseBean.getData());
 //                skipActivity(SenderPickUpSuccessActivity.class,bundle);
+            }
+            if(requestCls == GetOrderInfoRequestBean.class){
+                OrderInfoBean orderInfoBean = JSON.parseObject(responseBean.getData(), OrderInfoBean.class);
+                SaveOverTimeDialog timeDialog = new SaveOverTimeDialog(getCtx(),orderInfoBean.getOpencode());
+                timeDialog.hidePayView();
+                timeDialog.show();
             }
         } else {
             ToastUtil.showShortToast(responseBean.getMessage());

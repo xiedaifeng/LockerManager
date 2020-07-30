@@ -77,7 +77,7 @@ public class UserPickUpSuccessActivity extends BaseUrlView implements SerialPort
         if(getIntent().hasExtra(Constant.OpencodeKey)){
             String opencode = getIntent().getStringExtra(Constant.OpencodeKey);
             String boxno = opencode.substring(0,2);
-            tvCaseState.setText(String.format(tvCaseState.getText().toString(),boxno));
+            tvCaseState.setText(String.format("格口号：%s（已开）",boxno));
             try {
                 new CommandProtocol.Builder().setCommand(CommandProtocol.COMMAND_OPEN).setCommandChannel(boxno).builder();
                 SerialPortOpenSDK.getInstance().send(
@@ -132,7 +132,7 @@ public class UserPickUpSuccessActivity extends BaseUrlView implements SerialPort
             if(requestCls == GetOrderInfoRequestBean.class){
                 OrderInfoBean orderInfoBean = JSON.parseObject(responseBean.getData(), OrderInfoBean.class);
                 String boxno = orderInfoBean.getBoxno();
-                tvCaseState.setText(String.format(tvCaseState.getText().toString(),boxno));
+                tvCaseState.setText(String.format("格口号：%s（已开）",boxno));
                 try {
                     new CommandProtocol.Builder().setCommand(CommandProtocol.COMMAND_OPEN).setCommandChannel(boxno).builder();
                     SerialPortOpenSDK.getInstance().send(

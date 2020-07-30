@@ -1,24 +1,18 @@
 package com.locker.manager.activity;
 
 
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.http_lib.bean.CreateDeviceQrcodeRequestBean;
-import com.example.http_lib.bean.CreateOrderRequestBean;
-import com.example.http_lib.bean.UpdateDeviceBoxStatusRequestBean;
 import com.locker.manager.R;
 import com.locker.manager.base.BaseUrlView;
-import com.locker.manager.command.Command;
 import com.locker.manager.command.CommandProtocol;
 import com.qiao.serialport.SerialPortOpenSDK;
 import com.qiao.serialport.listener.SerialPortMessageListener;
 import com.yidao.module_lib.base.http.ResponseBean;
 import com.yidao.module_lib.utils.CommonGlideUtils;
-import com.yidao.module_lib.utils.DateUtils;
-import com.yidao.module_lib.utils.LogUtils;
 import com.yidao.module_lib.utils.PhoneInfoUtils;
 import com.yidao.module_lib.utils.ToastUtil;
 

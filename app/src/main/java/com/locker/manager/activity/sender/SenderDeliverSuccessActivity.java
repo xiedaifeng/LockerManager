@@ -1,13 +1,22 @@
 package com.locker.manager.activity.sender;
 
+import android.annotation.SuppressLint;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
+import com.example.http_lib.bean.GetOrderInfoRequestBean;
 import com.locker.manager.R;
 import com.locker.manager.activity.HomeActivity;
 import com.locker.manager.activity.SaveSecondActivity;
+import com.locker.manager.app.Constant;
 import com.locker.manager.base.BaseUrlView;
+import com.yidao.module_lib.base.http.ResponseBean;
 import com.yidao.module_lib.manager.ViewManager;
+import com.yidao.module_lib.utils.ToastUtil;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -29,6 +38,28 @@ public class SenderDeliverSuccessActivity extends BaseUrlView {
     @BindView(R.id.tv_tip)
     TextView tvTip;
 
+    private final int countDownCode = 0x110;
+
+    private int countDownTime = 60;
+
+    @SuppressLint("HandlerLeak")
+    private Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            super.handleMessage(msg);
+            if(msg.what == countDownCode) {
+                countDownTime--;
+                tvCountDown.setText(String.format("%ss后返回首页", countDownTime));
+                if (countDownTime > 0) {
+                    mHandler.sendEmptyMessageDelayed(countDownCode, 1000);
+                } else {
+                    ViewManager.getInstance().finishAllView();
+                    skipActivity(HomeActivity.class);
+                }
+            }
+        }
+    };
+
     @Override
     protected int getView() {
         return R.layout.activity_sender_deliver_success;
@@ -38,6 +69,13 @@ public class SenderDeliverSuccessActivity extends BaseUrlView {
     @Override
     public void init() {
         setCurrentTime(tvTitle,System.currentTimeMillis());
+
+        if(getIntent().hasExtra(Constant.OrderInfoKey)){
+            String orderId = getIntent().getStringExtra(Constant.OrderInfoKey);
+            mPresenter.getOrderInfo(orderId);
+        }
+
+        mHandler.sendEmptyMessageDelayed(countDownCode,1000);
     }
 
 
@@ -54,9 +92,29 @@ public class SenderDeliverSuccessActivity extends BaseUrlView {
                 break;
             case R.id.tv_hand_continue:
                 ViewManager.getInstance().finishAllView();
-                skipActivity(SaveSecondActivity.class);
+                skipActivity(SenderActivity.class);
 //                skipActivity(SenderDeliverAndBackActivity.class);
                 break;
+        }
+    }
+
+    @Override
+    public void onResponse(boolean success, Class requestCls, ResponseBean responseBean) {
+        super.onResponse(success, requestCls, responseBean);
+        if(success){
+            if(requestCls == GetOrderInfoRequestBean.class){
+
+            }
+        } else {
+            ToastUtil.showShortToast(responseBean.getMessage());
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(mHandler!=null){
+            mHandler.removeMessages(countDownCode);
         }
     }
 }

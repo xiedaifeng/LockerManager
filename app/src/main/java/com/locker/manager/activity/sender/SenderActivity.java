@@ -171,9 +171,6 @@ public class SenderActivity extends BaseUrlView {
                     tvPostMsg.setVisibility(View.INVISIBLE);
                     rlPostVerify.setVisibility(View.GONE);
                 }
-//                else {
-//                    tvPostMsg.setVisibility(View.INVISIBLE);
-//                }
             }
         });
 
@@ -195,9 +192,6 @@ public class SenderActivity extends BaseUrlView {
                     tvFetchMsg.setVisibility(View.INVISIBLE);
                     rlFetchVerify.setVisibility(View.GONE);
                 }
-//                else {
-//                    tvFetchMsg.setVisibility(View.INVISIBLE);
-//                }
             }
         });
         etPostVerify.addTextChangedListener(new TextWatcher() {

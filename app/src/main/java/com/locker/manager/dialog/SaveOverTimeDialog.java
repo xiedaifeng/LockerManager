@@ -26,6 +26,8 @@ public class SaveOverTimeDialog extends BaseUrlDialog {
     TextView tvCancel;
     @BindView(R.id.tv_exit)
     TextView tvExit;
+    @BindView(R.id.view_gap)
+    View viewGap;
 
     private Context mContext;
 
@@ -33,6 +35,11 @@ public class SaveOverTimeDialog extends BaseUrlDialog {
         super(context);
         this.mContext = context;
         mPresenter.getPayQrCode(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(mContext),opencode);
+    }
+
+    public void hidePayView(){
+        viewGap.setVisibility(View.GONE);
+        tvCancel.setVisibility(View.GONE);
     }
 
     public SaveOverTimeDialog(Context context, int themeResId) {

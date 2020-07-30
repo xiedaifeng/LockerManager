@@ -1,5 +1,6 @@
 package com.locker.manager.activity.sender;
 
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -8,6 +9,7 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.example.http_lib.bean.GetAllBoxDetailRequestBean;
+import com.example.http_lib.bean.GetOrderInfoRequestBean;
 import com.example.http_lib.response.DeviceBoxDetailBean;
 import com.locker.manager.R;
 import com.locker.manager.activity.HomeActivity;
@@ -144,8 +146,11 @@ public class SenderDeliverActivity extends BaseUrlView {
                 ViewManager.getInstance().finishView();
                 break;
             case R.id.tv_save:
+                mPresenter.getOrderInfo(orderId);
                 // TODO: 2020/7/3 判断付费、免费和付费成功自动跳转
-                skipActivity(SenderDeliverSuccessActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString(Constant.OrderInfoKey,orderId);
+                skipActivity(SenderDeliverSuccessActivity.class,bundle);
                 break;
             case R.id.ll_small:
                 chooseCase(0);
@@ -208,6 +213,9 @@ public class SenderDeliverActivity extends BaseUrlView {
                     }
                 }
                 tvTip.setText(String.format(tvTip.getText().toString(),"xx",smallNum,middleNum,largeNum));
+            }
+            if(requestCls == GetOrderInfoRequestBean.class){
+
             }
         } else {
             ToastUtil.showShortToast(responseBean.getMessage());
