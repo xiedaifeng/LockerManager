@@ -21,7 +21,7 @@
             android:id="@+id/tv_case_state"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="格口号：015（已开）"
+            android:text="格口号：%s（已开）"
             android:textColor="@color/color_333333"
             android:textSize="35sp" />
 

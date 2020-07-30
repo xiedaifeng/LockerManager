@@ -1,23 +1,34 @@
 package com.locker.manager.activity;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
+import com.example.http_lib.bean.CreateOrderRequestBean;
+import com.example.http_lib.bean.GetAllBoxDetailRequestBean;
+import com.example.http_lib.response.DeviceBoxDetailBean;
 import com.locker.manager.R;
 import com.locker.manager.activity.sender.SenderPickUpSuccessActivity;
 import com.locker.manager.adapter.NumAdapter;
+import com.locker.manager.app.Constant;
 import com.locker.manager.base.BaseUrlView;
 import com.locker.manager.callback.OnItemCallBack;
+import com.locker.manager.dialog.SaveOverTimeDialog;
+import com.yidao.module_lib.base.http.ResponseBean;
 import com.yidao.module_lib.manager.ViewManager;
+import com.yidao.module_lib.utils.PhoneInfoUtils;
+import com.yidao.module_lib.utils.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import butterknife.BindView;
 import butterknife.OnClick;
 
@@ -60,7 +71,19 @@ public class SaveDepositActivity extends BaseUrlView {
     @BindView(R.id.tv_large_size)
     TextView tvLargeSize;
 
+    @BindView(R.id.tv_tip)
+    TextView tvTip;
+
     private List<View> mViews = new ArrayList<>();
+    private String postPhone;
+    private String fetchPhone;
+
+    private int mPosition = 0;
+
+    private int smallBoxNum = 0;
+    private int middleBoxNum = 0;
+    private int largeBoxNum = 0;
+
 
     @Override
     protected int getView() {
@@ -69,7 +92,12 @@ public class SaveDepositActivity extends BaseUrlView {
 
     @Override
     public void init() {
-        setCurrentTime(tvTitle,System.currentTimeMillis());
+        setCurrentTime(tvTitle, System.currentTimeMillis());
+
+        postPhone = getIntent().getStringExtra(Constant.PostPhone);
+        fetchPhone = getIntent().getStringExtra(Constant.FetchPhone);
+
+        mPresenter.getAllBoxDetail(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()));
 
         recyclerView.setLayoutManager(new GridLayoutManager(getCtx(), 3));
         NumAdapter adapter = new NumAdapter(getCtx());
@@ -111,12 +139,12 @@ public class SaveDepositActivity extends BaseUrlView {
     }
 
 
-    @OnClick({R.id.iv_left, R.id.tv_agree, R.id.iv_help, R.id.tv_last, R.id.tv_save,R.id.ll_small, R.id.ll_middle, R.id.ll_large})
+    @OnClick({R.id.iv_left, R.id.tv_agree, R.id.iv_help, R.id.tv_last, R.id.tv_save, R.id.ll_small, R.id.ll_middle, R.id.ll_large})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_left:
                 ViewManager.getInstance().finishAllView();
-                skipActivity(SaveAppScanActivity.class);
+                skipActivity(HomeActivity.class);
                 break;
             case R.id.tv_agree:
                 break;
@@ -127,8 +155,25 @@ public class SaveDepositActivity extends BaseUrlView {
                 ViewManager.getInstance().finishView();
                 break;
             case R.id.tv_save:
-
-                skipActivity(SenderPickUpSuccessActivity.class);
+                if (mPosition == 0 && smallBoxNum == 0) {
+                    ToastUtil.showShortToast("暂无相应型号的箱子可用");
+                    return;
+                }
+                if (mPosition == 1 && middleBoxNum == 0) {
+                    ToastUtil.showShortToast("暂无相应型号的箱子可用");
+                    return;
+                }
+                if (mPosition == 2 && largeBoxNum == 0) {
+                    ToastUtil.showShortToast("暂无相应型号的箱子可用");
+                    return;
+                }
+                String boxSize = mPosition == 0 ? "small" : mPosition == 1 ? "medium" : "big";
+                CreateOrderRequestBean requestBean = new CreateOrderRequestBean();
+                requestBean.cun_phone = postPhone;
+                requestBean.qu_phone = fetchPhone;
+                requestBean.device_id = PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx());
+                requestBean.boxsize = boxSize;
+                mPresenter.createOrder(requestBean);
                 break;
             case R.id.ll_small:
                 chooseCase(0);
@@ -142,22 +187,67 @@ public class SaveDepositActivity extends BaseUrlView {
         }
     }
 
-    private void chooseCase(int position){
-        for(int i=0;i<mViews.size();i++){
-            mViews.get(i).setSelected(position==i);
+    private void chooseCase(int position) {
+        mPosition = position;
+        for (int i = 0; i < mViews.size(); i++) {
+            mViews.get(i).setSelected(position == i);
         }
 
-        tvSmallPrice.setTextColor(getCtx().getResources().getColor(position==0?R.color.color_0ED26B:R.color.color_999999));
-        tvSmallSize.setTextColor(getCtx().getResources().getColor(position==0?R.color.color_0ED26B:R.color.color_999999));
-        tvSmallRemain.setTextColor(getCtx().getResources().getColor(position==0?R.color.color_0ED26B:R.color.color_999999));
+        tvSmallPrice.setTextColor(getCtx().getResources().getColor(position == 0 ? R.color.color_0ED26B : R.color.color_999999));
+        tvSmallSize.setTextColor(getCtx().getResources().getColor(position == 0 ? R.color.color_0ED26B : R.color.color_999999));
+        tvSmallRemain.setTextColor(getCtx().getResources().getColor(position == 0 ? R.color.color_0ED26B : R.color.color_999999));
 
-        tvMiddlePrice.setTextColor(getCtx().getResources().getColor(position==1?R.color.color_0ED26B:R.color.color_999999));
-        tvMiddleSize.setTextColor(getCtx().getResources().getColor(position==1?R.color.color_0ED26B:R.color.color_999999));
-        tvMiddleRemain.setTextColor(getCtx().getResources().getColor(position==1?R.color.color_0ED26B:R.color.color_999999));
+        tvMiddlePrice.setTextColor(getCtx().getResources().getColor(position == 1 ? R.color.color_0ED26B : R.color.color_999999));
+        tvMiddleSize.setTextColor(getCtx().getResources().getColor(position == 1 ? R.color.color_0ED26B : R.color.color_999999));
+        tvMiddleRemain.setTextColor(getCtx().getResources().getColor(position == 1 ? R.color.color_0ED26B : R.color.color_999999));
 
-        tvLargePrice.setTextColor(getCtx().getResources().getColor(position==2?R.color.color_0ED26B:R.color.color_999999));
-        tvLargeSize.setTextColor(getCtx().getResources().getColor(position==2?R.color.color_0ED26B:R.color.color_999999));
-        tvLargeRemain.setTextColor(getCtx().getResources().getColor(position==2?R.color.color_0ED26B:R.color.color_999999));
+        tvLargePrice.setTextColor(getCtx().getResources().getColor(position == 2 ? R.color.color_0ED26B : R.color.color_999999));
+        tvLargeSize.setTextColor(getCtx().getResources().getColor(position == 2 ? R.color.color_0ED26B : R.color.color_999999));
+        tvLargeRemain.setTextColor(getCtx().getResources().getColor(position == 2 ? R.color.color_0ED26B : R.color.color_999999));
 
+    }
+
+    @Override
+    public void onResponse(boolean success, Class requestCls, ResponseBean responseBean) {
+        super.onResponse(success, requestCls, responseBean);
+        if (success) {
+            if (requestCls == GetAllBoxDetailRequestBean.class) {
+                List<DeviceBoxDetailBean> boxDetailBeans = JSON.parseArray(responseBean.getData(), DeviceBoxDetailBean.class);
+                for (DeviceBoxDetailBean bean : boxDetailBeans) {
+                    if (TextUtils.equals("big", bean.getSize())) {
+                        tvLargePrice.setText("￥" + bean.getMoney());
+                        tvLargeRemain.setText("剩余空箱" + bean.getCount());
+                        tvLargeSize.setText(bean.getTitle());
+
+                        largeBoxNum = Integer.parseInt(bean.getCount());
+                    }
+                    if (TextUtils.equals("medium", bean.getSize())) {
+                        tvMiddlePrice.setText("￥" + bean.getMoney());
+                        tvMiddleRemain.setText("剩余空箱" + bean.getCount());
+                        tvMiddleSize.setText(bean.getTitle());
+
+                        middleBoxNum = Integer.parseInt(bean.getCount());
+                    }
+                    if (TextUtils.equals("small", bean.getSize())) {
+                        tvSmallPrice.setText("￥" + bean.getMoney());
+                        tvSmallRemain.setText("剩余空箱" + bean.getCount());
+                        tvSmallSize.setText(bean.getTitle());
+
+                        smallBoxNum = Integer.parseInt(bean.getCount());
+                    }
+                }
+                tvTip.setText(String.format(tvTip.getText().toString(),"xx",smallBoxNum,middleBoxNum,largeBoxNum));
+            }
+            if(requestCls == CreateOrderRequestBean.class){
+                SaveOverTimeDialog timeDialog = new SaveOverTimeDialog(getCtx(),responseBean.getData());
+                timeDialog.show();
+
+//                Bundle bundle = new Bundle();
+//                bundle.putString(Constant.OrderInfoKey,responseBean.getData());
+//                skipActivity(SenderPickUpSuccessActivity.class,bundle);
+            }
+        } else {
+            ToastUtil.showShortToast(responseBean.getMessage());
+        }
     }
 }

@@ -1,18 +1,25 @@
 package com.locker.manager.activity.sender;
 
-import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
+import com.example.http_lib.bean.GetAllBoxDetailRequestBean;
+import com.example.http_lib.response.DeviceBoxDetailBean;
 import com.locker.manager.R;
-import com.locker.manager.activity.SaveAppScanActivity;
+import com.locker.manager.activity.HomeActivity;
 import com.locker.manager.activity.SaveHelpActivity;
 import com.locker.manager.adapter.NumAdapter;
+import com.locker.manager.app.Constant;
 import com.locker.manager.base.BaseUrlView;
 import com.locker.manager.callback.OnItemCallBack;
+import com.yidao.module_lib.base.http.ResponseBean;
 import com.yidao.module_lib.manager.ViewManager;
+import com.yidao.module_lib.utils.PhoneInfoUtils;
+import com.yidao.module_lib.utils.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +27,6 @@ import java.util.List;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
@@ -62,7 +68,11 @@ public class SenderDeliverActivity extends BaseUrlView {
     @BindView(R.id.tv_large_size)
     TextView tvLargeSize;
 
+    @BindView(R.id.tv_tip)
+    TextView tvTip;
+
     private List<View> mViews = new ArrayList<>();
+    private String orderId;
 
 
     @Override
@@ -73,6 +83,10 @@ public class SenderDeliverActivity extends BaseUrlView {
     @Override
     public void init() {
         setCurrentTime(tvTitle,System.currentTimeMillis());
+
+        orderId = getIntent().getStringExtra(Constant.OrderInfoKey);
+
+        mPresenter.getAllBoxDetail(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()));
 
         recyclerView.setLayoutManager(new GridLayoutManager(getCtx(), 3));
         NumAdapter adapter = new NumAdapter(getCtx());
@@ -119,7 +133,7 @@ public class SenderDeliverActivity extends BaseUrlView {
         switch (view.getId()) {
             case R.id.iv_left:
                 ViewManager.getInstance().finishAllView();
-                skipActivity(SaveAppScanActivity.class);
+                skipActivity(HomeActivity.class);
                 break;
             case R.id.tv_agree:
                 break;
@@ -163,4 +177,40 @@ public class SenderDeliverActivity extends BaseUrlView {
         tvLargeRemain.setTextColor(getResources().getColor(position==2?R.color.color_0ED26B:R.color.color_999999));
     }
 
+
+    @Override
+    public void onResponse(boolean success, Class requestCls, ResponseBean responseBean) {
+        super.onResponse(success, requestCls, responseBean);
+        if(success){
+            if(requestCls == GetAllBoxDetailRequestBean.class){
+                List<DeviceBoxDetailBean> boxDetailBeans = JSON.parseArray(responseBean.getData(), DeviceBoxDetailBean.class);
+                String smallNum = "0";
+                String middleNum = "0";
+                String largeNum = "0";
+                for(DeviceBoxDetailBean bean:boxDetailBeans){
+                    if(TextUtils.equals("big",bean.getSize())){
+                        tvLargePrice.setText("￥"+bean.getMoney());
+                        tvLargeRemain.setText("剩余空箱"+bean.getCount());
+                        tvLargeSize.setText(bean.getTitle());
+                        largeNum = bean.getCount();
+                    }
+                    if(TextUtils.equals("medium",bean.getSize())){
+                        tvMiddlePrice.setText("￥"+bean.getMoney());
+                        tvMiddleRemain.setText("剩余空箱"+bean.getCount());
+                        tvMiddleSize.setText(bean.getTitle());
+                        middleNum = bean.getCount();
+                    }
+                    if(TextUtils.equals("small",bean.getSize())){
+                        tvSmallPrice.setText("￥"+bean.getMoney());
+                        tvSmallRemain.setText("剩余空箱"+bean.getCount());
+                        tvSmallSize.setText(bean.getTitle());
+                        smallNum = bean.getCount();
+                    }
+                }
+                tvTip.setText(String.format(tvTip.getText().toString(),"xx",smallNum,middleNum,largeNum));
+            }
+        } else {
+            ToastUtil.showShortToast(responseBean.getMessage());
+        }
+    }
 }

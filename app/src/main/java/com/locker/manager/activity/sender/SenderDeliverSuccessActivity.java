@@ -4,8 +4,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.locker.manager.R;
-import com.locker.manager.activity.SaveAppScanActivity;
-import com.locker.manager.activity.SaveFirstActivity;
+import com.locker.manager.activity.HomeActivity;
+import com.locker.manager.activity.SaveSecondActivity;
 import com.locker.manager.base.BaseUrlView;
 import com.yidao.module_lib.manager.ViewManager;
 
@@ -46,15 +46,15 @@ public class SenderDeliverSuccessActivity extends BaseUrlView {
         switch (view.getId()) {
             case R.id.iv_left:
                 ViewManager.getInstance().finishAllView();
-                skipActivity(SaveAppScanActivity.class);
+                skipActivity(HomeActivity.class);
                 break;
             case R.id.tv_pick_success:
                 ViewManager.getInstance().finishAllView();
-                skipActivity(SaveAppScanActivity.class);
+                skipActivity(HomeActivity.class);
                 break;
             case R.id.tv_hand_continue:
                 ViewManager.getInstance().finishAllView();
-                skipActivity(SenderActivity.class);
+                skipActivity(SaveSecondActivity.class);
 //                skipActivity(SenderDeliverAndBackActivity.class);
                 break;
         }

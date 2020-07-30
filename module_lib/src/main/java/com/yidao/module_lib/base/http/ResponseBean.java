@@ -8,9 +8,9 @@ package com.yidao.module_lib.base.http;
 public class ResponseBean {
     private Integer code;
 
-    private int errCode;
+    private Integer errCode;
 
-    private String errMsg;
+    private String message;
 
     private String data;
 
@@ -53,11 +53,19 @@ public class ResponseBean {
     }
 
     public String getErrMsg() {
-        return errMsg;
+        return message;
     }
 
     public void setErrMsg(String errMsg) {
-        this.errMsg = errMsg;
+        this.message = errMsg;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public String getData() {
@@ -100,7 +108,7 @@ public class ResponseBean {
     public String toString() {
         return "ResponseBean{" +
                 "code=" + code +
-                ", msg='" + errMsg + '\'' +
+                ", msg='" + message + '\'' +
                 ", data='" + data + '\'' +
                 ", mClass='" + mClass+ '\'' +
                 ", carry='" + carry + '\'' +

@@ -6,4 +6,10 @@ public interface Constant {
 
     public static final int SenderDeliverCode = 0x111;
 
+    public static final String OrderInfoKey ="orderInfo";
+    public static final String OpencodeKey ="opencode";
+
+    public static final String PostPhone ="postPhone";
+    public static final String FetchPhone ="fetchPhone";
+
 }

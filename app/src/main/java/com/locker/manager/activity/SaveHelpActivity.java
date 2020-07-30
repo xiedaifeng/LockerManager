@@ -38,7 +38,7 @@ public class SaveHelpActivity extends BaseUrlView {
         switch (view.getId()) {
             case R.id.iv_left:
                 ViewManager.getInstance().finishAllView();
-                skipActivity(SaveAppScanActivity.class);
+                skipActivity(HomeActivity.class);
                 break;
         }
     }

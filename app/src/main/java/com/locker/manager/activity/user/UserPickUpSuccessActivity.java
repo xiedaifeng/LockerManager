@@ -1,20 +1,34 @@
 package com.locker.manager.activity.user;
 
+import android.annotation.SuppressLint;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
+import com.alibaba.fastjson.JSON;
+import com.example.http_lib.bean.GetOrderInfoRequestBean;
+import com.example.http_lib.response.OrderInfoBean;
 import com.locker.manager.R;
-import com.locker.manager.activity.SaveAppScanActivity;
-import com.locker.manager.activity.SaveFirstActivity;
+import com.locker.manager.activity.HomeActivity;
 import com.locker.manager.activity.SenderPickUpActivity;
+import com.locker.manager.app.Constant;
 import com.locker.manager.base.BaseUrlView;
+import com.locker.manager.command.CommandProtocol;
+import com.qiao.serialport.SerialPortOpenSDK;
+import com.qiao.serialport.listener.SerialPortMessageListener;
+import com.yidao.module_lib.base.http.ResponseBean;
 import com.yidao.module_lib.manager.ViewManager;
+import com.yidao.module_lib.utils.PhoneInfoUtils;
+import com.yidao.module_lib.utils.ToastUtil;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
 
-public class UserPickUpSuccessActivity extends BaseUrlView {
+public class UserPickUpSuccessActivity extends BaseUrlView implements SerialPortMessageListener {
 
 
     @BindView(R.id.tv_title)
@@ -24,24 +38,80 @@ public class UserPickUpSuccessActivity extends BaseUrlView {
     @BindView(R.id.tv_count_down)
     TextView tvCountDown;
 
+    private final int countDownCode = 0x110;
+
+    private int countDownTime = 60;
+
+    @SuppressLint("HandlerLeak")
+    private Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            super.handleMessage(msg);
+            if(msg.what == countDownCode) {
+                countDownTime--;
+                tvCountDown.setText(String.format("%ss后返回首页", countDownTime));
+                if (countDownTime > 0) {
+                    mHandler.sendEmptyMessageDelayed(countDownCode, 1000);
+                } else {
+                    ViewManager.getInstance().finishAllView();
+                    skipActivity(HomeActivity.class);
+                }
+            }
+        }
+    };
+
     @Override
     protected int getView() {
         return R.layout.activity_user_pick_up_success;
     }
 
-
     @Override
     public void init() {
         setCurrentTime(tvTitle,System.currentTimeMillis());
+
+        if(getIntent().hasExtra(Constant.OrderInfoKey)){
+            String orderId = getIntent().getStringExtra(Constant.OrderInfoKey);
+            mPresenter.getOrderInfo(orderId);
+        }
+
+        if(getIntent().hasExtra(Constant.OpencodeKey)){
+            String opencode = getIntent().getStringExtra(Constant.OpencodeKey);
+            String boxno = opencode.substring(0,2);
+            tvCaseState.setText(String.format(tvCaseState.getText().toString(),boxno));
+            try {
+                new CommandProtocol.Builder().setCommand(CommandProtocol.COMMAND_OPEN).setCommandChannel(boxno).builder();
+                SerialPortOpenSDK.getInstance().send(
+                        new CommandProtocol.Builder()
+                                .setCommand(CommandProtocol.COMMAND_OPEN)
+                                .setCommandChannel(boxno)
+                                .builder()
+                                .getBytes());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        mHandler.sendEmptyMessageDelayed(countDownCode,1000);
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        SerialPortOpenSDK.getInstance().unregirster(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SerialPortOpenSDK.getInstance().regirster(this);
+    }
 
     @OnClick({R.id.iv_left, R.id.tv_pick_success, R.id.tv_hand_continue})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_left:
                 ViewManager.getInstance().finishAllView();
-                skipActivity(SaveAppScanActivity.class);
+                skipActivity(HomeActivity.class);
                 break;
             case R.id.tv_pick_success:
                 ViewManager.getInstance().finishAllView();
@@ -49,9 +119,55 @@ public class UserPickUpSuccessActivity extends BaseUrlView {
                 break;
             case R.id.tv_hand_continue:
                 ViewManager.getInstance().finishAllView();
-                skipActivity(SaveAppScanActivity.class);
+                skipActivity(HomeActivity.class);
                 break;
         }
     }
 
+
+    @Override
+    public void onResponse(boolean success, Class requestCls, ResponseBean responseBean) {
+        super.onResponse(success, requestCls, responseBean);
+        if(success){
+            if(requestCls == GetOrderInfoRequestBean.class){
+                OrderInfoBean orderInfoBean = JSON.parseObject(responseBean.getData(), OrderInfoBean.class);
+                String boxno = orderInfoBean.getBoxno();
+                tvCaseState.setText(String.format(tvCaseState.getText().toString(),boxno));
+                try {
+                    new CommandProtocol.Builder().setCommand(CommandProtocol.COMMAND_OPEN).setCommandChannel(boxno).builder();
+                    SerialPortOpenSDK.getInstance().send(
+                            new CommandProtocol.Builder()
+                                    .setCommand(CommandProtocol.COMMAND_OPEN)
+                                    .setCommandChannel(boxno)
+                                    .builder()
+                                    .getBytes());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            ViewManager.getInstance().finishView();
+            ToastUtil.showShortToast(responseBean.getMessage());
+        }
+    }
+
+    @Override
+    public void onMessage(int error, String errorMessage, byte[] data) throws Exception {
+        CommandProtocol commandProtocol = new CommandProtocol.Builder().setBytes(data).parseMessage();
+        if(CommandProtocol.COMMAND_SELECT_BOX_STATE == commandProtocol.getCommand()){
+            int boxNum = commandProtocol.getData().size();
+            mPresenter.createDeviceBox(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()),boxNum+"");
+        }
+        if(CommandProtocol.COMMAND_OPEN == commandProtocol.getCommand()){
+
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(mHandler!=null){
+            mHandler.removeMessages(countDownCode);
+        }
+    }
 }

@@ -31,7 +31,7 @@ public @interface RequestrAnnotation {
     /**
      * 请求头Content-Type
      */
-    public RequestTypeEnum type() default RequestTypeEnum.JSON;
+    public RequestTypeEnum type() default RequestTypeEnum.FORM;
 
     /**
      * 请求的地址

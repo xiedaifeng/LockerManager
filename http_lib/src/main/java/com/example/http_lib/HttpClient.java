@@ -119,6 +119,7 @@ public class HttpClient {
                     responseBean.setErrCode(404);
                     responseBean.setCode(404);
                     responseBean.setErrMsg("请求错误");
+                    responseBean.setMessage("请求错误");
                     onFail(responseBean);
                 }
 
@@ -144,6 +145,7 @@ public class HttpClient {
                     responseBean.setErrCode(404);
                     responseBean.setCode(404);
                     responseBean.setErrMsg("请求错误");
+                    responseBean.setMessage("请求错误");
                     onFail(responseBean);
                 }
 
@@ -176,7 +178,9 @@ public class HttpClient {
                     ResponseBean responseBean = new ResponseBean();
                     responseBean.setData("");
                     responseBean.setErrCode(404);
+                    responseBean.setCode(404);
                     responseBean.setErrMsg("网络错误");
+                    responseBean.setMessage("网络错误");
                     onFail(responseBean);
                 }
 
@@ -195,7 +199,9 @@ public class HttpClient {
                     ResponseBean responseBean = new ResponseBean();
                     responseBean.setData("");
                     responseBean.setErrCode(404);
+                    responseBean.setCode(404);
                     responseBean.setErrMsg("网络错误");
+                    responseBean.setMessage("网络错误");
                     onFail(responseBean);
                 }
 
@@ -231,11 +237,12 @@ public class HttpClient {
             responseBean.setErrCode(-1);
             responseBean.setCode(-1);
             responseBean.setErrMsg("后台异常");
+            responseBean.setMessage("后台异常");
             onFail(responseBean);
             return;
         }
         responseBean.setData(data);
-        if (responseBean.getCode() == 1) {
+        if (responseBean.getCode() == 0) {
             onSuccess(responseBean);
         } else {
             onFail(responseBean);

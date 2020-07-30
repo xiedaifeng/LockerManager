@@ -54,13 +54,13 @@ public abstract class BaseDialog<T extends IBasePress> extends Dialog implements
         getWindow().setWindowAnimations(R.style.dialog_style);
         getWindow().setGravity(setGravity());
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
     protected abstract int getLayoutId();
     protected abstract void initPress();
     protected int setGravity(){
-        return Gravity.BOTTOM;
+        return Gravity.CENTER;
     }
 
     @Override
