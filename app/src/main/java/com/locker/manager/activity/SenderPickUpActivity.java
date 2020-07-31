@@ -94,7 +94,7 @@ public class SenderPickUpActivity extends BaseUrlView {
                     return;
                 }
                 mPresenter.getDeviceBoxTimeStatus(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()),code);
-//                skipActivity(UserPickUpSuccessActivity.class);
+
                 break;
             case R.id.iv_help:
                 skipActivity(SaveHelpActivity.class);
