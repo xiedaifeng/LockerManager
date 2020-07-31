@@ -253,10 +253,6 @@ public class SaveDepositActivity extends BaseUrlView {
                 SaveOverTimeDialog timeDialog = new SaveOverTimeDialog(getCtx(), orderId);
                 timeDialog.hidePayView();
                 timeDialog.show();
-
-//                Bundle bundle = new Bundle();
-//                bundle.putString(Constant.OrderInfoKey,responseBean.getData());
-//                skipActivity(SenderPickUpSuccessActivity.class,bundle);
             }
             if(requestCls == GetOrderInfoRequestBean.class){
                 OrderInfoBean orderInfoBean = JSON.parseObject(responseBean.getData(), OrderInfoBean.class);
