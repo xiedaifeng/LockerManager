@@ -79,7 +79,6 @@ public class UserPickUpSuccessActivity extends BaseUrlView implements SerialPort
             String boxno = opencode.substring(0,2);
             tvCaseState.setText(String.format("格口号：%s（已开）",boxno));
             try {
-                new CommandProtocol.Builder().setCommand(CommandProtocol.COMMAND_OPEN).setCommandChannel(boxno).builder();
                 SerialPortOpenSDK.getInstance().send(
                         new CommandProtocol.Builder()
                                 .setCommand(CommandProtocol.COMMAND_OPEN)

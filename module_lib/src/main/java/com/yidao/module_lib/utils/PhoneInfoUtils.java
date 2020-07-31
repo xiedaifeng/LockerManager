@@ -13,10 +13,13 @@ import android.widget.Toast;
 import com.yidao.module_lib.base.BaseApplication;
 
 import java.io.BufferedReader;
+import java.io.Closeable;
 import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.Reader;
+import java.lang.reflect.Method;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
@@ -155,12 +158,54 @@ public class PhoneInfoUtils {
      * @param context
      * @return
      */
-    public static String getLocalMacAddressFromWifiInfo(Context context){
-        WifiManager wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-        WifiInfo winfo = wifi.getConnectionInfo();
-        String mac =  winfo.getMacAddress();
-//        return mac;
-        return "02:00:00:00:00:00";
+//    public static String getLocalMacAddressFromWifiInfo(Context context){
+//        WifiManager wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+//        WifiInfo winfo = wifi.getConnectionInfo();
+//        String mac =  winfo.getMacAddress();
+////        return mac;
+//        return "02:00:00:00:00:00";
+//    }
+
+    public static String getLocalMacAddressFromWifiInfo(Context context) {
+        String macAddress = null;
+        LineNumberReader lnr = null;
+        InputStreamReader isr = null;
+        try {
+            Process pp = Runtime.getRuntime().exec("cat /sys/class/net/wlan0/address");
+            isr = new InputStreamReader(pp.getInputStream());
+            lnr = new LineNumberReader(isr);
+            macAddress = lnr.readLine().replaceAll(":", "");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+          closeIO(lnr, isr);
+        }
+        return macAddress == null ? getSerialNumber() : macAddress.toUpperCase();
+    }
+
+    public static String getSerialNumber() {
+        String serial = null;
+        try {
+            Class<?> c = Class.forName("android.os.SystemProperties");
+            Method get = c.getMethod("get", String.class);
+            serial = (String) get.invoke(c, "ro.serialno");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return serial==null?"":serial;
+    }
+
+    public static void closeIO(Closeable... closeables) {
+        if (closeables == null) {return;}
+        try {
+            for (Closeable closeable : closeables) {
+                if (closeable != null) {
+                    closeable.close();
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
