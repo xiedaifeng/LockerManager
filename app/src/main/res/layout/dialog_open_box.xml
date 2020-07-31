@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="500dp"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/dialog_title"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+        <TextView
+            android:text="提醒"
+            android:textSize="20dp"
+            android:textColor="@color/black"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"/>
+
+        <ImageView
+            android:id="@+id/dialog_close_btn"
+            android:src="@mipmap/close"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/dialog_content_ll"
+        android:layout_below="@+id/dialog_title"
+        android:layout_margin="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/dialog_content_tv"
+            android:layout_alignParentLeft="true"
+            android:text="     由于快递包裹的特殊性，为最大限度保障用户的利益，要求您取出货物关闭柜门（避免二次收费），原地查看包裹外包装是否完好（仅限外包装查看限时一分钟）。如遇外包装损坏情况，请按下方按钮将包裹原路放回，并及时联系存件人处理（可在谭小二app我的包裹里面查看存件人联系电话））"
+            android:textColor="@color/black"
+            android:textSize="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/dialog_back_tv"
+            android:textSize="15dp"
+            android:layout_marginTop="10dp"
+            android:text="60后返回首页"
+            android:layout_below="@+id/dialog_content_tv"
+            android:textColor="@color/colorPrimary"
+            android:layout_alignParentLeft="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
+    <RelativeLayout
+       android:layout_margin="10dp"
+        android:layout_below="@+id/dialog_content_ll"
+        android:layout_width="match_parent"
+
+        android:layout_height="50dp">
+        <TextView
+            android:layout_centerVertical="true"
+            android:id="@+id/dialog_box_state_tv"
+            android:text="格口号：015（已开）"
+            android:textColor="@color/black"
+            android:textSize="25dp"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:layout_centerVertical="true"
+           android:layout_toRightOf="@+id/dialog_box_state_tv"
+            android:text="如有疑问，请致电客服：95138"
+            android:textColor="@color/colorPrimary"
+            android:textSize="15dp"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
+    <LinearLayout
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:layout_margin="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+        <RelativeLayout
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/dialog_open_box_tv"
+                android:text="打开取件"
+                android:textColor="@color/black"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/dialog_finisn_tv"
+                android:text="完成"
+                android:textColor="@color/black"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_centerInParent="true"
+                android:id="@+id/dialog_goback_tv"
+                android:text="原路退回"
+                android:textColor="@color/black"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+</RelativeLayout>
