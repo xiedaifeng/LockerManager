@@ -42,7 +42,6 @@ public class HomeActivity extends BaseUrlView implements SerialPortMessageListen
         mPresenter.createDeviceQrcode(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()));
 
         try {
-//            new CommandProtocol.Builder().setCommand(CommandProtocol.COMMAND_OPEN).setCommandChannel(5).builder();
             SerialPortOpenSDK.getInstance().send(
                     new CommandProtocol.Builder()
                             .setCommand(CommandProtocol.COMMAND_SELECT_BOX_STATE)
