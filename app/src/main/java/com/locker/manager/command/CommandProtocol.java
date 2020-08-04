@@ -132,7 +132,7 @@ public class CommandProtocol {
         public CommandProtocol builder(){
             int boxCh=0;
             if (commandChannel instanceof Integer){
-                boxCh=(int)commandChannel;
+                boxCh=Integer.parseInt((int)commandChannel+"",16);;
             }else if (commandChannel instanceof String){
                 boxCh=Integer.parseInt((String) commandChannel, 16);
             }
