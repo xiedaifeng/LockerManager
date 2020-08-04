@@ -1,27 +1,28 @@
 package com.locker.manager.dialog;
 
+import android.app.Activity;
 import android.content.Context;
-import android.view.LayoutInflater;
+import android.content.Intent;
+import android.os.CountDownTimer;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.locker.manager.R;
+import com.locker.manager.activity.HomeActivity;
+import com.locker.manager.base.BaseUrlDialog;
+import com.locker.manager.command.CommandProtocol;
+import com.qiao.serialport.SerialPortOpenSDK;
+import com.yidao.module_lib.manager.ViewManager;
+import com.yidao.module_lib.utils.SoftKeyboardUtil;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-
-public
-class BoxStateDialog extends RxDialog {
+import butterknife.OnClick;
 
 
-    public BoxStateDialog(Context context) {
-        super(context);
-        ButterKnife.bind(this);
-        initView();
-    }
-
+public class BoxStateDialog extends BaseUrlDialog {
 
     @BindView(R.id.dialog_close_btn)
     ImageView dialogCloseBtn;
@@ -35,14 +36,106 @@ class BoxStateDialog extends RxDialog {
     RelativeLayout dialogContentLl;
     @BindView(R.id.dialog_box_state_tv)
     TextView dialogBoxStateTv;
-    private void initView() {
-        View dialogView = LayoutInflater.from(getContext()).inflate(R.layout.dialog_open_box, null);
-        setContentView(dialogView);
-        setCanceledOnTouchOutside(false);
-        dialogCloseBtn=dialogView.findViewById(R.id.dialog_close_btn);
-        dialogCloseBtn=dialogView.findViewById(R.id.dialog_close_btn);
-        dialogCloseBtn=dialogView.findViewById(R.id.dialog_close_btn);
-        dialogBoxStateTv=dialogView.findViewById(R.id.dialog_box_state_tv);
+    @BindView(R.id.dialog_open_box_tv)
+    TextView dialogOpenBoxTv;
+    @BindView(R.id.dialog_finisn_tv)
+    TextView dialogFinisnTv;
+    @BindView(R.id.dialog_goback_tv)
+    TextView dialogGobackTv;
+
+    TimeCount timeCount = null;
+
+
+    public BoxStateDialog(Context context) {
+        super(context);
+        mContext = context;
+    }
+
+    private String openBoxId="";
+
+    public void setOpenBoxId(String openBoxId) {
+        this.openBoxId = openBoxId;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (timeCount != null) {
+            timeCount.onFinish();
+        }
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.dialog_open_box;
+    }
+
+    @Override
+    protected void initPress() {
+        timeCount = new TimeCount(60 * 1000, 1000);
+        timeCount.start();
+    }
+
+    @OnClick({R.id.dialog_open_box_tv, R.id.dialog_finisn_tv, R.id.dialog_goback_tv,R.id.dialog_close_btn})
+    public void onClick(View view) {
+        if (timeCount != null) {
+            timeCount.onFinish();
+        }
+        cancel();
+        switch (view.getId()) {
+            case R.id.dialog_open_box_tv:
+                break;
+            case R.id.dialog_goback_tv:
+                if (TextUtils.isEmpty(openBoxId)||openBoxId.length()<=1){
+                    return;
+                }
+                String boxno = openBoxId.substring(0,2);
+                try {
+                    SerialPortOpenSDK.getInstance().send(
+                            new CommandProtocol.Builder()
+                                    .setCommand(CommandProtocol.COMMAND_OPEN)
+                                    .setCommandChannel(boxno)
+                                    .builder()
+                                    .getBytes());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+            case R.id.dialog_finisn_tv:
+            case R.id.dialog_close_btn:
+                ViewManager.getInstance().finishAllView();
+                Intent intent1 = new Intent(mContext, HomeActivity.class);
+                mContext.startActivity(intent1);
+                SoftKeyboardUtil.hideSoftKeyboard((Activity) mContext);
+                break;
+        }
+    }
+
+
+    class TimeCount extends CountDownTimer {
+        public TimeCount(long millisInFuture, long countDownInterval) {
+            super(millisInFuture, countDownInterval);
+        }
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+            if (dialogBackTv == null) {
+                return;
+            }
+
+            String value = String.valueOf((int) (millisUntilFinished / 1000));
+            dialogBackTv.setText(String.format("%ss后返回首页", value));
+        }
+
+        @Override
+        public void onFinish() {
+            cancel();
+            ViewManager.getInstance().finishAllView();
+            Intent intent1 = new Intent(mContext, HomeActivity.class);
+            mContext.startActivity(intent1);
+            SoftKeyboardUtil.hideSoftKeyboard((Activity) mContext);
+
+        }
     }
 
 }
