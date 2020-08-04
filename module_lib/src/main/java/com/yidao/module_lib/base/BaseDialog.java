@@ -31,7 +31,7 @@ public abstract class BaseDialog<T extends IBasePress> extends Dialog implements
         return mPress;
     }
 
-    private Context mContext;
+    protected Context mContext;
 
     public BaseDialog(Context context) {
         super(context);
