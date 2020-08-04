@@ -169,6 +169,7 @@ public class PhoneInfoUtils {
     public static String getLocalMacAddressFromWifiInfo(Context context) {
         String macAddress = null;
         LineNumberReader lnr = null;
+
         InputStreamReader isr = null;
         try {
             Process pp = Runtime.getRuntime().exec("cat /sys/class/net/wlan0/address");
