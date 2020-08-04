@@ -7,14 +7,17 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.example.http_lib.bean.DeviceBoxTimeStatusRequestBean;
 import com.example.http_lib.bean.OpenDeviceBoxRequestBean;
+import com.example.http_lib.response.OrderInfoBean;
 import com.locker.manager.R;
 import com.locker.manager.activity.user.UserPickUpSuccessActivity;
 import com.locker.manager.adapter.NumAdapter;
 import com.locker.manager.app.Constant;
 import com.locker.manager.base.BaseUrlView;
 import com.locker.manager.callback.OnItemCallBack;
+import com.locker.manager.dialog.BoxStateDialog;
 import com.locker.manager.dialog.SaveOverTimeDialog;
 import com.yidao.module_lib.base.http.ResponseBean;
 import com.yidao.module_lib.manager.ViewManager;
@@ -107,6 +110,11 @@ public class SenderPickUpActivity extends BaseUrlView {
         super.onResponse(success, requestCls, responseBean);
         if(success){
             if(requestCls == OpenDeviceBoxRequestBean.class){
+                OrderInfoBean orderInfoBean = JSON.parseObject(responseBean.getData(), OrderInfoBean.class);
+                String boxno = orderInfoBean.getBoxno();
+                BoxStateDialog dialog=new BoxStateDialog(this);
+                dialog.setOpenBoxId(boxno);
+                dialog.show();
                 Bundle bundle = new Bundle();
                 bundle.putString(Constant.OpencodeKey,etPostPhone.getText().toString());
                 skipActivity(UserPickUpSuccessActivity.class,bundle);
