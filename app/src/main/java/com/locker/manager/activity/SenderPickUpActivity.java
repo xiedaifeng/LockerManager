@@ -97,7 +97,6 @@ public class SenderPickUpActivity extends BaseUrlView {
                     return;
                 }
                 mPresenter.getDeviceBoxTimeStatus(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()),code);
-
                 break;
             case R.id.iv_help:
                 skipActivity(SaveHelpActivity.class);
@@ -115,9 +114,10 @@ public class SenderPickUpActivity extends BaseUrlView {
                 BoxStateDialog dialog=new BoxStateDialog(this);
                 dialog.setOpenBoxId(boxno);
                 dialog.show();
-                Bundle bundle = new Bundle();
-                bundle.putString(Constant.OpencodeKey,etPostPhone.getText().toString());
-                skipActivity(UserPickUpSuccessActivity.class,bundle);
+
+//                Bundle bundle = new Bundle();
+//                bundle.putString(Constant.OpencodeKey,etPostPhone.getText().toString());
+//                skipActivity(UserPickUpSuccessActivity.class,bundle);
             }
             if(requestCls == DeviceBoxTimeStatusRequestBean.class){
                 // TODO: 2020/7/24  判断取件的快递的状态，是否超时 超时弹出收款码弹框   没有超时则打开相应的箱门

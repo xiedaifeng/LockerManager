@@ -1,5 +1,6 @@
 package com.locker.manager.mvp.presenter;
 
+import com.example.http_lib.bean.BackOrderRequestBean;
 import com.example.http_lib.bean.CheckSmsRequestBean;
 import com.example.http_lib.bean.CreateDeviceBoxRequestBean;
 import com.example.http_lib.bean.CreateDeviceQrcodeRequestBean;
@@ -212,6 +213,18 @@ public class CommonPresenter extends BasePressPlus {
         requestBean.mobile = mobile;
         requestBean.code = code;
         requestBean.carry = sign;
+        mCommomModel.setBean(requestBean);
+        mCommomModel.request(false);
+    }
+
+
+    /**
+     *  退回
+     */
+    public void backOrder(String device_id,String opencode){
+        BackOrderRequestBean requestBean = new BackOrderRequestBean();
+        requestBean.device_id = device_id;
+        requestBean.opencode = opencode;
         mCommomModel.setBean(requestBean);
         mCommomModel.request(false);
     }

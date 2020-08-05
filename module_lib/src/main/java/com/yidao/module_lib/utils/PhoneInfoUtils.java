@@ -175,13 +175,13 @@ public class PhoneInfoUtils {
             Process pp = Runtime.getRuntime().exec("cat /sys/class/net/wlan0/address");
             isr = new InputStreamReader(pp.getInputStream());
             lnr = new LineNumberReader(isr);
-            macAddress = lnr.readLine().replaceAll(":", "");
+            macAddress = lnr.readLine();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
           closeIO(lnr, isr);
         }
-        return macAddress == null ? getSerialNumber() : macAddress.toUpperCase();
+        return macAddress == null ? getSerialNumber() : macAddress.replaceAll(":", "").toUpperCase();
     }
 
     public static String getSerialNumber() {

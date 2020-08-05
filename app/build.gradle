@@ -67,6 +67,7 @@ dependencies {
     implementation project(path: ':SerialPort')
 
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.1'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.10.0'
 
     //私有依赖
     implementation 'me.jessyan:autosize:1.1.2'
@@ -76,5 +77,8 @@ dependencies {
     implementation project(path: ':LaunchStarter')
 
     implementation 'com.getui:sdk:2.14.0.0'
+
+
+    implementation 'com.squareup.picasso:picasso:2.5.2'
 
 }

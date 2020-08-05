@@ -45,6 +45,8 @@ public interface ILocalHost {
 
     String checkSmsCode = "/Apiindex/check_code";  //验证短信验证码是否有效
 
+    String backOrder = "/Apiorder/back_order";  //退回
+
 
 
 

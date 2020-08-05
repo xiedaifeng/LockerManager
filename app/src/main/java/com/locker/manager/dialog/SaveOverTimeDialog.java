@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.example.http_lib.bean.PayQrCodeRequestBean;
 import com.locker.manager.R;
 import com.locker.manager.base.BaseUrlDialog;
+import com.squareup.picasso.Picasso;
 import com.yidao.module_lib.base.http.ResponseBean;
 import com.yidao.module_lib.utils.CommonGlideUtils;
 import com.yidao.module_lib.utils.PhoneInfoUtils;
@@ -71,7 +72,9 @@ public class SaveOverTimeDialog extends BaseUrlDialog {
         super.onResponse(success, requestCls, responseBean);
         if(success){
             if(requestCls == PayQrCodeRequestBean.class){
-                CommonGlideUtils.showImageView(mContext,responseBean.getData(),ivQrcode);
+//                CommonGlideUtils.showImageView(mContext,responseBean.getData(),ivQrcode);
+
+                Picasso.with(mContext).load(responseBean.getData().replace("https","http")).into(ivQrcode);
             }
         } else {
             ToastUtil.showShortToast(responseBean.getMessage());

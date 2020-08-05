@@ -22,6 +22,7 @@ import com.yidao.module_lib.base.http.ResponseBean;
 import com.yidao.module_lib.base.http.callback.IHttpCallBack;
 import com.yidao.module_lib.utils.LogUtils;
 import com.yidao.module_lib.utils.PhoneInfoUtils;
+import com.yidao.module_lib.utils.ToastUtil;
 
 public class LockerIntentService extends GTIntentService {
 
@@ -47,10 +48,36 @@ public class LockerIntentService extends GTIntentService {
         JSONObject object = JSON.parseObject(payload);
         String order_id = object.getString("order_id");
 
-        Intent intent = new Intent(LockerApplication.getApplication(), UserPickUpSuccessActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra(Constant.OrderInfoKey,order_id);
-        LockerApplication.getApplication().startActivity(intent);
+        GetOrderInfoRequestBean requestBean = new GetOrderInfoRequestBean();
+        requestBean.order_id = order_id;
+        HttpClient.request(requestBean, false, new IHttpCallBack() {
+            @Override
+            public void success(ResponseBean responseBean) {
+                OrderInfoBean orderInfoBean = JSON.parseObject(responseBean.getData(), OrderInfoBean.class);
+                String boxno = orderInfoBean.getBoxno();
+                try {
+                    new CommandProtocol.Builder().setCommand(CommandProtocol.COMMAND_OPEN).setCommandChannel(boxno).builder();
+                    SerialPortOpenSDK.getInstance().send(
+                            new CommandProtocol.Builder()
+                                    .setCommand(CommandProtocol.COMMAND_OPEN)
+                                    .setCommandChannel(boxno)
+                                    .builder()
+                                    .getBytes());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                ToastUtil.showLongToast("格口号"+boxno+"已打开");
+            }
+            @Override
+            public void failed(ResponseBean responseBean) {
+                ToastUtil.showShortToast(responseBean.getMessage());
+            }
+        });
+
+//        Intent intent = new Intent(LockerApplication.getApplication(), UserPickUpSuccessActivity.class);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        intent.putExtra(Constant.OrderInfoKey,order_id);
+//        LockerApplication.getApplication().startActivity(intent);
     }
     // cid 离线上线通知
     @Override

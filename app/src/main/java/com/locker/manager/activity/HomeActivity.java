@@ -1,18 +1,24 @@
 package com.locker.manager.activity;
 
 
+import android.net.Uri;
+import android.os.Handler;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.http_lib.bean.CreateDeviceQrcodeRequestBean;
 import com.locker.manager.R;
 import com.locker.manager.base.BaseUrlView;
 import com.locker.manager.command.CommandProtocol;
 import com.qiao.serialport.SerialPortOpenSDK;
 import com.qiao.serialport.listener.SerialPortMessageListener;
+import com.squareup.picasso.Picasso;
 import com.yidao.module_lib.base.http.ResponseBean;
+import com.yidao.module_lib.glide.GlideApp;
 import com.yidao.module_lib.utils.CommonGlideUtils;
+import com.yidao.module_lib.utils.LogUtils;
 import com.yidao.module_lib.utils.PhoneInfoUtils;
 import com.yidao.module_lib.utils.ToastUtil;
 
@@ -41,16 +47,21 @@ public class HomeActivity extends BaseUrlView implements SerialPortMessageListen
 
         mPresenter.createDeviceQrcode(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()));
 
-        try {
-            SerialPortOpenSDK.getInstance().send(
-                    new CommandProtocol.Builder()
-                            .setCommand(CommandProtocol.COMMAND_SELECT_BOX_STATE)
-                            .setCommandChannel(1)
-                            .builder()
-                            .getBytes());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    SerialPortOpenSDK.getInstance().send(
+                            new CommandProtocol.Builder()
+                                    .setCommand(CommandProtocol.COMMAND_SELECT_BOX_STATE)
+                                    .setCommandChannel(1)
+                                    .builder()
+                                    .getBytes());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        },500);
 
 //        mPresenter.createDeviceBox(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()),"12");
 //
@@ -88,12 +99,22 @@ public class HomeActivity extends BaseUrlView implements SerialPortMessageListen
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_left:
+//                try {
+//                    SerialPortOpenSDK.getInstance().send(
+//                            new CommandProtocol.Builder()
+//                                    .setCommand(CommandProtocol.COMMAND_OPEN)
+//                                    .setCommandChannel(5)
+//                                    .builder()
+//                                    .getBytes());
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+
                 try {
-//                    new CommandProtocol.Builder().setCommand(CommandProtocol.COMMAND_OPEN).setCommandChannel(5).builder();
                     SerialPortOpenSDK.getInstance().send(
                             new CommandProtocol.Builder()
-                                    .setCommand(CommandProtocol.COMMAND_OPEN)
-                                    .setCommandChannel(5)
+                                    .setCommand(CommandProtocol.COMMAND_SELECT_BOX_STATE)
+                                    .setCommandChannel(1)
                                     .builder()
                                     .getBytes());
                 } catch (Exception e) {
@@ -118,8 +139,9 @@ public class HomeActivity extends BaseUrlView implements SerialPortMessageListen
 //        }
 
         CommandProtocol commandProtocol = new CommandProtocol.Builder().setBytes(data).parseMessage();
-        if(CommandProtocol.COMMAND_SELECT_BOX_STATE == commandProtocol.getCommand()){
+        if(CommandProtocol.COMMAND_SELECT_DEPOSIT_STATE == commandProtocol.getCommand()){
             int boxNum = commandProtocol.getData().size();
+            LogUtils.e("boxNum:"+boxNum);
             mPresenter.createDeviceBox(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()),boxNum+"");
         }
         if(CommandProtocol.COMMAND_OPEN == commandProtocol.getCommand()){
@@ -133,7 +155,7 @@ public class HomeActivity extends BaseUrlView implements SerialPortMessageListen
         super.onResponse(success, requestCls, responseBean);
         if(success){
             if(requestCls == CreateDeviceQrcodeRequestBean.class){
-                CommonGlideUtils.showImageView(getCtx(),responseBean.getData(),ivQrcode);
+                Picasso.with(this).load(responseBean.getData().replace("https","http")).into(ivQrcode);
             }
         } else {
             ToastUtil.showShortToast(responseBean.getMessage());
