@@ -32,6 +32,8 @@ import okhttp3.Protocol;
 
 public class LockerApplication extends BaseApplication {
 
+    public static String sOrderId = null;
+
     @Override
     public void onCreate() {
         super.onCreate();

@@ -14,6 +14,7 @@ import com.example.http_lib.response.OrderInfoBean;
 import com.locker.manager.R;
 import com.locker.manager.activity.HomeActivity;
 import com.locker.manager.activity.SaveFirstActivity;
+import com.locker.manager.activity.SaveSecondActivity;
 import com.locker.manager.app.Constant;
 import com.locker.manager.base.BaseUrlView;
 import com.locker.manager.command.CommandProtocol;
@@ -91,7 +92,7 @@ public class SenderPickUpSuccessActivity extends BaseUrlView {
                 break;
             case R.id.tv_hand_continue:
                 ViewManager.getInstance().finishAllView();
-                skipActivity(SaveFirstActivity.class);
+                skipActivity(SaveSecondActivity.class);
                 break;
         }
     }

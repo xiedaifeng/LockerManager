@@ -1,6 +1,9 @@
 package com.locker.manager.activity;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -17,9 +20,13 @@ import com.locker.manager.R;
 import com.locker.manager.activity.sender.SenderPickUpSuccessActivity;
 import com.locker.manager.adapter.NumAdapter;
 import com.locker.manager.app.Constant;
+import com.locker.manager.app.LockerApplication;
 import com.locker.manager.base.BaseUrlView;
 import com.locker.manager.callback.OnItemCallBack;
+import com.locker.manager.command.CommandProtocol;
 import com.locker.manager.dialog.SaveOverTimeDialog;
+import com.qiao.serialport.SerialPortOpenSDK;
+import com.qiao.serialport.listener.SerialPortMessageListener;
 import com.yidao.module_lib.base.http.ResponseBean;
 import com.yidao.module_lib.manager.ViewManager;
 import com.yidao.module_lib.utils.PhoneInfoUtils;
@@ -28,6 +35,7 @@ import com.yidao.module_lib.utils.ToastUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -35,7 +43,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 
-public class SaveDepositActivity extends BaseUrlView {
+public class SaveDepositActivity extends BaseUrlView implements SerialPortMessageListener {
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
@@ -75,10 +83,13 @@ public class SaveDepositActivity extends BaseUrlView {
 
     @BindView(R.id.tv_tip)
     TextView tvTip;
+    @BindView(R.id.tv_count_down)
+    TextView tvCountDown;
 
     private List<View> mViews = new ArrayList<>();
     private String postPhone;
     private String fetchPhone;
+    private String userName;
 
     private int mPosition = 0;
 
@@ -86,8 +97,29 @@ public class SaveDepositActivity extends BaseUrlView {
     private int middleBoxNum = 0;
     private int largeBoxNum = 0;
 
-    private String orderId;
+    private String opencode;
 
+    private final int countDownCode = 0x111;
+
+    private int countDownTime = 30;
+
+    @SuppressLint("HandlerLeak")
+    private Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            super.handleMessage(msg);
+            if(msg.what == countDownCode) {
+                countDownTime--;
+                tvCountDown.setText(String.format("%ss后返回首页", countDownTime));
+                if (countDownTime > 0) {
+                    mHandler.sendEmptyMessageDelayed(countDownCode, 1000);
+                } else {
+                    ViewManager.getInstance().finishAllView();
+                    skipActivity(HomeActivity.class);
+                }
+            }
+        }
+    };
 
     @Override
     protected int getView() {
@@ -100,6 +132,7 @@ public class SaveDepositActivity extends BaseUrlView {
 
         postPhone = getIntent().getStringExtra(Constant.PostPhone);
         fetchPhone = getIntent().getStringExtra(Constant.FetchPhone);
+        userName = getIntent().getStringExtra(Constant.UserName);
 
         mPresenter.getAllBoxDetail(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()));
 
@@ -116,41 +149,29 @@ public class SaveDepositActivity extends BaseUrlView {
         adapter.setOnItemCallBack(new OnItemCallBack<String>() {
             @Override
             public void onItemClick(int position, String str, int... i) {
-//                if (TextUtils.equals("重置", str)) {
-//                    if (etPostPhone.isFocused()) {
-//                        etPostPhone.setText("");
-//                    }
-//                    if (etFetchPhone.isFocused()) {
-//                        etFetchPhone.setText("");
-//                    }
-//                } else if (TextUtils.equals("回删", str)) {
-//                    if (etPostPhone.isFocused()) {
-//                        EditTextInputUtils.deleteString(etPostPhone);
-//                    }
-//                    if (etFetchPhone.isFocused()) {
-//                        EditTextInputUtils.deleteString(etFetchPhone);
-//                    }
-//                } else {
-//                    if (etPostPhone.isFocused()) {
-//                        EditTextInputUtils.addString(etPostPhone, str);
-//                    }
-//                    if (etFetchPhone.isFocused()) {
-//                        EditTextInputUtils.addString(etFetchPhone, str);
-//                    }
-//                }
             }
         });
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        SerialPortOpenSDK.getInstance().unregirster(this);
+    }
 
-    @OnClick({R.id.iv_left, R.id.tv_agree, R.id.iv_help, R.id.tv_last, R.id.tv_save, R.id.ll_small, R.id.ll_middle, R.id.ll_large})
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SerialPortOpenSDK.getInstance().regirster(this);
+    }
+
+
+    @OnClick({R.id.iv_left, R.id.iv_help, R.id.tv_last, R.id.tv_save, R.id.ll_small, R.id.ll_middle, R.id.ll_large})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_left:
                 ViewManager.getInstance().finishAllView();
                 skipActivity(HomeActivity.class);
-                break;
-            case R.id.tv_agree:
                 break;
             case R.id.iv_help:
                 skipActivity(SaveHelpActivity.class);
@@ -171,7 +192,7 @@ public class SaveDepositActivity extends BaseUrlView {
                     ToastUtil.showShortToast("暂无相应型号的箱子可用");
                     return;
                 }
-                if(TextUtils.isEmpty(orderId)){
+                if(TextUtils.isEmpty(opencode)){
                     String boxSize = mPosition == 0 ? "small" : mPosition == 1 ? "medium" : "big";
                     CreateOrderRequestBean requestBean = new CreateOrderRequestBean();
                     requestBean.cun_phone = postPhone;
@@ -179,9 +200,19 @@ public class SaveDepositActivity extends BaseUrlView {
                     requestBean.device_id = PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx());
                     requestBean.boxsize = boxSize;
                     mPresenter.createOrder(requestBean);
+
+                    mHandler.sendEmptyMessageDelayed(countDownCode,1000);
                 } else {
-                    mPresenter.getOrderInfo(orderId);
+//                    mPresenter.getOrderInfo(orderId);
+
+                    SaveOverTimeDialog timeDialog = new SaveOverTimeDialog(getCtx(), opencode);
+                    timeDialog.hidePayView();
+                    timeDialog.setTvTitle("包裹订单创建成功\n请扫描下方二维码支付寄存包裹");
+                    timeDialog.show();
                 }
+
+
+//                skipActivity(SenderPickUpSuccessActivity.class);
                 break;
             case R.id.ll_small:
                 chooseCase(0);
@@ -244,24 +275,37 @@ public class SaveDepositActivity extends BaseUrlView {
                         smallBoxNum = Integer.parseInt(bean.getCount());
                     }
                 }
-                tvTip.setText(String.format(tvTip.getText().toString(),"xx",smallBoxNum,middleBoxNum,largeBoxNum));
+                tvTip.setText(String.format(tvTip.getText().toString(),userName,smallBoxNum,middleBoxNum,largeBoxNum));
             }
             if(requestCls == CreateOrderRequestBean.class){
-                orderId = responseBean.getData();
-                mPresenter.getOrderInfo(orderId);
-
-                SaveOverTimeDialog timeDialog = new SaveOverTimeDialog(getCtx(), orderId);
-                timeDialog.hidePayView();
-                timeDialog.show();
-            }
-            if(requestCls == GetOrderInfoRequestBean.class){
                 OrderInfoBean orderInfoBean = JSON.parseObject(responseBean.getData(), OrderInfoBean.class);
-                SaveOverTimeDialog timeDialog = new SaveOverTimeDialog(getCtx(),orderInfoBean.getOpencode());
+                opencode = orderInfoBean.getOpencode();
+
+                LockerApplication.sOrderId = orderInfoBean.getId();
+
+                SaveOverTimeDialog timeDialog = new SaveOverTimeDialog(getCtx(), opencode);
                 timeDialog.hidePayView();
+                timeDialog.setTvTitle("包裹订单创建成功\n请扫描下方二维码支付寄存包裹");
                 timeDialog.show();
             }
         } else {
             ToastUtil.showShortToast(responseBean.getMessage());
+        }
+    }
+
+    @Override
+    public void onMessage(int error, String errorMessage, byte[] data) throws Exception {
+        CommandProtocol commandProtocol = new CommandProtocol.Builder().setBytes(data).parseMessage();
+        if(CommandProtocol.COMMAND_OPEN_RESPONSE == commandProtocol.getCommand()){
+
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(mHandler!=null){
+            mHandler.removeMessages(countDownCode);
         }
     }
 }

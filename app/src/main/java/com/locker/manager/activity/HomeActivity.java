@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide;
 import com.example.http_lib.bean.CreateDeviceQrcodeRequestBean;
 import com.locker.manager.R;
 import com.locker.manager.base.BaseUrlView;
+import com.locker.manager.command.CommandNewProtocol;
 import com.locker.manager.command.CommandProtocol;
 import com.qiao.serialport.SerialPortOpenSDK;
 import com.qiao.serialport.listener.SerialPortMessageListener;
@@ -103,23 +104,38 @@ public class HomeActivity extends BaseUrlView implements SerialPortMessageListen
 //                    SerialPortOpenSDK.getInstance().send(
 //                            new CommandProtocol.Builder()
 //                                    .setCommand(CommandProtocol.COMMAND_OPEN)
-//                                    .setCommandChannel(5)
+//                                    .setCommandChannel(2)
 //                                    .builder()
 //                                    .getBytes());
 //                } catch (Exception e) {
 //                    e.printStackTrace();
 //                }
 
+//                try {
+//                    SerialPortOpenSDK.getInstance().send(
+//                            new CommandProtocol.Builder()
+//                                    .setCommand(CommandProtocol.COMMAND_SELECT_BOX_STATE)
+//                                    .setCommandChannel(1)
+//                                    .builder()
+//                                    .getBytes());
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+
+//                byte[] bytes = new CommandNewProtocol.Builder().setCommand(CommandNewProtocol.COMMAND_OPEN).setCommandChannel(1).builder().getBytes();
+//                try {
+//                    SerialPortOpenSDK.getInstance().send(bytes);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+
+                byte[] bytes1 = new CommandNewProtocol.Builder().setCommand(CommandNewProtocol.COMMAND_SELECT_BOX_STATE).setCommandChannel(1).builder().getBytes();
                 try {
-                    SerialPortOpenSDK.getInstance().send(
-                            new CommandProtocol.Builder()
-                                    .setCommand(CommandProtocol.COMMAND_SELECT_BOX_STATE)
-                                    .setCommandChannel(1)
-                                    .builder()
-                                    .getBytes());
+                    SerialPortOpenSDK.getInstance().send(bytes1);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
                 break;
             case R.id.tv_hand_save:
                 skipActivity(SaveHandActivity.class);
@@ -144,8 +160,8 @@ public class HomeActivity extends BaseUrlView implements SerialPortMessageListen
             LogUtils.e("boxNum:"+boxNum);
             mPresenter.createDeviceBox(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()),boxNum+"");
         }
-        if(CommandProtocol.COMMAND_OPEN == commandProtocol.getCommand()){
-
+        if(CommandProtocol.COMMAND_OPEN_RESPONSE == commandProtocol.getCommand()){
+            LogUtils.e("COMMAND_OPEN");
         }
     }
 
@@ -157,8 +173,6 @@ public class HomeActivity extends BaseUrlView implements SerialPortMessageListen
             if(requestCls == CreateDeviceQrcodeRequestBean.class){
                 Picasso.with(this).load(responseBean.getData().replace("https","http")).into(ivQrcode);
             }
-        } else {
-            ToastUtil.showShortToast(responseBean.getMessage());
         }
     }
 }

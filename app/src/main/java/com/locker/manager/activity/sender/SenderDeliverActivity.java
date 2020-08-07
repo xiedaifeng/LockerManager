@@ -1,6 +1,9 @@
 package com.locker.manager.activity.sender;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -8,16 +11,23 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
+import com.example.http_lib.bean.CreateOrderRequestBean;
 import com.example.http_lib.bean.GetAllBoxDetailRequestBean;
 import com.example.http_lib.bean.GetOrderInfoRequestBean;
 import com.example.http_lib.response.DeviceBoxDetailBean;
+import com.example.http_lib.response.OrderInfoBean;
 import com.locker.manager.R;
 import com.locker.manager.activity.HomeActivity;
 import com.locker.manager.activity.SaveHelpActivity;
 import com.locker.manager.adapter.NumAdapter;
 import com.locker.manager.app.Constant;
+import com.locker.manager.app.LockerApplication;
 import com.locker.manager.base.BaseUrlView;
 import com.locker.manager.callback.OnItemCallBack;
+import com.locker.manager.command.CommandProtocol;
+import com.locker.manager.dialog.SaveOverTimeDialog;
+import com.qiao.serialport.SerialPortOpenSDK;
+import com.qiao.serialport.listener.SerialPortMessageListener;
 import com.yidao.module_lib.base.http.ResponseBean;
 import com.yidao.module_lib.manager.ViewManager;
 import com.yidao.module_lib.utils.PhoneInfoUtils;
@@ -26,13 +36,14 @@ import com.yidao.module_lib.utils.ToastUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.OnClick;
 
 
-public class SenderDeliverActivity extends BaseUrlView {
+public class SenderDeliverActivity extends BaseUrlView implements SerialPortMessageListener {
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
@@ -72,9 +83,46 @@ public class SenderDeliverActivity extends BaseUrlView {
 
     @BindView(R.id.tv_tip)
     TextView tvTip;
+    @BindView(R.id.tv_count_down)
+    TextView tvCountDown;
 
     private List<View> mViews = new ArrayList<>();
+
     private String orderId;
+    private String opencode;
+
+    private String postPhone;
+    private String fetchPhone;
+    private String postNo;
+    private String userName;
+
+    private int mPosition = 0;
+
+    private int smallBoxNum = 0;
+    private int middleBoxNum = 0;
+    private int largeBoxNum = 0;
+
+    private final int countDownCode = 0x112;
+
+    private int countDownTime = 30;
+
+    @SuppressLint("HandlerLeak")
+    private Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            super.handleMessage(msg);
+            if(msg.what == countDownCode) {
+                countDownTime--;
+                tvCountDown.setText(String.format("%ss后返回首页", countDownTime));
+                if (countDownTime > 0) {
+                    mHandler.sendEmptyMessageDelayed(countDownCode, 1000);
+                } else {
+                    ViewManager.getInstance().finishAllView();
+                    skipActivity(HomeActivity.class);
+                }
+            }
+        }
+    };
 
 
     @Override
@@ -86,7 +134,10 @@ public class SenderDeliverActivity extends BaseUrlView {
     public void init() {
         setCurrentTime(tvTitle,System.currentTimeMillis());
 
-        orderId = getIntent().getStringExtra(Constant.OrderInfoKey);
+        userName = getIntent().getStringExtra(Constant.UserName);
+        postPhone = getIntent().getStringExtra(Constant.PostPhone);
+        fetchPhone = getIntent().getStringExtra(Constant.FetchPhone);
+        postNo = getIntent().getStringExtra(Constant.PostNo);
 
         mPresenter.getAllBoxDetail(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()));
 
@@ -103,41 +154,30 @@ public class SenderDeliverActivity extends BaseUrlView {
         adapter.setOnItemCallBack(new OnItemCallBack<String>() {
             @Override
             public void onItemClick(int position, String str, int... i) {
-//                if (TextUtils.equals("重置", str)) {
-//                    if (etPostPhone.isFocused()) {
-//                        etPostPhone.setText("");
-//                    }
-//                    if (etFetchPhone.isFocused()) {
-//                        etFetchPhone.setText("");
-//                    }
-//                } else if (TextUtils.equals("回删", str)) {
-//                    if (etPostPhone.isFocused()) {
-//                        EditTextInputUtils.deleteString(etPostPhone);
-//                    }
-//                    if (etFetchPhone.isFocused()) {
-//                        EditTextInputUtils.deleteString(etFetchPhone);
-//                    }
-//                } else {
-//                    if (etPostPhone.isFocused()) {
-//                        EditTextInputUtils.addString(etPostPhone, str);
-//                    }
-//                    if (etFetchPhone.isFocused()) {
-//                        EditTextInputUtils.addString(etFetchPhone, str);
-//                    }
-//                }
             }
         });
     }
 
 
-    @OnClick({R.id.iv_left, R.id.tv_agree, R.id.iv_help, R.id.tv_last, R.id.tv_save, R.id.ll_small, R.id.ll_middle, R.id.ll_large})
+    @Override
+    protected void onPause() {
+        super.onPause();
+        SerialPortOpenSDK.getInstance().unregirster(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SerialPortOpenSDK.getInstance().regirster(this);
+    }
+
+
+    @OnClick({R.id.iv_left, R.id.iv_help, R.id.tv_last, R.id.tv_save, R.id.ll_small, R.id.ll_middle, R.id.ll_large})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_left:
                 ViewManager.getInstance().finishAllView();
                 skipActivity(HomeActivity.class);
-                break;
-            case R.id.tv_agree:
                 break;
             case R.id.iv_help:
                 skipActivity(SaveHelpActivity.class);
@@ -146,11 +186,41 @@ public class SenderDeliverActivity extends BaseUrlView {
                 ViewManager.getInstance().finishView();
                 break;
             case R.id.tv_save:
-                mPresenter.getOrderInfo(orderId);
-                // TODO: 2020/7/3 判断付费、免费和付费成功自动跳转
-                Bundle bundle = new Bundle();
-                bundle.putString(Constant.OrderInfoKey,orderId);
-                skipActivity(SenderDeliverSuccessActivity.class,bundle);
+                if (mPosition == 0 && smallBoxNum == 0) {
+                    ToastUtil.showShortToast("暂无相应型号的箱子可用");
+                    return;
+                }
+                if (mPosition == 1 && middleBoxNum == 0) {
+                    ToastUtil.showShortToast("暂无相应型号的箱子可用");
+                    return;
+                }
+                if (mPosition == 2 && largeBoxNum == 0) {
+                    ToastUtil.showShortToast("暂无相应型号的箱子可用");
+                    return;
+                }
+                if(TextUtils.isEmpty(opencode)){
+                    String boxSize = mPosition == 0 ? "small" : mPosition == 1 ? "medium" : "big";
+                    CreateOrderRequestBean requestBean = new CreateOrderRequestBean();
+                    requestBean.cun_phone = postPhone;
+                    requestBean.qu_phone = fetchPhone;
+                    requestBean.device_id = PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx());
+                    requestBean.boxsize = boxSize;
+                    requestBean.post_no = postNo;
+                    mPresenter.createOrder(requestBean);
+
+                    mHandler.sendEmptyMessageDelayed(countDownCode,1000);
+                } else {
+                    SaveOverTimeDialog timeDialog = new SaveOverTimeDialog(getCtx(), opencode);
+                    timeDialog.hidePayView();
+                    timeDialog.setTvTitle("包裹订单创建成功\n请扫描下方二维码支付寄存包裹");
+                    timeDialog.show();
+                }
+
+//                mPresenter.getOrderInfo(orderId);
+//                // TODO: 2020/7/3 判断付费、免费和付费成功自动跳转
+//                Bundle bundle = new Bundle();
+//                bundle.putString(Constant.OrderInfoKey,orderId);
+//                skipActivity(SenderDeliverSuccessActivity.class,bundle);
                 break;
             case R.id.ll_small:
                 chooseCase(0);
@@ -165,6 +235,7 @@ public class SenderDeliverActivity extends BaseUrlView {
     }
 
     private void chooseCase(int position) {
+        mPosition = position;
         for (int i = 0; i < mViews.size(); i++) {
             mViews.get(i).setSelected(position == i);
         }
@@ -189,36 +260,64 @@ public class SenderDeliverActivity extends BaseUrlView {
         if(success){
             if(requestCls == GetAllBoxDetailRequestBean.class){
                 List<DeviceBoxDetailBean> boxDetailBeans = JSON.parseArray(responseBean.getData(), DeviceBoxDetailBean.class);
-                String smallNum = "0";
-                String middleNum = "0";
-                String largeNum = "0";
                 for(DeviceBoxDetailBean bean:boxDetailBeans){
                     if(TextUtils.equals("big",bean.getSize())){
                         tvLargePrice.setText("￥"+bean.getMoney());
                         tvLargeRemain.setText("剩余空箱"+bean.getCount());
                         tvLargeSize.setText(bean.getTitle());
-                        largeNum = bean.getCount();
+
+                        largeBoxNum = Integer.parseInt(bean.getCount());
                     }
                     if(TextUtils.equals("medium",bean.getSize())){
                         tvMiddlePrice.setText("￥"+bean.getMoney());
                         tvMiddleRemain.setText("剩余空箱"+bean.getCount());
                         tvMiddleSize.setText(bean.getTitle());
-                        middleNum = bean.getCount();
+
+                        middleBoxNum = Integer.parseInt(bean.getCount());
                     }
                     if(TextUtils.equals("small",bean.getSize())){
                         tvSmallPrice.setText("￥"+bean.getMoney());
                         tvSmallRemain.setText("剩余空箱"+bean.getCount());
                         tvSmallSize.setText(bean.getTitle());
-                        smallNum = bean.getCount();
+
+                        smallBoxNum = Integer.parseInt(bean.getCount());
                     }
                 }
-                tvTip.setText(String.format(tvTip.getText().toString(),"xx",smallNum,middleNum,largeNum));
+                tvTip.setText(String.format(tvTip.getText().toString(),userName,smallBoxNum,middleBoxNum,largeBoxNum));
             }
-            if(requestCls == GetOrderInfoRequestBean.class){
+            if(requestCls == CreateOrderRequestBean.class){
+                OrderInfoBean orderInfoBean = JSON.parseObject(responseBean.getData(), OrderInfoBean.class);
+                opencode = orderInfoBean.getOpencode();
+                orderId = orderInfoBean.getId();
+                LockerApplication.sOrderId = orderId;
 
+                SaveOverTimeDialog timeDialog = new SaveOverTimeDialog(getCtx(), opencode);
+                timeDialog.hidePayView();
+                timeDialog.setTvTitle("包裹订单创建成功\n请扫描下方二维码支付寄存包裹");
+                timeDialog.show();
             }
         } else {
             ToastUtil.showShortToast(responseBean.getMessage());
+        }
+    }
+
+    @Override
+    public void onMessage(int error, String errorMessage, byte[] data) throws Exception {
+        CommandProtocol commandProtocol = new CommandProtocol.Builder().setBytes(data).parseMessage();
+        if(CommandProtocol.COMMAND_OPEN_RESPONSE == commandProtocol.getCommand()){
+//                mPresenter.getOrderInfo(orderId);
+                // TODO: 2020/7/3 判断付费、免费和付费成功自动跳转
+                Bundle bundle = new Bundle();
+                bundle.putString(Constant.OrderInfoKey,orderId);
+                skipActivity(SenderDeliverSuccessActivity.class,bundle);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(mHandler!=null){
+            mHandler.removeMessages(countDownCode);
         }
     }
 }

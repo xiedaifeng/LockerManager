@@ -75,6 +75,8 @@ public class SaveFirstActivity extends BaseUrlView {
     private boolean isPostCheck = false;
     private boolean isFetchCheck = false;
 
+    private String userName = "";
+
 
     @Override
     protected int getView() {
@@ -173,8 +175,7 @@ public class SaveFirstActivity extends BaseUrlView {
                     mPresenter.getUserInfoByMobile(s.toString(), "fetch");
                 }
                 if (TextUtils.isEmpty(s.toString())) {
-                    tvFetchAgree.setVisibility(View.VISIBLE);
-                    tvFetchAgree.setText("与存件人一致");
+                    tvFetchAgree.setVisibility(View.GONE);
                     tvFetchMsg.setVisibility(View.INVISIBLE);
                     rlFetchVerify.setVisibility(View.GONE);
                 }
@@ -257,6 +258,8 @@ public class SaveFirstActivity extends BaseUrlView {
                     }
                 }
                 Bundle bundle = new Bundle();
+
+                bundle.putString(Constant.UserName, userName);
                 bundle.putString(Constant.PostPhone, postPhone);
                 bundle.putString(Constant.FetchPhone, fetchPhone);
                 skipActivity(SaveDepositActivity.class, bundle);
@@ -267,9 +270,7 @@ public class SaveFirstActivity extends BaseUrlView {
                     ToastUtil.showShortToast("请输入正确的手机号");
                     return;
                 }
-                if (TextUtils.equals("发送验证码", tvFetchAgree.getText().toString())) {
-                    mPresenter.sendSms(fetchPhone);
-                }
+                mPresenter.sendSms(fetchPhone);
                 break;
             case R.id.tv_post_send:
                 postPhone = etPostPhone.getText().toString();
@@ -293,11 +294,12 @@ public class SaveFirstActivity extends BaseUrlView {
                     tvPostSend.setVisibility(View.GONE);
                     MobileUserInfoBean userInfoBean = JSON.parseObject(responseBean.getData(), MobileUserInfoBean.class);
                     tvPostMsg.setText("验证信息：" + userInfoBean.getRealname());
+                    userName = userInfoBean.getRealname();
                 }
                 if (TextUtils.equals("fetch", responseBean.getCarry().toString())) {
                     tvFetchMsg.setVisibility(View.VISIBLE);
                     rlFetchVerify.setVisibility(View.GONE);
-                    tvFetchAgree.setText("与存件人一致");
+                    tvFetchAgree.setVisibility(View.GONE);
                     MobileUserInfoBean userInfoBean = JSON.parseObject(responseBean.getData(), MobileUserInfoBean.class);
                     tvFetchMsg.setText("验证信息：" + userInfoBean.getRealname());
                 }
@@ -327,7 +329,7 @@ public class SaveFirstActivity extends BaseUrlView {
                 if (TextUtils.equals("fetch", responseBean.getCarry().toString())) {
                     tvFetchMsg.setVisibility(View.GONE);
                     rlFetchVerify.setVisibility(View.VISIBLE);
-                    tvFetchAgree.setText("发送验证码");
+                    tvFetchAgree.setVisibility(View.VISIBLE);
                 }
             }
             if (requestCls == CheckSmsRequestBean.class) {

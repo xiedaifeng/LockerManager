@@ -80,6 +80,8 @@ public class SenderActivity extends BaseUrlView {
     private boolean isPostCheck = false;
     private boolean isFetchCheck = false;
 
+    private String userName = "";
+
     @Override
     protected int getView() {
         return R.layout.activity_save_sender;
@@ -187,8 +189,7 @@ public class SenderActivity extends BaseUrlView {
                     mPresenter.getUserInfoByMobile(s.toString(),"fetch");
                 }
                 if(TextUtils.isEmpty(s.toString())){
-                    tvFetchAgree.setVisibility(View.VISIBLE);
-                    tvFetchAgree.setText("与存件人一致");
+                    tvFetchAgree.setVisibility(View.GONE);
                     tvFetchMsg.setVisibility(View.INVISIBLE);
                     rlFetchVerify.setVisibility(View.GONE);
                 }
@@ -276,12 +277,19 @@ public class SenderActivity extends BaseUrlView {
                     }
                 }
                 String postNo = etParcelNum.getText().toString();
-                if(TextUtils.isEmpty(postNo)){
-                    ToastUtil.showShortToast("包裹单号不能为空");
-                    return;
-                }
-                mPresenter.getOrderInfoByPostNo(postNo);
+//                if(TextUtils.isEmpty(postNo)){
+//                    ToastUtil.showShortToast("包裹单号不能为空");
+//                    return;
+//                }
 
+                Bundle bundle = new Bundle();
+                bundle.putString(Constant.UserName,userName);
+                bundle.putString(Constant.PostPhone,postPhone);
+                bundle.putString(Constant.FetchPhone,fetchPhone);
+                bundle.putString(Constant.PostNo,postNo);
+                skipActivity(SenderDeliverActivity.class,bundle);
+
+//                mPresenter.getOrderInfoByPostNo(postNo);
 //                skipActivity(SenderDeliverActivity.class);
                 break;
             case R.id.iv_help:
@@ -293,9 +301,7 @@ public class SenderActivity extends BaseUrlView {
                     ToastUtil.showShortToast("请输入正确的手机号");
                     return;
                 }
-                if (TextUtils.equals("发送验证码", tvFetchAgree.getText().toString())) {
-                    mPresenter.sendSms(fetchPhone);
-                }
+                mPresenter.sendSms(fetchPhone);
                 break;
             case R.id.tv_post_send:
                 postPhone = etPostPhone.getText().toString();
@@ -320,32 +326,35 @@ public class SenderActivity extends BaseUrlView {
                     tvPostSend.setVisibility(View.GONE);
                     MobileUserInfoBean userInfoBean = JSON.parseObject(responseBean.getData(), MobileUserInfoBean.class);
                     tvPostMsg.setText("验证信息："+userInfoBean.getRealname());
+                    userName = userInfoBean.getRealname();
                 }
                 if(TextUtils.equals("fetch",responseBean.getCarry().toString())){
                     tvFetchMsg.setVisibility(View.VISIBLE);
                     rlFetchVerify.setVisibility(View.GONE);
-                    tvFetchAgree.setText("与存件人一致");
+                    tvFetchAgree.setVisibility(View.GONE);
                     MobileUserInfoBean userInfoBean = JSON.parseObject(responseBean.getData(), MobileUserInfoBean.class);
                     tvFetchMsg.setText("验证信息："+userInfoBean.getRealname());
                 }
             }
-            if(requestCls == GetOrderInfoByPostNoRequestBean.class){
-                OrderInfoBean orderInfoBean = JSON.parseObject(responseBean.getData(), OrderInfoBean.class);
-                String cun_phone = orderInfoBean.getCun_phone();
-                String qu_phone = orderInfoBean.getQu_phone();
-                if(!TextUtils.equals(etPostPhone.getText().toString(),cun_phone)){
-                    ToastUtil.showShortToast("该订单中存件人手机号和输入的存件人手机号对不上，请重新输入");
-                    return;
-                }
-                if(!TextUtils.equals(etFetchPhone.getText().toString(),qu_phone)){
-                    ToastUtil.showShortToast("该订单中取件人手机号和输入的取件人手机号对不上，请重新输入");
-                    return;
-                }
 
-                Bundle bundle = new Bundle();
-                bundle.putSerializable(Constant.OrderInfoKey,orderInfoBean.getId());
-                skipActivity(SenderDeliverActivity.class,bundle);
-            }
+//            if(requestCls == GetOrderInfoByPostNoRequestBean.class){
+//                OrderInfoBean orderInfoBean = JSON.parseObject(responseBean.getData(), OrderInfoBean.class);
+//                String cun_phone = orderInfoBean.getCun_phone();
+//                String qu_phone = orderInfoBean.getQu_phone();
+//
+//                if(!TextUtils.equals(etPostPhone.getText().toString(),cun_phone)){
+//                    ToastUtil.showShortToast("该订单中存件人手机号和输入的存件人手机号对不上，请重新输入");
+//                    return;
+//                }
+//                if(!TextUtils.equals(etFetchPhone.getText().toString(),qu_phone)){
+//                    ToastUtil.showShortToast("该订单中取件人手机号和输入的取件人手机号对不上，请重新输入");
+//                    return;
+//                }
+//
+//                Bundle bundle = new Bundle();
+//                bundle.putSerializable(Constant.OrderInfoKey,orderInfoBean.getId());
+//                skipActivity(SenderDeliverActivity.class,bundle);
+//            }
             if(requestCls == SendSmsRequestBean.class){
                 ToastUtil.showShortToast("验证码发送成功");
             }
@@ -371,7 +380,8 @@ public class SenderActivity extends BaseUrlView {
                 if(TextUtils.equals("fetch",responseBean.getCarry().toString())){
                     tvFetchMsg.setVisibility(View.GONE);
                     rlFetchVerify.setVisibility(View.VISIBLE);
-                    tvFetchAgree.setText("发送验证码");
+                    tvFetchAgree.setVisibility(View.VISIBLE);
+//                    tvFetchAgree.setText("发送验证码");
                 }
             }
             if (requestCls == CheckSmsRequestBean.class) {

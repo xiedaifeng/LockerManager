@@ -16,6 +16,7 @@ import com.locker.manager.base.BaseUrlDialog;
 import com.locker.manager.command.CommandProtocol;
 import com.qiao.serialport.SerialPortOpenSDK;
 import com.yidao.module_lib.manager.ViewManager;
+import com.yidao.module_lib.utils.LogUtils;
 import com.yidao.module_lib.utils.SoftKeyboardUtil;
 
 import butterknife.BindView;
@@ -45,10 +46,25 @@ public class BoxStateDialog extends BaseUrlDialog {
 
     TimeCount timeCount = null;
 
+    private IClickListener clickListener;
+
+    public void setClickListener(IClickListener clickListener) {
+        this.clickListener = clickListener;
+    }
 
     public BoxStateDialog(Context context) {
         super(context);
         mContext = context;
+        setCanceledOnTouchOutside(false);
+    }
+
+    @Override
+    public void setOnDismissListener(OnDismissListener listener) {
+        super.setOnDismissListener(listener);
+        LogUtils.e("setOnDismissListener");
+        if (timeCount != null) {
+            timeCount.cancel();
+        }
     }
 
     private String openBoxId="";
@@ -81,24 +97,31 @@ public class BoxStateDialog extends BaseUrlDialog {
         if (timeCount != null) {
             timeCount.onFinish();
         }
-        cancel();
+        dismiss();
         switch (view.getId()) {
             case R.id.dialog_open_box_tv:
+                if(clickListener!=null){
+                    clickListener.openBox(openBoxId);
+                }
                 break;
             case R.id.dialog_goback_tv:
-                if (TextUtils.isEmpty(openBoxId)||openBoxId.length()<=1){
-                    return;
-                }
-                String boxno = openBoxId.substring(0,2);
-                try {
-                    SerialPortOpenSDK.getInstance().send(
-                            new CommandProtocol.Builder()
-                                    .setCommand(CommandProtocol.COMMAND_OPEN)
-                                    .setCommandChannel(boxno)
-                                    .builder()
-                                    .getBytes());
-                } catch (Exception e) {
-                    e.printStackTrace();
+//                if (TextUtils.isEmpty(openBoxId)||openBoxId.length()<=1){
+//                    return;
+//                }
+//                String boxno = openBoxId.substring(0,2);
+//                try {
+//                    SerialPortOpenSDK.getInstance().send(
+//                            new CommandProtocol.Builder()
+//                                    .setCommand(CommandProtocol.COMMAND_OPEN)
+//                                    .setCommandChannel(boxno)
+//                                    .builder()
+//                                    .getBytes());
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+
+                if(clickListener!=null){
+                    clickListener.getBack(openBoxId);
                 }
                 break;
             case R.id.dialog_finisn_tv:
@@ -129,13 +152,18 @@ public class BoxStateDialog extends BaseUrlDialog {
 
         @Override
         public void onFinish() {
-            cancel();
+            dismiss();
             ViewManager.getInstance().finishAllView();
             Intent intent1 = new Intent(mContext, HomeActivity.class);
             mContext.startActivity(intent1);
             SoftKeyboardUtil.hideSoftKeyboard((Activity) mContext);
-
         }
+    }
+
+
+    public interface IClickListener{
+        void openBox(String openBoxId);
+        void getBack(String openBoxId);
     }
 
 }

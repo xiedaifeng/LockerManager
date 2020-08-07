@@ -1,6 +1,7 @@
 package com.locker.manager.dialog;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -36,6 +37,12 @@ public class SaveOverTimeDialog extends BaseUrlDialog {
         super(context);
         this.mContext = context;
         mPresenter.getPayQrCode(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(mContext),opencode);
+    }
+
+    public void setTvTitle(String title){
+        if(!TextUtils.isEmpty(title)){
+            tvTitle.setText(title);
+        }
     }
 
     public void hidePayView(){

@@ -21,7 +21,7 @@
             android:id="@+id/tv_case_state"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="格口已打开，请投递物品\n格口号：015（已开）"
+            android:text="格口已打开，请投递物品\n格口号：%s（已开）"
             android:textColor="@color/color_333333"
             android:textSize="35sp"
             android:lineSpacingExtra="15dp"/>
@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/iv1"
             android:layout_marginTop="20dp"
-            android:text="单    号：55841451"
+            android:text="单    号：%s"
             android:textColor="@color/color_333333"
             android:textSize="24sp" />
 
@@ -41,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/iv1"
-            android:text="手机号：55841451"
+            android:text="手机号：%s"
             android:textColor="@color/color_333333"
             android:textSize="24sp" />
 
@@ -54,7 +54,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/iv1"
-                android:text="取件码：55841451"
+                android:text="取件码：%s"
                 android:textColor="@color/color_333333"
                 android:textSize="24sp" />
             <TextView

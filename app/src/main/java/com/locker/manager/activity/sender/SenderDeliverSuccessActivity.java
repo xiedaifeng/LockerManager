@@ -8,7 +8,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.alibaba.fastjson.JSON;
 import com.example.http_lib.bean.GetOrderInfoRequestBean;
+import com.example.http_lib.response.OrderInfoBean;
 import com.locker.manager.R;
 import com.locker.manager.activity.HomeActivity;
 import com.locker.manager.activity.SaveSecondActivity;
@@ -92,7 +94,7 @@ public class SenderDeliverSuccessActivity extends BaseUrlView {
                 break;
             case R.id.tv_hand_continue:
                 ViewManager.getInstance().finishAllView();
-                skipActivity(SenderActivity.class);
+                skipActivity(SaveSecondActivity.class);
 //                skipActivity(SenderDeliverAndBackActivity.class);
                 break;
         }
@@ -103,7 +105,11 @@ public class SenderDeliverSuccessActivity extends BaseUrlView {
         super.onResponse(success, requestCls, responseBean);
         if(success){
             if(requestCls == GetOrderInfoRequestBean.class){
-
+                OrderInfoBean orderInfoBean = JSON.parseObject(responseBean.getData(), OrderInfoBean.class);
+                tvCaseState.setText(String.format(tvCaseState.getText().toString(),orderInfoBean.getBoxno()));
+                tvOrderNo.setText(String.format(tvOrderNo.getText().toString(),orderInfoBean.getOrder_no()));
+                tvPhone.setText(String.format(tvPhone.getText().toString(),orderInfoBean.getQu_phone()));
+                tvTip.setText(String.format(tvTip.getText().toString(),orderInfoBean.getOpencode()));
             }
         } else {
             ToastUtil.showShortToast(responseBean.getMessage());

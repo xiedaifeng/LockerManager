@@ -22,7 +22,7 @@
         android:id="@+id/iv_qrcode"
         android:layout_width="133dp"
         android:layout_height="133dp"
-        android:src="@color/color_0ED26B"
+        android:src="@color/color_EEEEEE"
         android:layout_marginTop="20dp"/>
 
     <LinearLayout
