@@ -9,6 +9,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.ViewGroup;
+import android.view.Window;
 
 import com.yidao.module_lib.R;
 import com.yidao.module_lib.base.http.ResponseBean;
@@ -49,6 +50,7 @@ public abstract class BaseDialog<T extends IBasePress> extends Dialog implements
     }
 
     protected void init(){
+        requestWindowFeature(Window.FEATURE_NO_TITLE);//去掉标题
         setContentView(getLayoutId());
         ButterKnife.bind(this);
         getWindow().setWindowAnimations(R.style.dialog_style);

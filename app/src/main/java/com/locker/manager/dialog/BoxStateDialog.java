@@ -71,6 +71,10 @@ public class BoxStateDialog extends BaseUrlDialog {
 
     public void setOpenBoxId(String openBoxId) {
         this.openBoxId = openBoxId;
+        if (TextUtils.isEmpty(openBoxId)||openBoxId.length()<=1){
+            return;
+        }
+        dialogBoxStateTv.setText(String.format("格口号：%s（已开）",openBoxId.substring(0,2)));
     }
 
     @Override

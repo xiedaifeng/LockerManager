@@ -1,27 +1,29 @@
 package com.locker.manager.activity;
 
 
-import android.net.Uri;
 import android.os.Handler;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import com.alibaba.fastjson.JSON;
 import com.example.http_lib.bean.CreateDeviceQrcodeRequestBean;
+import com.example.http_lib.bean.HotPhoneRequestBean;
+import com.example.http_lib.bean.SystemNoticeRequestBean;
+import com.example.http_lib.response.NoticeBean;
 import com.locker.manager.R;
 import com.locker.manager.base.BaseUrlView;
 import com.locker.manager.command.CommandNewProtocol;
 import com.locker.manager.command.CommandProtocol;
+import com.locker.manager.dialog.SaveOverTimeDialog;
 import com.qiao.serialport.SerialPortOpenSDK;
 import com.qiao.serialport.listener.SerialPortMessageListener;
 import com.squareup.picasso.Picasso;
 import com.yidao.module_lib.base.http.ResponseBean;
-import com.yidao.module_lib.glide.GlideApp;
-import com.yidao.module_lib.utils.CommonGlideUtils;
 import com.yidao.module_lib.utils.LogUtils;
 import com.yidao.module_lib.utils.PhoneInfoUtils;
-import com.yidao.module_lib.utils.ToastUtil;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -35,6 +37,10 @@ public class HomeActivity extends BaseUrlView implements SerialPortMessageListen
     TextView tvTitle;
     @BindView(R.id.iv_qrcode)
     ImageView ivQrcode;
+    @BindView(R.id.tv_phone_tip)
+    TextView tvPhoneTip;
+    @BindView(R.id.tv_notice)
+    TextView tvNotice;
 
 
     @Override
@@ -47,6 +53,8 @@ public class HomeActivity extends BaseUrlView implements SerialPortMessageListen
         setCurrentTime(tvTitle,System.currentTimeMillis());
 
         mPresenter.createDeviceQrcode(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()));
+        mPresenter.hotPhone();
+        mPresenter.getSystemNotice();
 
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -100,16 +108,16 @@ public class HomeActivity extends BaseUrlView implements SerialPortMessageListen
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_left:
-//                try {
-//                    SerialPortOpenSDK.getInstance().send(
-//                            new CommandProtocol.Builder()
-//                                    .setCommand(CommandProtocol.COMMAND_OPEN)
-//                                    .setCommandChannel(2)
-//                                    .builder()
-//                                    .getBytes());
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
+                try {
+                    SerialPortOpenSDK.getInstance().send(
+                            new CommandProtocol.Builder()
+                                    .setCommand(CommandProtocol.COMMAND_OPEN)
+                                    .setCommandChannel(2)
+                                    .builder()
+                                    .getBytes());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
 //                try {
 //                    SerialPortOpenSDK.getInstance().send(
@@ -172,6 +180,15 @@ public class HomeActivity extends BaseUrlView implements SerialPortMessageListen
         if(success){
             if(requestCls == CreateDeviceQrcodeRequestBean.class){
                 Picasso.with(this).load(responseBean.getData().replace("https","http")).into(ivQrcode);
+            }
+            if(requestCls == HotPhoneRequestBean.class){
+                tvPhoneTip.setText(String.format("客服热线：%s",responseBean.getData()));
+            }
+            if(requestCls == SystemNoticeRequestBean.class){
+                List<NoticeBean> noticeBeans = JSON.parseArray(responseBean.getData(), NoticeBean.class);
+                if(noticeBeans!=null && noticeBeans.size()>0){
+                    tvNotice.setText(noticeBeans.get(0).getTitle());
+                }
             }
         }
     }

@@ -47,6 +47,11 @@ public interface ILocalHost {
 
     String backOrder = "/Apiorder/back_order";  //退回
 
+    String hotPhone = "/Apiindex/get_ttd_phone";  //热线电话
+
+    String systemNoticeInfo = "/Apiindex/get_notice_list";  //系统通知详情
+
+
 
 
 

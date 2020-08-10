@@ -44,7 +44,7 @@
         <View
             android:id="@+id/view_gap"
             android:layout_width="30dp"
-            android:layout_height="wrap_content"/>
+            android:layout_height="0dp"/>
 
         <TextView
             android:id="@+id/tv_exit"

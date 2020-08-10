@@ -33,6 +33,11 @@ public class SaveOverTimeDialog extends BaseUrlDialog {
 
     private Context mContext;
 
+    public SaveOverTimeDialog(Context context) {
+        super(context);
+        this.mContext = context;
+    }
+
     public SaveOverTimeDialog(Context context,String opencode) {
         super(context);
         this.mContext = context;

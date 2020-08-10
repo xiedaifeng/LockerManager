@@ -13,10 +13,12 @@ import com.example.http_lib.bean.GetAllBoxDetailRequestBean;
 import com.example.http_lib.bean.GetOrderInfoByPostNoRequestBean;
 import com.example.http_lib.bean.GetOrderInfoRequestBean;
 import com.example.http_lib.bean.GetUserInfoByMobileRequestBean;
+import com.example.http_lib.bean.HotPhoneRequestBean;
 import com.example.http_lib.bean.OpenDeviceBoxRequestBean;
 import com.example.http_lib.bean.PayOrderRequestBean;
 import com.example.http_lib.bean.PayQrCodeRequestBean;
 import com.example.http_lib.bean.SendSmsRequestBean;
+import com.example.http_lib.bean.SystemNoticeRequestBean;
 import com.example.http_lib.bean.UpdateDeviceBoxStatusRequestBean;
 import com.locker.manager.mvp.model.CommomModel;
 import com.yidao.module_lib.base.BasePressPlus;
@@ -225,6 +227,26 @@ public class CommonPresenter extends BasePressPlus {
         BackOrderRequestBean requestBean = new BackOrderRequestBean();
         requestBean.device_id = device_id;
         requestBean.opencode = opencode;
+        mCommomModel.setBean(requestBean);
+        mCommomModel.request(false);
+    }
+
+
+    /**
+     *  客服电话
+     */
+    public void hotPhone(){
+        HotPhoneRequestBean requestBean = new HotPhoneRequestBean();
+        mCommomModel.setBean(requestBean);
+        mCommomModel.request(false);
+    }
+
+
+    /**
+     *  系统公告
+     */
+    public void getSystemNotice(){
+        SystemNoticeRequestBean requestBean = new SystemNoticeRequestBean();
         mCommomModel.setBean(requestBean);
         mCommomModel.request(false);
     }

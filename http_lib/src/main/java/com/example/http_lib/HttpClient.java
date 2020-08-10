@@ -214,6 +214,7 @@ public class HttpClient {
     }
 
     private void callback(boolean isEncrypt, String result) {
+        LogUtils.d("callback:" + result);
         ResponseBean responseBean = JSON.parseObject(result, ResponseBean.class);
         String data = responseBean.getData();
         // 判断是否加密  如果加密  进行解密操作

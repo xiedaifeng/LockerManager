@@ -92,15 +92,22 @@
             android:gravity="center_vertical"/>
 
         <TextView
-            android:id="@+id/tv_title"
+            android:id="@+id/tv_notice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="我是公告我是公告我是公告我是公告我是公告我是公告"
             android:textSize="18sp"
             android:textColor="@color/white"
-            android:layout_centerInParent="true"/>
+            android:layout_centerInParent="true"
+            android:layout_toRightOf="@+id/tv_help"
+            android:layout_toLeftOf="@+id/tv_phone_tip"
+            android:gravity="center"
+            android:singleLine="true"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"/>
 
         <TextView
+            android:id="@+id/tv_phone_tip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="客服热线：98525"
