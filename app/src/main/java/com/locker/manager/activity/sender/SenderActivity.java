@@ -185,8 +185,13 @@ public class SenderActivity extends BaseUrlView {
             }
             @Override
             public void afterTextChanged(Editable s) {
-                if(PhoneUtils.isPhone(s.toString())){
+                if(PhoneUtils.isPhone(s.toString()) && !TextUtils.equals(s.toString(),etPostPhone.getText().toString())){
                     mPresenter.getUserInfoByMobile(s.toString(),"fetch");
+                }
+                if(PhoneUtils.isPhone(s.toString()) && TextUtils.equals(s.toString(),etPostPhone.getText().toString())){
+                    tvFetchAgree.setVisibility(View.GONE);
+                    tvFetchMsg.setVisibility(View.INVISIBLE);
+                    rlFetchVerify.setVisibility(View.GONE);
                 }
                 if(TextUtils.isEmpty(s.toString())){
                     tvFetchAgree.setVisibility(View.GONE);
@@ -238,14 +243,6 @@ public class SenderActivity extends BaseUrlView {
                 skipActivity(HomeActivity.class);
                 break;
             case R.id.tv_next:
-//                if(tvPostMsg.getVisibility() != View.VISIBLE){
-//                    ToastUtil.showShortToast("请先输入正确的存件人的手机号");
-//                    return;
-//                }
-//                if(tvFetchMsg.getVisibility() != View.VISIBLE){
-//                    ToastUtil.showShortToast("请先输入正确的取件人的手机号");
-//                    return;
-//                }
                 String postPhone = etPostPhone.getText().toString();
                 String fetchPhone = etFetchPhone.getText().toString();
                 if (!PhoneUtils.isPhone(postPhone)) {
@@ -336,25 +333,6 @@ public class SenderActivity extends BaseUrlView {
                     tvFetchMsg.setText("验证信息："+userInfoBean.getRealname());
                 }
             }
-
-//            if(requestCls == GetOrderInfoByPostNoRequestBean.class){
-//                OrderInfoBean orderInfoBean = JSON.parseObject(responseBean.getData(), OrderInfoBean.class);
-//                String cun_phone = orderInfoBean.getCun_phone();
-//                String qu_phone = orderInfoBean.getQu_phone();
-//
-//                if(!TextUtils.equals(etPostPhone.getText().toString(),cun_phone)){
-//                    ToastUtil.showShortToast("该订单中存件人手机号和输入的存件人手机号对不上，请重新输入");
-//                    return;
-//                }
-//                if(!TextUtils.equals(etFetchPhone.getText().toString(),qu_phone)){
-//                    ToastUtil.showShortToast("该订单中取件人手机号和输入的取件人手机号对不上，请重新输入");
-//                    return;
-//                }
-//
-//                Bundle bundle = new Bundle();
-//                bundle.putSerializable(Constant.OrderInfoKey,orderInfoBean.getId());
-//                skipActivity(SenderDeliverActivity.class,bundle);
-//            }
             if(requestCls == SendSmsRequestBean.class){
                 ToastUtil.showShortToast("验证码发送成功");
             }

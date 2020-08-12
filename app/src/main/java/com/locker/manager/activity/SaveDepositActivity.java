@@ -1,7 +1,6 @@
 package com.locker.manager.activity;
 
 import android.annotation.SuppressLint;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
@@ -10,14 +9,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.alibaba.fastjson.JSON;
 import com.example.http_lib.bean.CreateOrderRequestBean;
 import com.example.http_lib.bean.GetAllBoxDetailRequestBean;
-import com.example.http_lib.bean.GetOrderInfoRequestBean;
 import com.example.http_lib.response.DeviceBoxDetailBean;
 import com.example.http_lib.response.OrderInfoBean;
 import com.locker.manager.R;
-import com.locker.manager.activity.sender.SenderPickUpSuccessActivity;
 import com.locker.manager.adapter.NumAdapter;
 import com.locker.manager.app.Constant;
 import com.locker.manager.app.LockerApplication;
@@ -34,10 +35,6 @@ import com.yidao.module_lib.utils.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -210,7 +207,6 @@ public class SaveDepositActivity extends BaseUrlView implements SerialPortMessag
                     timeDialog.setTvTitle("包裹订单创建成功\n请扫描下方二维码支付寄存包裹");
                     timeDialog.show();
                 }
-
 
 //                skipActivity(SenderPickUpSuccessActivity.class);
                 break;

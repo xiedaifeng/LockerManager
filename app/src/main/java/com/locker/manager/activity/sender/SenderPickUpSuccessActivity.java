@@ -109,7 +109,7 @@ public class SenderPickUpSuccessActivity extends BaseUrlView {
                 tvOrderNo.setText(String.format(tvOrderNo.getText().toString(),orderInfoBean.getOrder_no()));
 
                 try {
-                    new CommandProtocol.Builder().setCommand(CommandProtocol.COMMAND_OPEN).setCommandChannel(boxno).builder();
+//                    new CommandProtocol.Builder().setCommand(CommandProtocol.COMMAND_OPEN).setCommandChannel(boxno).builder();
                     SerialPortOpenSDK.getInstance().send(
                             new CommandProtocol.Builder()
                                     .setCommand(CommandProtocol.COMMAND_OPEN)

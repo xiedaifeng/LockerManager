@@ -171,8 +171,13 @@ public class SaveFirstActivity extends BaseUrlView {
             }
             @Override
             public void afterTextChanged(Editable s) {
-                if (PhoneUtils.isPhone(s.toString())) {
+                if (PhoneUtils.isPhone(s.toString()) && !TextUtils.equals(s.toString(),etPostPhone.getText().toString())) {
                     mPresenter.getUserInfoByMobile(s.toString(), "fetch");
+                }
+                if (PhoneUtils.isPhone(s.toString()) && TextUtils.equals(s.toString(),etPostPhone.getText().toString())) {
+                    tvFetchAgree.setVisibility(View.GONE);
+                    tvFetchMsg.setVisibility(View.INVISIBLE);
+                    rlFetchVerify.setVisibility(View.GONE);
                 }
                 if (TextUtils.isEmpty(s.toString())) {
                     tvFetchAgree.setVisibility(View.GONE);

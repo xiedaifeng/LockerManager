@@ -34,6 +34,8 @@ public class LockerApplication extends BaseApplication {
 
     public static String sOrderId = null;
 
+    public static String sOpenCode = null;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -41,22 +43,6 @@ public class LockerApplication extends BaseApplication {
 
             TaskDispatcher.init(this);
             TaskDispatcher.createInstance().addTask(new LockerManagerTask()).start();
-
-
-            CreateDeviceRequestBean requestBean = new CreateDeviceRequestBean();
-            requestBean.device_id = PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getApplicationContext());
-            LogUtils.e("CreateDeviceRequestBean:"+requestBean.device_id);
-            HttpClient.request(requestBean, false, new IHttpCallBack() {
-                @Override
-                public void success(ResponseBean responseBean) {
-                    LogUtils.e("success:createDevice");
-                }
-                @Override
-                public void failed(ResponseBean responseBean) {
-                    LogUtils.e("failed:createDevice");
-                }
-            });
-
 
             PushManager.getInstance().initialize(this);
             PushManager.getInstance().setDebugLogger(this, new IUserLoggerInterface() {

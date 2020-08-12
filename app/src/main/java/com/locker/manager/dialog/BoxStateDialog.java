@@ -109,21 +109,6 @@ public class BoxStateDialog extends BaseUrlDialog {
                 }
                 break;
             case R.id.dialog_goback_tv:
-//                if (TextUtils.isEmpty(openBoxId)||openBoxId.length()<=1){
-//                    return;
-//                }
-//                String boxno = openBoxId.substring(0,2);
-//                try {
-//                    SerialPortOpenSDK.getInstance().send(
-//                            new CommandProtocol.Builder()
-//                                    .setCommand(CommandProtocol.COMMAND_OPEN)
-//                                    .setCommandChannel(boxno)
-//                                    .builder()
-//                                    .getBytes());
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-
                 if(clickListener!=null){
                     clickListener.getBack(openBoxId);
                 }

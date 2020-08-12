@@ -39,11 +39,12 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import butterknife.BindView;
 import butterknife.OnClick;
 
 
-public class SenderDeliverActivity extends BaseUrlView implements SerialPortMessageListener {
+public class SenderDeliverActivity extends BaseUrlView {
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
@@ -107,11 +108,11 @@ public class SenderDeliverActivity extends BaseUrlView implements SerialPortMess
     private int countDownTime = 30;
 
     @SuppressLint("HandlerLeak")
-    private Handler mHandler = new Handler(){
+    private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
-            if(msg.what == countDownCode) {
+            if (msg.what == countDownCode) {
                 countDownTime--;
                 tvCountDown.setText(String.format("%ss后返回首页", countDownTime));
                 if (countDownTime > 0) {
@@ -132,7 +133,7 @@ public class SenderDeliverActivity extends BaseUrlView implements SerialPortMess
 
     @Override
     public void init() {
-        setCurrentTime(tvTitle,System.currentTimeMillis());
+        setCurrentTime(tvTitle, System.currentTimeMillis());
 
         userName = getIntent().getStringExtra(Constant.UserName);
         postPhone = getIntent().getStringExtra(Constant.PostPhone);
@@ -157,20 +158,6 @@ public class SenderDeliverActivity extends BaseUrlView implements SerialPortMess
             }
         });
     }
-
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        SerialPortOpenSDK.getInstance().unregirster(this);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        SerialPortOpenSDK.getInstance().regirster(this);
-    }
-
 
     @OnClick({R.id.iv_left, R.id.iv_help, R.id.tv_last, R.id.tv_save, R.id.ll_small, R.id.ll_middle, R.id.ll_large})
     public void onViewClicked(View view) {
@@ -198,17 +185,17 @@ public class SenderDeliverActivity extends BaseUrlView implements SerialPortMess
                     ToastUtil.showShortToast("暂无相应型号的箱子可用");
                     return;
                 }
-                if(TextUtils.isEmpty(opencode)){
+                if (TextUtils.isEmpty(opencode)) {
                     String boxSize = mPosition == 0 ? "small" : mPosition == 1 ? "medium" : "big";
                     CreateOrderRequestBean requestBean = new CreateOrderRequestBean();
                     requestBean.cun_phone = postPhone;
                     requestBean.qu_phone = fetchPhone;
                     requestBean.device_id = PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx());
                     requestBean.boxsize = boxSize;
-                    requestBean.post_no = postNo;
+                    requestBean.post_no = TextUtils.isEmpty(postNo) ? "123456" : postNo;
                     mPresenter.createOrder(requestBean);
 
-                    mHandler.sendEmptyMessageDelayed(countDownCode,1000);
+                    mHandler.sendEmptyMessageDelayed(countDownCode, 1000);
                 } else {
                     SaveOverTimeDialog timeDialog = new SaveOverTimeDialog(getCtx(), opencode);
                     timeDialog.hidePayView();
@@ -240,52 +227,52 @@ public class SenderDeliverActivity extends BaseUrlView implements SerialPortMess
             mViews.get(i).setSelected(position == i);
         }
 
-        tvSmallPrice.setTextColor(getResources().getColor(position==0?R.color.color_0ED26B:R.color.color_999999));
-        tvSmallSize.setTextColor(getResources().getColor(position==0?R.color.color_0ED26B:R.color.color_999999));
-        tvSmallRemain.setTextColor(getResources().getColor(position==0?R.color.color_0ED26B:R.color.color_999999));
+        tvSmallPrice.setTextColor(getResources().getColor(position == 0 ? R.color.color_0ED26B : R.color.color_999999));
+        tvSmallSize.setTextColor(getResources().getColor(position == 0 ? R.color.color_0ED26B : R.color.color_999999));
+        tvSmallRemain.setTextColor(getResources().getColor(position == 0 ? R.color.color_0ED26B : R.color.color_999999));
 
-        tvMiddlePrice.setTextColor(getResources().getColor(position==1?R.color.color_0ED26B:R.color.color_999999));
-        tvMiddleSize.setTextColor(getResources().getColor(position==1?R.color.color_0ED26B:R.color.color_999999));
-        tvMiddleRemain.setTextColor(getResources().getColor(position==1?R.color.color_0ED26B:R.color.color_999999));
+        tvMiddlePrice.setTextColor(getResources().getColor(position == 1 ? R.color.color_0ED26B : R.color.color_999999));
+        tvMiddleSize.setTextColor(getResources().getColor(position == 1 ? R.color.color_0ED26B : R.color.color_999999));
+        tvMiddleRemain.setTextColor(getResources().getColor(position == 1 ? R.color.color_0ED26B : R.color.color_999999));
 
-        tvLargePrice.setTextColor(getResources().getColor(position==2?R.color.color_0ED26B:R.color.color_999999));
-        tvLargeSize.setTextColor(getResources().getColor(position==2?R.color.color_0ED26B:R.color.color_999999));
-        tvLargeRemain.setTextColor(getResources().getColor(position==2?R.color.color_0ED26B:R.color.color_999999));
+        tvLargePrice.setTextColor(getResources().getColor(position == 2 ? R.color.color_0ED26B : R.color.color_999999));
+        tvLargeSize.setTextColor(getResources().getColor(position == 2 ? R.color.color_0ED26B : R.color.color_999999));
+        tvLargeRemain.setTextColor(getResources().getColor(position == 2 ? R.color.color_0ED26B : R.color.color_999999));
     }
 
 
     @Override
     public void onResponse(boolean success, Class requestCls, ResponseBean responseBean) {
         super.onResponse(success, requestCls, responseBean);
-        if(success){
-            if(requestCls == GetAllBoxDetailRequestBean.class){
+        if (success) {
+            if (requestCls == GetAllBoxDetailRequestBean.class) {
                 List<DeviceBoxDetailBean> boxDetailBeans = JSON.parseArray(responseBean.getData(), DeviceBoxDetailBean.class);
-                for(DeviceBoxDetailBean bean:boxDetailBeans){
-                    if(TextUtils.equals("big",bean.getSize())){
-                        tvLargePrice.setText("￥"+bean.getMoney());
-                        tvLargeRemain.setText("剩余空箱"+bean.getCount());
+                for (DeviceBoxDetailBean bean : boxDetailBeans) {
+                    if (TextUtils.equals("big", bean.getSize())) {
+                        tvLargePrice.setText("￥" + bean.getMoney());
+                        tvLargeRemain.setText("剩余空箱" + bean.getCount());
                         tvLargeSize.setText(bean.getTitle());
 
                         largeBoxNum = Integer.parseInt(bean.getCount());
                     }
-                    if(TextUtils.equals("medium",bean.getSize())){
-                        tvMiddlePrice.setText("￥"+bean.getMoney());
-                        tvMiddleRemain.setText("剩余空箱"+bean.getCount());
+                    if (TextUtils.equals("medium", bean.getSize())) {
+                        tvMiddlePrice.setText("￥" + bean.getMoney());
+                        tvMiddleRemain.setText("剩余空箱" + bean.getCount());
                         tvMiddleSize.setText(bean.getTitle());
 
                         middleBoxNum = Integer.parseInt(bean.getCount());
                     }
-                    if(TextUtils.equals("small",bean.getSize())){
-                        tvSmallPrice.setText("￥"+bean.getMoney());
-                        tvSmallRemain.setText("剩余空箱"+bean.getCount());
+                    if (TextUtils.equals("small", bean.getSize())) {
+                        tvSmallPrice.setText("￥" + bean.getMoney());
+                        tvSmallRemain.setText("剩余空箱" + bean.getCount());
                         tvSmallSize.setText(bean.getTitle());
 
                         smallBoxNum = Integer.parseInt(bean.getCount());
                     }
                 }
-                tvTip.setText(String.format(tvTip.getText().toString(),userName,smallBoxNum,middleBoxNum,largeBoxNum));
+                tvTip.setText(String.format(tvTip.getText().toString(), userName, smallBoxNum, middleBoxNum, largeBoxNum));
             }
-            if(requestCls == CreateOrderRequestBean.class){
+            if (requestCls == CreateOrderRequestBean.class) {
                 OrderInfoBean orderInfoBean = JSON.parseObject(responseBean.getData(), OrderInfoBean.class);
                 opencode = orderInfoBean.getOpencode();
                 orderId = orderInfoBean.getId();
@@ -301,22 +288,22 @@ public class SenderDeliverActivity extends BaseUrlView implements SerialPortMess
         }
     }
 
-    @Override
-    public void onMessage(int error, String errorMessage, byte[] data) throws Exception {
-        CommandProtocol commandProtocol = new CommandProtocol.Builder().setBytes(data).parseMessage();
-        if(CommandProtocol.COMMAND_OPEN_RESPONSE == commandProtocol.getCommand()){
+//    @Override
+//    public void onMessage(int error, String errorMessage, byte[] data) throws Exception {
+//        CommandProtocol commandProtocol = new CommandProtocol.Builder().setBytes(data).parseMessage();
+//        if(CommandProtocol.COMMAND_OPEN_RESPONSE == commandProtocol.getCommand()){
 //                mPresenter.getOrderInfo(orderId);
-                // TODO: 2020/7/3 判断付费、免费和付费成功自动跳转
-                Bundle bundle = new Bundle();
-                bundle.putString(Constant.OrderInfoKey,orderId);
-                skipActivity(SenderDeliverSuccessActivity.class,bundle);
-        }
-    }
+////                 TODO: 2020/7/3 判断付费、免费和付费成功自动跳转
+//                Bundle bundle = new Bundle();
+//                bundle.putString(Constant.OrderInfoKey,orderId);
+//                skipActivity(SenderDeliverSuccessActivity.class,bundle);
+//        }
+//    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(mHandler!=null){
+        if (mHandler != null) {
             mHandler.removeMessages(countDownCode);
         }
     }

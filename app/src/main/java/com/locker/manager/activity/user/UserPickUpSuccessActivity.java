@@ -21,7 +21,6 @@ import com.qiao.serialport.SerialPortOpenSDK;
 import com.qiao.serialport.listener.SerialPortMessageListener;
 import com.yidao.module_lib.base.http.ResponseBean;
 import com.yidao.module_lib.manager.ViewManager;
-import com.yidao.module_lib.utils.PhoneInfoUtils;
 import com.yidao.module_lib.utils.ToastUtil;
 
 import butterknife.BindView;
@@ -133,7 +132,6 @@ public class UserPickUpSuccessActivity extends BaseUrlView implements SerialPort
                 String boxno = orderInfoBean.getBoxno();
                 tvCaseState.setText(String.format("格口号：%s（已开）",boxno));
                 try {
-                    new CommandProtocol.Builder().setCommand(CommandProtocol.COMMAND_OPEN).setCommandChannel(boxno).builder();
                     SerialPortOpenSDK.getInstance().send(
                             new CommandProtocol.Builder()
                                     .setCommand(CommandProtocol.COMMAND_OPEN)
@@ -153,11 +151,7 @@ public class UserPickUpSuccessActivity extends BaseUrlView implements SerialPort
     @Override
     public void onMessage(int error, String errorMessage, byte[] data) throws Exception {
         CommandProtocol commandProtocol = new CommandProtocol.Builder().setBytes(data).parseMessage();
-        if(CommandProtocol.COMMAND_SELECT_BOX_STATE == commandProtocol.getCommand()){
-            int boxNum = commandProtocol.getData().size();
-            mPresenter.createDeviceBox(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()),boxNum+"");
-        }
-        if(CommandProtocol.COMMAND_OPEN == commandProtocol.getCommand()){
+        if(CommandProtocol.COMMAND_OPEN_RESPONSE == commandProtocol.getCommand()){
 
         }
     }

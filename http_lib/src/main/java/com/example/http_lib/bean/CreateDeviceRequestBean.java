@@ -14,5 +14,6 @@ public class CreateDeviceRequestBean extends BaseBean {
 
 
     public String device_id;  //
+    public String getui_cid;  //
 
 }

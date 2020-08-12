@@ -112,6 +112,7 @@ public class SenderDeliverSuccessActivity extends BaseUrlView {
                 tvTip.setText(String.format(tvTip.getText().toString(),orderInfoBean.getOpencode()));
             }
         } else {
+            ViewManager.getInstance().finishView();
             ToastUtil.showShortToast(responseBean.getMessage());
         }
     }

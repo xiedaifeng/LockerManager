@@ -1,22 +1,22 @@
 package com.locker.manager.activity;
 
-import android.content.DialogInterface;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.http_lib.HttpClient;
 import com.example.http_lib.bean.BackOrderRequestBean;
 import com.example.http_lib.bean.DeviceBoxTimeStatusRequestBean;
 import com.example.http_lib.bean.OpenDeviceBoxRequestBean;
-import com.example.http_lib.response.OrderInfoBean;
+import com.example.http_lib.bean.UpdateDeviceBoxStatusRequestBean;
 import com.locker.manager.R;
-import com.locker.manager.activity.user.UserPickUpSuccessActivity;
 import com.locker.manager.adapter.NumAdapter;
-import com.locker.manager.app.Constant;
+import com.locker.manager.app.LockerApplication;
 import com.locker.manager.base.BaseUrlView;
 import com.locker.manager.callback.OnItemCallBack;
 import com.locker.manager.command.CommandProtocol;
@@ -25,6 +25,7 @@ import com.locker.manager.dialog.SaveOverTimeDialog;
 import com.qiao.serialport.SerialPortOpenSDK;
 import com.qiao.serialport.listener.SerialPortMessageListener;
 import com.yidao.module_lib.base.http.ResponseBean;
+import com.yidao.module_lib.base.http.callback.IHttpCallBack;
 import com.yidao.module_lib.manager.ViewManager;
 import com.yidao.module_lib.utils.EditTextInputUtils;
 import com.yidao.module_lib.utils.LogUtils;
@@ -32,8 +33,6 @@ import com.yidao.module_lib.utils.PhoneInfoUtils;
 import com.yidao.module_lib.utils.SoftKeyboardUtil;
 import com.yidao.module_lib.utils.ToastUtil;
 
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.OnClick;
 
@@ -54,6 +53,7 @@ public class SenderPickUpActivity extends BaseUrlView implements SerialPortMessa
 
     private BoxStateDialog dialog = null;
 
+    private SaveOverTimeDialog timeDialog = null;
 
     @Override
     protected int getView() {
@@ -102,7 +102,6 @@ public class SenderPickUpActivity extends BaseUrlView implements SerialPortMessa
         SerialPortOpenSDK.getInstance().regirster(this);
     }
 
-
     @OnClick({R.id.iv_left, R.id.tv_next, R.id.iv_help})
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -116,34 +115,6 @@ public class SenderPickUpActivity extends BaseUrlView implements SerialPortMessa
                     ToastUtil.showShortToast("取件码不能为空");
                     return;
                 }
-//                if(dialog == null){
-//                    dialog = new BoxStateDialog(this);
-//                }
-//                dialog.setOpenBoxId("018456");
-//                dialog.setClickListener(new BoxStateDialog.IClickListener() {
-//                    @Override
-//                    public void openBox(String openBoxId) {
-//                    }
-//                    @Override
-//                    public void getBack(String openBoxId) {
-//                        if (TextUtils.isEmpty(openBoxId)||openBoxId.length()<=1){
-//                            return;
-//                        }
-//                        String boxno = openBoxId.substring(0,2);
-//                        try {
-//                            SerialPortOpenSDK.getInstance().send(
-//                                    new CommandProtocol.Builder()
-//                                            .setCommand(CommandProtocol.COMMAND_OPEN)
-//                                            .setCommandChannel(boxno)
-//                                            .builder()
-//                                            .getBytes());
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                });
-//                dialog.show();
-
                 mPresenter.getDeviceBoxTimeStatus(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()),code);
                 break;
             case R.id.iv_help:
@@ -171,24 +142,7 @@ public class SenderPickUpActivity extends BaseUrlView implements SerialPortMessa
                     }
                     @Override
                     public void getBack(String openBoxId) {
-
-                        openBoxByOpencode();
                         mPresenter.backOrder(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()),etPostPhone.getText().toString());
-
-//                        if (TextUtils.isEmpty(openBoxId)||openBoxId.length()<=1){
-//                            return;
-//                        }
-//                        String boxno = openBoxId.substring(0,2);
-//                        try {
-//                            SerialPortOpenSDK.getInstance().send(
-//                                    new CommandProtocol.Builder()
-//                                            .setCommand(CommandProtocol.COMMAND_OPEN)
-//                                            .setCommandChannel(boxno)
-//                                            .builder()
-//                                            .getBytes());
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//                        }
                     }
                 });
                 dialog.show();
@@ -201,14 +155,19 @@ public class SenderPickUpActivity extends BaseUrlView implements SerialPortMessa
                 // TODO: 2020/7/24  判断取件的快递的状态，是否超时 超时弹出收款码弹框   没有超时则打开相应的箱门
                 String code = responseBean.getData();
                 if(TextUtils.equals("1",code)){ //超时请支付费用
-                    SaveOverTimeDialog timeDialog = new SaveOverTimeDialog(getCtx(),etPostPhone.getText().toString());
+                    if(timeDialog == null){
+                        timeDialog = new SaveOverTimeDialog(getCtx(),etPostPhone.getText().toString());
+                    }
+                    timeDialog.hidePayView();
                     timeDialog.show();
                 } else if(TextUtils.equals("0",code)){
                     mPresenter.openDeviceBox(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()),etPostPhone.getText().toString());
                 }
             }
             if(requestCls == BackOrderRequestBean.class){
-
+                openBoxByOpencode();
+            }
+            if(requestCls == UpdateDeviceBoxStatusRequestBean.class){
             }
         } else {
             ToastUtil.showShortToast(responseBean.getMessage());
@@ -221,6 +180,20 @@ public class SenderPickUpActivity extends BaseUrlView implements SerialPortMessa
         CommandProtocol commandProtocol = new CommandProtocol.Builder().setBytes(data).parseMessage();
         if(CommandProtocol.COMMAND_OPEN_RESPONSE == commandProtocol.getCommand()){
             LogUtils.e("COMMAND_OPEN");
+            if(timeDialog != null && timeDialog.isShowing()){
+                timeDialog.dismiss();
+            }
+
+            String openBoxId = etPostPhone.getText().toString();
+            if (TextUtils.isEmpty(openBoxId)||openBoxId.length()<=1){
+                return;
+            }
+            String boxno = openBoxId.substring(0,2);
+            UpdateDeviceBoxStatusRequestBean requestBean = new UpdateDeviceBoxStatusRequestBean();
+            requestBean.device_id = PhoneInfoUtils.getLocalMacAddressFromWifiInfo(LockerApplication.getApplication());
+            requestBean.boxno = boxno;
+            requestBean.openstatus = "open";
+            mPresenter.updateDeviceBoxStatus(requestBean);
         }
     }
 
