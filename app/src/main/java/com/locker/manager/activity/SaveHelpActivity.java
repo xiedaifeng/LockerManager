@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.locker.manager.R;
 import com.locker.manager.base.BaseUrlView;
+import com.locker.manager.dialog.ExitDialog;
 import com.yidao.module_lib.manager.ViewManager;
 
 import butterknife.BindView;
@@ -36,9 +37,12 @@ public class SaveHelpActivity extends BaseUrlView {
         tvTitle.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_MAIN);
-                intent.addCategory(Intent.CATEGORY_HOME);
-                startActivity(intent);
+//                Intent intent = new Intent(Intent.ACTION_MAIN);
+//                intent.addCategory(Intent.CATEGORY_HOME);
+//                startActivity(intent);
+
+                ExitDialog dialog = new ExitDialog(getCtx());
+                dialog.show();
                 return false;
             }
         });

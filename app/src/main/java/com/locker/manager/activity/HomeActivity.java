@@ -3,10 +3,12 @@ package com.locker.manager.activity;
 
 import android.os.Build;
 import android.os.Handler;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.ViewFlipper;
 
 import com.alibaba.fastjson.JSON;
 import com.example.http_lib.bean.CreateDeviceQrcodeRequestBean;
@@ -46,6 +48,8 @@ public class HomeActivity extends BaseUrlView implements SerialPortMessageListen
     TextView tvNotice;
     @BindView(R.id.tv_mac)
     TextView tvMac;
+    @BindView(R.id.filpper)
+    ViewFlipper filpper;
 
     @Override
     protected int getView() {
@@ -62,7 +66,7 @@ public class HomeActivity extends BaseUrlView implements SerialPortMessageListen
         mPresenter.createDeviceQrcode(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()));
         mPresenter.hotPhone();
         mPresenter.getSystemNotice();
-        mPresenter.createDeviceBox(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()),   "14");
+//        mPresenter.createDeviceBox(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()),   "14");
 
 //        new Handler().postDelayed(new Runnable() {
 //            @Override
@@ -175,7 +179,7 @@ public class HomeActivity extends BaseUrlView implements SerialPortMessageListen
         if (CommandProtocol.COMMAND_SELECT_DEPOSIT_STATE == commandProtocol.getCommand()) {
             int boxNum = commandProtocol.getData().size();
             LogUtils.e("boxNum:" + boxNum);
-            mPresenter.createDeviceBox(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()), boxNum + "");
+//            mPresenter.createDeviceBox(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()), boxNum + "");
         }
         if (CommandProtocol.COMMAND_OPEN_RESPONSE == commandProtocol.getCommand()) {
             LogUtils.e("COMMAND_OPEN");
@@ -196,9 +200,17 @@ public class HomeActivity extends BaseUrlView implements SerialPortMessageListen
             }
             if (requestCls == SystemNoticeRequestBean.class) {
                 List<NoticeBean> noticeBeans = JSON.parseArray(responseBean.getData(), NoticeBean.class);
-                if (noticeBeans != null && noticeBeans.size() > 0) {
-                    tvNotice.setText(noticeBeans.get(0).getTitle());
+
+                for(int i=0;i<noticeBeans.size();i++){
+                    View view = LayoutInflater.from(getCtx()).inflate(R.layout.item_flipper, null);
+                    TextView notice = view.findViewById(R.id.tv_notice);
+                    notice.setText(noticeBeans.get(i).getTitle());
+                    filpper.addView(view);
                 }
+
+//                if (noticeBeans != null && noticeBeans.size() > 0) {
+//                    tvNotice.setText(noticeBeans.get(0).getTitle());
+//                }
             }
         }
     }

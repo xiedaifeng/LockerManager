@@ -45,7 +45,8 @@
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:textColor="@color/color_333333"
-                android:layout_marginTop="5dp"/>
+                android:layout_marginTop="5dp"
+                android:visibility="gone"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -114,7 +115,23 @@
             android:gravity="center"
             android:singleLine="true"
             android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"/>
+            android:layout_marginRight="20dp"
+            android:visibility="gone"/>
+
+        <ViewFlipper
+            android:id="@+id/filpper"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:autoStart="true"
+            android:flipInterval="2000"
+            android:layout_toRightOf="@+id/tv_help"
+            android:layout_toLeftOf="@+id/tv_phone_tip"
+            android:gravity="center"
+            android:singleLine="true"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:inAnimation="@anim/anim_come_in"
+            android:outAnimation="@anim/anim_get_out"/>
 
         <TextView
             android:id="@+id/tv_phone_tip"

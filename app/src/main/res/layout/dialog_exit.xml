@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="500dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/all_corner_shape"
+    android:gravity="center"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    android:paddingTop="40dp"
+    android:paddingBottom="40dp">
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="退出"
+        android:textColor="@color/color_333333"
+        android:textSize="20sp"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/tv_tip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textColor="@color/color_333333"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:layout_marginTop="20dp"/>
+
+    <TextView
+        android:id="@+id/et_user"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@drawable/et_shape"
+        android:hint="输入账号"
+        android:textSize="18sp"
+        android:paddingLeft="20dp"
+        android:inputType="number"
+        android:singleLine="true"
+        android:gravity="center_vertical"
+        android:textColorHint="@color/color_999999"
+        android:textColor="@color/color_333333"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"/>
+
+    <EditText
+        android:id="@+id/et_pwd"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@drawable/et_shape"
+        android:hint="输入密码"
+        android:textSize="18sp"
+        android:paddingLeft="20dp"
+        android:singleLine="true"
+        android:textColorHint="@color/color_999999"
+        android:textColor="@color/color_333333"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp">
+
+        <TextView
+            android:id="@+id/tv_exit"
+            android:layout_width="130dp"
+            android:layout_height="50dp"
+            android:layout_below="@+id/tv_role_name"
+            android:text="退出应用"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:background="@drawable/text_0ed26b_5_shape" />
+
+        <View
+            android:id="@+id/view_gap"
+            android:layout_width="30dp"
+            android:layout_height="0dp"/>
+
+        <TextView
+            android:id="@+id/tv_cancel"
+            android:layout_width="130dp"
+            android:layout_height="50dp"
+            android:layout_below="@+id/tv_role_name"
+            android:text="取消"
+            android:textColor="@color/color_0ED26B"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:background="@drawable/text_eeeeee_5_shape"/>
+
+    </LinearLayout>
+
+</LinearLayout>
