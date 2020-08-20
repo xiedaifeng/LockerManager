@@ -18,6 +18,8 @@ public class UserCacheHelper {
     public static String Cookie = "cookie";
     public static String UserType = "userType";
 
+    public static String HotPhone = "hotPhone";
+
     public static UserInfoBean getUserInfo() {
         String userInfo = SharedPreferencesUtils.getString(user_Info, null);
         if (TextUtils.isEmpty(userInfo)) {
@@ -79,5 +81,14 @@ public class UserCacheHelper {
 
     public static int getUserType(){
         return SharedPreferencesUtils.getInt(UserType, 0);
+    }
+
+
+    public static void setHotPhone(String phone){
+        SharedPreferencesUtils.putString(HotPhone, phone);
+    }
+
+    public static String getHotPhone(){
+        return SharedPreferencesUtils.getString(HotPhone, "");
     }
 }

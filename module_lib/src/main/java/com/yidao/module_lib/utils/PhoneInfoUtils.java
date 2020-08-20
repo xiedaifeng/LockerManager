@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
+import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -167,6 +168,12 @@ public class PhoneInfoUtils {
 //    }
 
     public static String getLocalMacAddressFromWifiInfo(Context context) {
+
+        String serialNumber = android.os.Build.SERIAL;
+        LogUtils.e("serialNumber:"+serialNumber);
+        String ANDROID_ID = Settings.System.getString(context.getContentResolver(), Settings.System.ANDROID_ID);
+        LogUtils.e("ANDROID_ID:"+ANDROID_ID);
+
         String macAddress = null;
         LineNumberReader lnr = null;
 
@@ -181,7 +188,17 @@ public class PhoneInfoUtils {
         } finally {
           closeIO(lnr, isr);
         }
-        return macAddress == null ? getSerialNumber() : macAddress.replaceAll(":", "").toUpperCase();
+        if(!TextUtils.isEmpty(macAddress)){
+            return macAddress.replaceAll(":", "").toUpperCase();
+        }
+        if(!TextUtils.isEmpty(getSerialNumber())){
+            return getSerialNumber();
+        }
+        if(!TextUtils.isEmpty(ANDROID_ID)){
+            return ANDROID_ID;
+        }
+        return ANDROID_ID;
+//        return macAddress == null ? getSerialNumber() : macAddress.replaceAll(":", "").toUpperCase();
     }
 
     public static String getSerialNumber() {

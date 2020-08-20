@@ -154,12 +154,16 @@ public class SaveFirstActivity extends BaseUrlView {
             public void afterTextChanged(Editable s) {
                 if (PhoneUtils.isPhone(s.toString())) {
                     mPresenter.getUserInfoByMobile(s.toString(), "post");
-                }
-                if (TextUtils.isEmpty(s.toString())) {
+                } else {
                     tvPostSend.setVisibility(View.GONE);
                     tvPostMsg.setVisibility(View.INVISIBLE);
                     rlPostVerify.setVisibility(View.GONE);
                 }
+//                if (TextUtils.isEmpty(s.toString())) {
+//                    tvPostSend.setVisibility(View.GONE);
+//                    tvPostMsg.setVisibility(View.INVISIBLE);
+//                    rlPostVerify.setVisibility(View.GONE);
+//                }
             }
         });
         etFetchPhone.addTextChangedListener(new TextWatcher() {
@@ -171,19 +175,47 @@ public class SaveFirstActivity extends BaseUrlView {
             }
             @Override
             public void afterTextChanged(Editable s) {
-                if (PhoneUtils.isPhone(s.toString()) && !TextUtils.equals(s.toString(),etPostPhone.getText().toString())) {
+                if(PhoneUtils.isPhone(s.toString())){
                     mPresenter.getUserInfoByMobile(s.toString(), "fetch");
-                }
-                if (PhoneUtils.isPhone(s.toString()) && TextUtils.equals(s.toString(),etPostPhone.getText().toString())) {
+//                    String postPhone = etPostPhone.getText().toString();
+//                    if(!TextUtils.equals(s.toString(),postPhone)){
+//                    } else {
+//                        if(tvPostSend.getVisibility() == View.VISIBLE){ // 取件人没有注册并且取件人和存间人为同一人
+//                            tvFetchMsg.setVisibility(View.INVISIBLE);
+//                            tvFetchAgree.setVisibility(View.GONE);
+//                            rlFetchVerify.setVisibility(View.GONE);
+//                        } else {
+//                            tvFetchMsg.setText("验证信息：" + userName);
+//                            tvFetchMsg.setVisibility(View.VISIBLE);
+//                            tvFetchAgree.setVisibility(View.GONE);
+//                            rlFetchVerify.setVisibility(View.GONE);
+//                        }
+//                    }
+                } else {
                     tvFetchAgree.setVisibility(View.GONE);
                     tvFetchMsg.setVisibility(View.INVISIBLE);
                     rlFetchVerify.setVisibility(View.GONE);
                 }
-                if (TextUtils.isEmpty(s.toString())) {
-                    tvFetchAgree.setVisibility(View.GONE);
-                    tvFetchMsg.setVisibility(View.INVISIBLE);
-                    rlFetchVerify.setVisibility(View.GONE);
-                }
+//                if (PhoneUtils.isPhone(s.toString()) && !TextUtils.equals(s.toString(),etPostPhone.getText().toString())) {
+//                    mPresenter.getUserInfoByMobile(s.toString(), "fetch");
+//                }
+//                if (PhoneUtils.isPhone(s.toString()) && TextUtils.equals(s.toString(),etPostPhone.getText().toString())) {
+//                    tvFetchAgree.setVisibility(View.GONE);
+//                    tvFetchMsg.setVisibility(View.INVISIBLE);
+//                    rlFetchVerify.setVisibility(View.GONE);
+//                } else {
+//                    tvFetchAgree.setVisibility(View.GONE);
+//                    tvFetchMsg.setVisibility(View.INVISIBLE);
+//                    rlFetchVerify.setVisibility(View.GONE);
+//                }
+//                if (s.toString().length()!=11) {
+//                    tvPostMsg.setVisibility(View.INVISIBLE);
+//                }
+//                if (TextUtils.isEmpty(s.toString())) {
+//                    tvFetchAgree.setVisibility(View.GONE);
+//                    tvFetchMsg.setVisibility(View.INVISIBLE);
+//                    rlFetchVerify.setVisibility(View.GONE);
+//                }
             }
         });
         etPostVerify.addTextChangedListener(new TextWatcher() {
@@ -263,7 +295,6 @@ public class SaveFirstActivity extends BaseUrlView {
                     }
                 }
                 Bundle bundle = new Bundle();
-
                 bundle.putString(Constant.UserName, userName);
                 bundle.putString(Constant.PostPhone, postPhone);
                 bundle.putString(Constant.FetchPhone, fetchPhone);

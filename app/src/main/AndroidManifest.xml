@@ -32,15 +32,15 @@
             android:name="design_height_in_dp"
             android:value="600" />
 
-        <activity android:name=".activity.SaveSecondActivity" android:screenOrientation="landscape" />
-        <activity android:name=".activity.sender.SenderDeliverActivity" android:screenOrientation="landscape"/>
-        <activity android:name=".activity.sender.SenderDeliverSuccessActivity" android:screenOrientation="landscape"/>
-        <activity android:name=".activity.sender.SenderPickUpSuccessActivity" android:screenOrientation="landscape"/>
-        <activity android:name=".activity.sender.SenderDeliverAndBackActivity" android:screenOrientation="landscape"/>
-        <activity android:name=".activity.sender.SenderActivity" android:screenOrientation="landscape"/>
-        <activity android:name=".activity.SaveHelpActivity" android:screenOrientation="landscape"/>
-        <activity android:name=".activity.SaveHandActivity" android:screenOrientation="landscape"/>
-        <activity android:name=".activity.user.UserPickUpSuccessActivity" android:screenOrientation="landscape"/>
+        <activity android:name=".activity.SaveSecondActivity" android:screenOrientation="landscape" android:windowSoftInputMode="stateHidden"/>
+        <activity android:name=".activity.sender.SenderDeliverActivity" android:screenOrientation="landscape" android:windowSoftInputMode="stateHidden"/>
+        <activity android:name=".activity.sender.SenderDeliverSuccessActivity" android:screenOrientation="landscape" android:windowSoftInputMode="stateHidden"/>
+        <activity android:name=".activity.sender.SenderPickUpSuccessActivity" android:screenOrientation="landscape" android:windowSoftInputMode="stateHidden"/>
+        <activity android:name=".activity.sender.SenderDeliverAndBackActivity" android:screenOrientation="landscape" android:windowSoftInputMode="stateHidden"/>
+        <activity android:name=".activity.sender.SenderActivity" android:screenOrientation="landscape" android:windowSoftInputMode="stateHidden"/>
+        <activity android:name=".activity.SaveHelpActivity" android:screenOrientation="landscape" android:windowSoftInputMode="stateHidden"/>
+        <activity android:name=".activity.SaveHandActivity" android:screenOrientation="landscape" android:windowSoftInputMode="stateHidden"/>
+        <activity android:name=".activity.user.UserPickUpSuccessActivity" android:screenOrientation="landscape" android:windowSoftInputMode="stateHidden"/>
 
         <activity android:name=".activity.HomeActivity"
             android:screenOrientation="landscape">
@@ -50,13 +50,21 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activity.SenderPickUpActivity" android:screenOrientation="landscape"/>
+        <activity android:name=".activity.SenderPickUpActivity" android:screenOrientation="landscape" android:windowSoftInputMode="stateHidden"/>
 
-        <activity android:name=".activity.SaveDepositActivity" android:screenOrientation="landscape"/>
+        <activity android:name=".activity.SaveDepositActivity" android:screenOrientation="landscape" android:windowSoftInputMode="stateHidden"/>
 
-        <activity android:name=".activity.SaveFirstActivity" android:screenOrientation="landscape"/>
+        <activity android:name=".activity.SaveFirstActivity" android:screenOrientation="landscape" android:windowSoftInputMode="stateHidden"/>
 
         <receiver android:name=".activity.receiver.TimerReceiver"/>
+
+        <receiver android:name=".activity.receiver.BootCompletedReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </receiver>
 
         <service
             android:name="com.locker.manager.service.LockerIntentService"

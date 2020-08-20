@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.http_lib.utils.UserCacheHelper;
 import com.locker.manager.R;
 import com.locker.manager.activity.HomeActivity;
 import com.locker.manager.base.BaseUrlDialog;
@@ -43,6 +44,8 @@ public class BoxStateDialog extends BaseUrlDialog {
     TextView dialogFinisnTv;
     @BindView(R.id.dialog_goback_tv)
     TextView dialogGobackTv;
+    @BindView(R.id.tv_hot_phone)
+    TextView tvHotPhone;
 
     TimeCount timeCount = null;
 
@@ -56,6 +59,11 @@ public class BoxStateDialog extends BaseUrlDialog {
         super(context);
         mContext = context;
         setCanceledOnTouchOutside(false);
+
+        String hotPhone = UserCacheHelper.getHotPhone();
+        if(!TextUtils.isEmpty(hotPhone)){
+            tvHotPhone.setText(String.format("如有疑问，请致电客服：%s", hotPhone));
+        }
     }
 
     @Override

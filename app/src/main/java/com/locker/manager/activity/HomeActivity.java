@@ -1,8 +1,10 @@
 package com.locker.manager.activity;
 
 
+import android.os.Build;
 import android.os.Handler;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -11,6 +13,7 @@ import com.example.http_lib.bean.CreateDeviceQrcodeRequestBean;
 import com.example.http_lib.bean.HotPhoneRequestBean;
 import com.example.http_lib.bean.SystemNoticeRequestBean;
 import com.example.http_lib.response.NoticeBean;
+import com.example.http_lib.utils.UserCacheHelper;
 import com.locker.manager.R;
 import com.locker.manager.base.BaseUrlView;
 import com.locker.manager.command.CommandNewProtocol;
@@ -41,7 +44,8 @@ public class HomeActivity extends BaseUrlView implements SerialPortMessageListen
     TextView tvPhoneTip;
     @BindView(R.id.tv_notice)
     TextView tvNotice;
-
+    @BindView(R.id.tv_mac)
+    TextView tvMac;
 
     @Override
     protected int getView() {
@@ -50,27 +54,32 @@ public class HomeActivity extends BaseUrlView implements SerialPortMessageListen
 
     @Override
     public void init() {
-        setCurrentTime(tvTitle,System.currentTimeMillis());
+        setCurrentTime(tvTitle, System.currentTimeMillis());
 
+        ivLeft.setVisibility(View.VISIBLE);
+
+        tvMac.setText(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()));
         mPresenter.createDeviceQrcode(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()));
         mPresenter.hotPhone();
         mPresenter.getSystemNotice();
+        mPresenter.createDeviceBox(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()),   "14");
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    SerialPortOpenSDK.getInstance().send(
-                            new CommandProtocol.Builder()
-                                    .setCommand(CommandProtocol.COMMAND_SELECT_BOX_STATE)
-                                    .setCommandChannel(1)
-                                    .builder()
-                                    .getBytes());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        },500);
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    SerialPortOpenSDK.getInstance().send(
+//                            new CommandProtocol.Builder()
+//                                    .setCommand(CommandProtocol.COMMAND_SELECT_BOX_STATE)
+//                                    .setCommandChannel(1)
+//                                    .builder()
+//                                    .getBytes());
+//                    setTip("查询指令发送成功");
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }, 500);
 
 //        mPresenter.createDeviceBox(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()),"12");
 //
@@ -104,7 +113,7 @@ public class HomeActivity extends BaseUrlView implements SerialPortMessageListen
         SerialPortOpenSDK.getInstance().regirster(this);
     }
 
-    @OnClick({R.id.iv_left, R.id.tv_hand_save,R.id.tv_help})
+    @OnClick({R.id.iv_left, R.id.tv_hand_save, R.id.tv_help})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_left:
@@ -112,7 +121,7 @@ public class HomeActivity extends BaseUrlView implements SerialPortMessageListen
                     SerialPortOpenSDK.getInstance().send(
                             new CommandProtocol.Builder()
                                     .setCommand(CommandProtocol.COMMAND_OPEN)
-                                    .setCommandChannel(2)
+                                    .setCommandChannel(1)
                                     .builder()
                                     .getBytes());
                 } catch (Exception e) {
@@ -137,12 +146,12 @@ public class HomeActivity extends BaseUrlView implements SerialPortMessageListen
 //                    e.printStackTrace();
 //                }
 
-                byte[] bytes1 = new CommandNewProtocol.Builder().setCommand(CommandNewProtocol.COMMAND_SELECT_BOX_STATE).setCommandChannel(1).builder().getBytes();
-                try {
-                    SerialPortOpenSDK.getInstance().send(bytes1);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+//                byte[] bytes1 = new CommandNewProtocol.Builder().setCommand(CommandNewProtocol.COMMAND_SELECT_BOX_STATE).setCommandChannel(1).builder().getBytes();
+//                try {
+//                    SerialPortOpenSDK.getInstance().send(bytes1);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
 
                 break;
             case R.id.tv_hand_save:
@@ -163,12 +172,12 @@ public class HomeActivity extends BaseUrlView implements SerialPortMessageListen
 //        }
 
         CommandProtocol commandProtocol = new CommandProtocol.Builder().setBytes(data).parseMessage();
-        if(CommandProtocol.COMMAND_SELECT_DEPOSIT_STATE == commandProtocol.getCommand()){
+        if (CommandProtocol.COMMAND_SELECT_DEPOSIT_STATE == commandProtocol.getCommand()) {
             int boxNum = commandProtocol.getData().size();
-            LogUtils.e("boxNum:"+boxNum);
-            mPresenter.createDeviceBox(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()),boxNum+"");
+            LogUtils.e("boxNum:" + boxNum);
+            mPresenter.createDeviceBox(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()), boxNum + "");
         }
-        if(CommandProtocol.COMMAND_OPEN_RESPONSE == commandProtocol.getCommand()){
+        if (CommandProtocol.COMMAND_OPEN_RESPONSE == commandProtocol.getCommand()) {
             LogUtils.e("COMMAND_OPEN");
         }
     }
@@ -177,16 +186,17 @@ public class HomeActivity extends BaseUrlView implements SerialPortMessageListen
     @Override
     public void onResponse(boolean success, Class requestCls, ResponseBean responseBean) {
         super.onResponse(success, requestCls, responseBean);
-        if(success){
-            if(requestCls == CreateDeviceQrcodeRequestBean.class){
-                Picasso.with(this).load(responseBean.getData().replace("https","http")).into(ivQrcode);
+        if (success) {
+            if (requestCls == CreateDeviceQrcodeRequestBean.class) {
+                Picasso.with(this).load(responseBean.getData().replace("https", "http")).into(ivQrcode);
             }
-            if(requestCls == HotPhoneRequestBean.class){
-                tvPhoneTip.setText(String.format("客服热线：%s",responseBean.getData()));
+            if (requestCls == HotPhoneRequestBean.class) {
+                UserCacheHelper.setHotPhone(responseBean.getData());
+                tvPhoneTip.setText(String.format("客服热线：%s", responseBean.getData()));
             }
-            if(requestCls == SystemNoticeRequestBean.class){
+            if (requestCls == SystemNoticeRequestBean.class) {
                 List<NoticeBean> noticeBeans = JSON.parseArray(responseBean.getData(), NoticeBean.class);
-                if(noticeBeans!=null && noticeBeans.size()>0){
+                if (noticeBeans != null && noticeBeans.size() > 0) {
                     tvNotice.setText(noticeBeans.get(0).getTitle());
                 }
             }
