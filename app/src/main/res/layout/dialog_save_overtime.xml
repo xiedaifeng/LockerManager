@@ -18,12 +18,31 @@
         android:textSize="20sp"
         android:gravity="center"/>
 
+    <TextView
+        android:id="@+id/tv_price"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="￥0.01"
+        android:textColor="@color/color_333333"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:layout_marginTop="15dp"/>
+
     <ImageView
         android:id="@+id/iv_qrcode"
         android:layout_width="133dp"
         android:layout_height="133dp"
         android:src="@color/color_EEEEEE"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginTop="15dp"/>
+
+    <TextView
+        android:id="@+id/dialog_back_tv"
+        android:textSize="20dp"
+        android:layout_marginTop="15dp"
+        android:text="60后返回首页"
+        android:textColor="@color/color_0ED26B"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -35,7 +54,7 @@
             android:layout_width="130dp"
             android:layout_height="50dp"
             android:layout_below="@+id/tv_role_name"
-            android:text="已支付"
+            android:text="继续支付"
             android:textColor="@color/white"
             android:textSize="16sp"
             android:gravity="center"

@@ -2,6 +2,7 @@ package com.yidao.module_lib.utils;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -35,12 +36,14 @@ public class CustomToast {
         }
         mToastText.setText(content);
         mToast.setDuration(duration);
+        mToast.setGravity(Gravity.CENTER,0,0);
         mToast.show();
     }
 
     public void showToast(int resId,int duration){
         mToastText.setText(resId);
         mToast.setDuration(duration);
+        mToast.setGravity(Gravity.CENTER,0,0);
         mToast.show();
     }
 

@@ -374,20 +374,25 @@ public class SenderActivity extends BaseUrlView {
                     tvFetchAgree.setVisibility(View.VISIBLE);
 //                    tvFetchAgree.setText("发送验证码");
                 }
+                ToastUtil.showShortToast("非平台用户，需向对方手机发送验证码");
             }
             if (requestCls == CheckSmsRequestBean.class) {
                 if (TextUtils.equals("post", responseBean.getCarry().toString())) {
                     tvPostVerify.setVisibility(View.VISIBLE);
                     tvPostVerify.setText("验证失败");
                     isPostCheck = false;
+                    tvPostSend.setText("重新发送");
                 }
                 if (TextUtils.equals("fetch", responseBean.getCarry().toString())) {
                     tvFetchVerify.setVisibility(View.VISIBLE);
                     tvFetchVerify.setText("验证失败");
                     isFetchCheck = false;
+                    tvFetchAgree.setText("重新发送");
                 }
             }
-            ToastUtil.showShortToast(responseBean.getMessage());
+            if (requestCls != GetUserInfoByMobileRequestBean.class) {
+                ToastUtil.showShortToast(responseBean.getMessage());
+            }
         }
     }
 

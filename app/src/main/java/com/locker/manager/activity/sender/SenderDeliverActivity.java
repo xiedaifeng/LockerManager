@@ -44,7 +44,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 
-public class SenderDeliverActivity extends BaseUrlView {
+public class SenderDeliverActivity extends BaseUrlView implements SerialPortMessageListener{
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
@@ -87,6 +87,8 @@ public class SenderDeliverActivity extends BaseUrlView {
     @BindView(R.id.tv_count_down)
     TextView tvCountDown;
 
+    private SaveOverTimeDialog timeDialog = null;
+
     private List<View> mViews = new ArrayList<>();
 
     private String orderId;
@@ -124,6 +126,7 @@ public class SenderDeliverActivity extends BaseUrlView {
             }
         }
     };
+    private String money;
 
 
     @Override
@@ -157,6 +160,18 @@ public class SenderDeliverActivity extends BaseUrlView {
             public void onItemClick(int position, String str, int... i) {
             }
         });
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        SerialPortOpenSDK.getInstance().unregirster(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SerialPortOpenSDK.getInstance().regirster(this);
     }
 
     @OnClick({R.id.iv_left, R.id.iv_help, R.id.tv_last, R.id.tv_save, R.id.ll_small, R.id.ll_middle, R.id.ll_large})
@@ -197,7 +212,10 @@ public class SenderDeliverActivity extends BaseUrlView {
 
                     mHandler.sendEmptyMessageDelayed(countDownCode, 1000);
                 } else {
-                    SaveOverTimeDialog timeDialog = new SaveOverTimeDialog(getCtx(), opencode);
+
+                    if(timeDialog == null){
+                        timeDialog = new SaveOverTimeDialog(getCtx(), opencode,money);
+                    }
                     timeDialog.hidePayView();
                     timeDialog.setTvTitle("包裹订单创建成功\n请扫描下方二维码支付寄存包裹");
                     timeDialog.show();
@@ -276,9 +294,17 @@ public class SenderDeliverActivity extends BaseUrlView {
                 OrderInfoBean orderInfoBean = JSON.parseObject(responseBean.getData(), OrderInfoBean.class);
                 opencode = orderInfoBean.getOpencode();
                 orderId = orderInfoBean.getId();
+                money = orderInfoBean.getMoney();
                 LockerApplication.sOrderId = orderId;
 
-                SaveOverTimeDialog timeDialog = new SaveOverTimeDialog(getCtx(), opencode);
+                if(TextUtils.isEmpty(money) || Float.parseFloat(money)<=0f){
+                    openBoxByOpencode(opencode);
+                    return;
+                }
+
+                if(timeDialog == null){
+                    timeDialog = new SaveOverTimeDialog(getCtx(), opencode,money);
+                }
                 timeDialog.hidePayView();
                 timeDialog.setTvTitle("包裹订单创建成功\n请扫描下方二维码支付寄存包裹");
                 timeDialog.show();
@@ -288,17 +314,33 @@ public class SenderDeliverActivity extends BaseUrlView {
         }
     }
 
-//    @Override
-//    public void onMessage(int error, String errorMessage, byte[] data) throws Exception {
-//        CommandProtocol commandProtocol = new CommandProtocol.Builder().setBytes(data).parseMessage();
-//        if(CommandProtocol.COMMAND_OPEN_RESPONSE == commandProtocol.getCommand()){
-//                mPresenter.getOrderInfo(orderId);
-////                 TODO: 2020/7/3 判断付费、免费和付费成功自动跳转
-//                Bundle bundle = new Bundle();
-//                bundle.putString(Constant.OrderInfoKey,orderId);
-//                skipActivity(SenderDeliverSuccessActivity.class,bundle);
-//        }
-//    }
+    @Override
+    public void onMessage(int error, String errorMessage, byte[] data) throws Exception {
+        CommandProtocol commandProtocol = new CommandProtocol.Builder().setBytes(data).parseMessage();
+        if(CommandProtocol.COMMAND_OPEN_RESPONSE == commandProtocol.getCommand()){
+                Bundle bundle = new Bundle();
+                bundle.putString(Constant.OrderInfoKey,orderId);
+                skipActivity(SenderDeliverSuccessActivity.class,bundle);
+        }
+    }
+
+    private void openBoxByOpencode(String opencode){
+        if (TextUtils.isEmpty(opencode)||opencode.length()<=1){
+            ToastUtil.showShortToast("取件码有误");
+            return;
+        }
+        String boxno = opencode.substring(0,2);
+        try {
+            SerialPortOpenSDK.getInstance().send(
+                    new CommandProtocol.Builder()
+                            .setCommand(CommandProtocol.COMMAND_OPEN)
+                            .setCommandChannel(boxno)
+                            .builder()
+                            .getBytes());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     protected void onDestroy() {

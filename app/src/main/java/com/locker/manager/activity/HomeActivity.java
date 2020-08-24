@@ -1,26 +1,24 @@
 package com.locker.manager.activity;
 
 
-import android.os.Build;
-import android.os.Handler;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.example.http_lib.bean.CreateDeviceQrcodeRequestBean;
+import com.example.http_lib.bean.DeviceInfoRequestBean;
 import com.example.http_lib.bean.HotPhoneRequestBean;
 import com.example.http_lib.bean.SystemNoticeRequestBean;
 import com.example.http_lib.response.NoticeBean;
 import com.example.http_lib.utils.UserCacheHelper;
 import com.locker.manager.R;
 import com.locker.manager.base.BaseUrlView;
-import com.locker.manager.command.CommandNewProtocol;
 import com.locker.manager.command.CommandProtocol;
-import com.locker.manager.dialog.SaveOverTimeDialog;
 import com.qiao.serialport.SerialPortOpenSDK;
 import com.qiao.serialport.listener.SerialPortMessageListener;
 import com.squareup.picasso.Picasso;
@@ -62,10 +60,12 @@ public class HomeActivity extends BaseUrlView implements SerialPortMessageListen
 
         ivLeft.setVisibility(View.VISIBLE);
 
-        tvMac.setText(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()));
-        mPresenter.createDeviceQrcode(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()));
+        String mac = PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx());
+        tvMac.setText(mac);
+        mPresenter.createDeviceQrcode(mac);
         mPresenter.hotPhone();
         mPresenter.getSystemNotice();
+        mPresenter.getDeviceInfo(mac);
 //        mPresenter.createDeviceBox(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()),   "14");
 
 //        new Handler().postDelayed(new Runnable() {
@@ -207,10 +207,13 @@ public class HomeActivity extends BaseUrlView implements SerialPortMessageListen
                     notice.setText(noticeBeans.get(i).getTitle());
                     filpper.addView(view);
                 }
-
-//                if (noticeBeans != null && noticeBeans.size() > 0) {
-//                    tvNotice.setText(noticeBeans.get(0).getTitle());
-//                }
+            }
+            if(requestCls == DeviceInfoRequestBean.class){
+                JSONObject object = JSON.parseObject(responseBean.getData());
+                String device_address = object.getString("device_address");
+                if(!TextUtils.isEmpty(device_address)){
+                    tvMac.setText(device_address);
+                }
             }
         }
     }

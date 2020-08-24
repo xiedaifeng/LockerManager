@@ -3,7 +3,9 @@ package com.locker.manager.activity.sender;
 import android.annotation.SuppressLint;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -39,10 +41,12 @@ public class SenderDeliverSuccessActivity extends BaseUrlView {
     TextView tvPhone;
     @BindView(R.id.tv_tip)
     TextView tvTip;
+    @BindView(R.id.ll_tip)
+    LinearLayout llTip;
 
     private final int countDownCode = 0x110;
 
-    private int countDownTime = 60;
+    private int countDownTime = 30;
 
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler(){
@@ -95,7 +99,6 @@ public class SenderDeliverSuccessActivity extends BaseUrlView {
             case R.id.tv_hand_continue:
                 ViewManager.getInstance().finishAllView();
                 skipActivity(SaveSecondActivity.class);
-//                skipActivity(SenderDeliverAndBackActivity.class);
                 break;
         }
     }
@@ -106,9 +109,18 @@ public class SenderDeliverSuccessActivity extends BaseUrlView {
         if(success){
             if(requestCls == GetOrderInfoRequestBean.class){
                 OrderInfoBean orderInfoBean = JSON.parseObject(responseBean.getData(), OrderInfoBean.class);
+
+                String postPhone = orderInfoBean.getCun_phone();
+                String fetchPhone = orderInfoBean.getQu_phone();
+                if(TextUtils.equals(postPhone,fetchPhone)){
+                    llTip.setVisibility(View.VISIBLE);
+                } else {
+                    llTip.setVisibility(View.GONE);
+                }
+
                 tvCaseState.setText(String.format(tvCaseState.getText().toString(),orderInfoBean.getBoxno()));
                 tvOrderNo.setText(String.format(tvOrderNo.getText().toString(),orderInfoBean.getOrder_no()));
-                tvPhone.setText(String.format(tvPhone.getText().toString(),orderInfoBean.getQu_phone()));
+                tvPhone.setText(String.format(tvPhone.getText().toString(),fetchPhone));
                 tvTip.setText(String.format(tvTip.getText().toString(),orderInfoBean.getOpencode()));
             }
         } else {
