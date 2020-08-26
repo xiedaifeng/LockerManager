@@ -224,10 +224,11 @@ public class CommonPresenter extends BasePressPlus {
     /**
      *  退回
      */
-    public void backOrder(String device_id,String opencode){
+    public void backOrder(String device_id,String opencode,String id){
         BackOrderRequestBean requestBean = new BackOrderRequestBean();
         requestBean.device_id = device_id;
         requestBean.opencode = opencode;
+        requestBean.id = id;
         mCommomModel.setBean(requestBean);
         mCommomModel.request(false);
     }

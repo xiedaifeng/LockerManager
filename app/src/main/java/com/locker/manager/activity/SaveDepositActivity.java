@@ -95,6 +95,8 @@ public class SaveDepositActivity extends BaseUrlView implements SerialPortMessag
 
     private int mPosition = 0;
 
+    private int mChoosePosition = 0;
+
     private int smallBoxNum = 0;
     private int middleBoxNum = 0;
     private int largeBoxNum = 0;
@@ -197,8 +199,11 @@ public class SaveDepositActivity extends BaseUrlView implements SerialPortMessag
                     ToastUtil.showShortToast("暂无相应型号的箱子可用");
                     return;
                 }
-                if(TextUtils.isEmpty(opencode)){
+                if(TextUtils.isEmpty(opencode) && mChoosePosition!=mPosition){
                     String boxSize = mPosition == 0 ? "small" : mPosition == 1 ? "medium" : "big";
+
+                    mChoosePosition = mPosition;
+
                     CreateOrderRequestBean requestBean = new CreateOrderRequestBean();
                     requestBean.cun_phone = postPhone;
                     requestBean.qu_phone = fetchPhone;
@@ -206,11 +211,10 @@ public class SaveDepositActivity extends BaseUrlView implements SerialPortMessag
                     requestBean.boxsize = boxSize;
                     mPresenter.createOrder(requestBean);
                 } else {
-//                    mPresenter.getOrderInfo(orderId);
-
                     if(timeDialog == null){
                         timeDialog = new SaveOverTimeDialog(getCtx(), opencode,money);
                     }
+                    timeDialog.setPrice(money);
                     timeDialog.hidePayView();
                     timeDialog.setTvTitle("包裹订单创建成功\n请扫描下方二维码支付寄存包裹");
                     timeDialog.show();
@@ -230,7 +234,7 @@ public class SaveDepositActivity extends BaseUrlView implements SerialPortMessag
         }
     }
 
-    private void chooseCase(int position) {
+    private int chooseCase(int position) {
         mPosition = position;
         for (int i = 0; i < mViews.size(); i++) {
             mViews.get(i).setSelected(position == i);
@@ -248,6 +252,7 @@ public class SaveDepositActivity extends BaseUrlView implements SerialPortMessag
         tvLargeSize.setTextColor(getCtx().getResources().getColor(position == 2 ? R.color.color_0ED26B : R.color.color_999999));
         tvLargeRemain.setTextColor(getCtx().getResources().getColor(position == 2 ? R.color.color_0ED26B : R.color.color_999999));
 
+        return mPosition;
     }
 
     @Override
@@ -296,6 +301,7 @@ public class SaveDepositActivity extends BaseUrlView implements SerialPortMessag
                 if(timeDialog == null){
                     timeDialog = new SaveOverTimeDialog(getCtx(), opencode, money);
                 }
+                timeDialog.setPrice(money);
                 timeDialog.hidePayView();
                 timeDialog.setTvTitle("包裹订单创建成功\n请扫描下方二维码支付寄存包裹");
                 timeDialog.show();

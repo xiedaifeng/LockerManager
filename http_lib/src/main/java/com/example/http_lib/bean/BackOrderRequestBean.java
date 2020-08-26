@@ -14,5 +14,6 @@ public class BackOrderRequestBean extends BaseBean {
 
     public String device_id;  //
     public String opencode;  //
+    public String id;  //
 
 }

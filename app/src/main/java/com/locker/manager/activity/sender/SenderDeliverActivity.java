@@ -100,6 +100,7 @@ public class SenderDeliverActivity extends BaseUrlView implements SerialPortMess
     private String userName;
 
     private int mPosition = 0;
+    private int mChoosePosition = 0;
 
     private int smallBoxNum = 0;
     private int middleBoxNum = 0;
@@ -200,8 +201,11 @@ public class SenderDeliverActivity extends BaseUrlView implements SerialPortMess
                     ToastUtil.showShortToast("暂无相应型号的箱子可用");
                     return;
                 }
-                if (TextUtils.isEmpty(opencode)) {
+                if (TextUtils.isEmpty(opencode) && mChoosePosition!=mPosition) {
                     String boxSize = mPosition == 0 ? "small" : mPosition == 1 ? "medium" : "big";
+
+                    mChoosePosition = mPosition;
+
                     CreateOrderRequestBean requestBean = new CreateOrderRequestBean();
                     requestBean.cun_phone = postPhone;
                     requestBean.qu_phone = fetchPhone;
@@ -216,6 +220,7 @@ public class SenderDeliverActivity extends BaseUrlView implements SerialPortMess
                     if(timeDialog == null){
                         timeDialog = new SaveOverTimeDialog(getCtx(), opencode,money);
                     }
+                    timeDialog.setPrice(money);
                     timeDialog.hidePayView();
                     timeDialog.setTvTitle("包裹订单创建成功\n请扫描下方二维码支付寄存包裹");
                     timeDialog.show();
@@ -305,6 +310,7 @@ public class SenderDeliverActivity extends BaseUrlView implements SerialPortMess
                 if(timeDialog == null){
                     timeDialog = new SaveOverTimeDialog(getCtx(), opencode,money);
                 }
+                timeDialog.setPrice(money);
                 timeDialog.hidePayView();
                 timeDialog.setTvTitle("包裹订单创建成功\n请扫描下方二维码支付寄存包裹");
                 timeDialog.show();

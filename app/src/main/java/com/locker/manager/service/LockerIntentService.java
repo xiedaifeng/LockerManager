@@ -69,6 +69,8 @@ public class LockerIntentService extends GTIntentService implements SerialPortMe
         JSONObject object = JSON.parseObject(payload);
         String order_id = object.getString("order_id");
 
+        ToastUtil.showLongToast("收到推送过来的内容：" + payload);
+
         GetOrderInfoRequestBean requestBean = new GetOrderInfoRequestBean();
         requestBean.order_id = order_id;
         HttpClient.request(requestBean, false, new IHttpCallBack() {

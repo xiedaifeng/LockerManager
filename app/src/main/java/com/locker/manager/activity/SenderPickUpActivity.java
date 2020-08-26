@@ -56,6 +56,9 @@ public class SenderPickUpActivity extends BaseUrlView implements SerialPortMessa
 
     private SaveOverTimeDialog timeDialog = null;
     private String post_no;
+    private String orderId;
+
+    private float money;
 
     @Override
     protected int getView() {
@@ -148,7 +151,7 @@ public class SenderPickUpActivity extends BaseUrlView implements SerialPortMessa
 
                         @Override
                         public void getBack(String openBoxId) {
-                            mPresenter.backOrder(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()), etPostPhone.getText().toString());
+                            mPresenter.backOrder(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()), etPostPhone.getText().toString(),orderId);
                         }
                     });
                     dialog.show();
@@ -163,7 +166,7 @@ public class SenderPickUpActivity extends BaseUrlView implements SerialPortMessa
                 String code = responseBean.getData();
                 if (TextUtils.equals("1", code)) { //超时请支付费用
                     if (timeDialog == null) {
-                        timeDialog = new SaveOverTimeDialog(getCtx(), etPostPhone.getText().toString());
+                        timeDialog = new SaveOverTimeDialog(getCtx(), etPostPhone.getText().toString(),money+"");
                     }
                     timeDialog.hidePayView();
                     timeDialog.show();
@@ -179,6 +182,10 @@ public class SenderPickUpActivity extends BaseUrlView implements SerialPortMessa
             if (requestCls == GetOrderInfoByCodeRequestBean.class) {
                 OrderInfoBean orderInfoBean = JSON.parseObject(responseBean.getData(), OrderInfoBean.class);
                 post_no = orderInfoBean.getPost_no();
+                orderId = orderInfoBean.getId();
+                String chao_hour = orderInfoBean.getChao_hour();
+                String chao_money = orderInfoBean.getChao_money();
+                money = Float.parseFloat(chao_hour)*Float.parseFloat(chao_money);
                 mPresenter.getDeviceBoxTimeStatus(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()), etPostPhone.getText().toString());
             }
         } else {

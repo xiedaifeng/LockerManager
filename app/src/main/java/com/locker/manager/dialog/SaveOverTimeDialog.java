@@ -64,6 +64,10 @@ public class SaveOverTimeDialog extends BaseUrlDialog {
         mPresenter.getPayQrCode(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(mContext),opencode);
     }
 
+    public void setPrice(String price){
+        tvPrice.setText(String.format("￥%s",price));
+    }
+
     @Override
     public void setOnDismissListener(OnDismissListener listener) {
         super.setOnDismissListener(listener);
