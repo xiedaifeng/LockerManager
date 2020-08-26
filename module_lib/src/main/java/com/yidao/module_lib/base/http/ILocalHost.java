@@ -51,6 +51,8 @@ public interface ILocalHost {
 
     String systemNoticeInfo = "/Apiindex/get_notice_list";  //系统通知详情
 
+    String getOrderInfoByCode = "/Apiorder/get_order_info_by_code";  //根据取件码获取订单详情
+
 
 
 

@@ -10,6 +10,7 @@ import com.example.http_lib.bean.DeviceBoxInfoRequestBean;
 import com.example.http_lib.bean.DeviceBoxTimeStatusRequestBean;
 import com.example.http_lib.bean.DeviceInfoRequestBean;
 import com.example.http_lib.bean.GetAllBoxDetailRequestBean;
+import com.example.http_lib.bean.GetOrderInfoByCodeRequestBean;
 import com.example.http_lib.bean.GetOrderInfoByPostNoRequestBean;
 import com.example.http_lib.bean.GetOrderInfoRequestBean;
 import com.example.http_lib.bean.GetUserInfoByMobileRequestBean;
@@ -247,6 +248,19 @@ public class CommonPresenter extends BasePressPlus {
      */
     public void getSystemNotice(){
         SystemNoticeRequestBean requestBean = new SystemNoticeRequestBean();
+        mCommomModel.setBean(requestBean);
+        mCommomModel.request(false);
+    }
+
+
+
+    /**根据取件码获取订单详情
+     *
+     */
+    public void getOrderInfoByCode(String device_id,String opencode){
+        GetOrderInfoByCodeRequestBean requestBean = new GetOrderInfoByCodeRequestBean();
+        requestBean.device_id = device_id;
+        requestBean.opencode = opencode;
         mCommomModel.setBean(requestBean);
         mCommomModel.request(false);
     }

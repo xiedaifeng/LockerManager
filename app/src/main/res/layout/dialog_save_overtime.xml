@@ -22,7 +22,6 @@
         android:id="@+id/tv_price"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="￥0.01"
         android:textColor="@color/color_333333"
         android:textSize="20sp"
         android:gravity="center"
