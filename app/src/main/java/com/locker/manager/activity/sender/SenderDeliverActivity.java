@@ -100,7 +100,7 @@ public class SenderDeliverActivity extends BaseUrlView implements SerialPortMess
     private String userName;
 
     private int mPosition = 0;
-    private int mChoosePosition = 0;
+    private int mChoosePosition = -1;
 
     private int smallBoxNum = 0;
     private int middleBoxNum = 0;
@@ -201,7 +201,7 @@ public class SenderDeliverActivity extends BaseUrlView implements SerialPortMess
                     ToastUtil.showShortToast("暂无相应型号的箱子可用");
                     return;
                 }
-                if (TextUtils.isEmpty(opencode) && mChoosePosition!=mPosition) {
+                if (TextUtils.isEmpty(opencode) || mChoosePosition!=mPosition) {
                     String boxSize = mPosition == 0 ? "small" : mPosition == 1 ? "medium" : "big";
 
                     mChoosePosition = mPosition;

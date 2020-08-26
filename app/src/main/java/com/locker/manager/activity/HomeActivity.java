@@ -66,7 +66,8 @@ public class HomeActivity extends BaseUrlView implements SerialPortMessageListen
         mPresenter.hotPhone();
         mPresenter.getSystemNotice();
         mPresenter.getDeviceInfo(mac);
-//        mPresenter.createDeviceBox(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()),   "14");
+
+//        mPresenter.createDeviceBox(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()),   "12");
 
 //        new Handler().postDelayed(new Runnable() {
 //            @Override

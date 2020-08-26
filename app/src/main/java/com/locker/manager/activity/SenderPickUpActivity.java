@@ -136,7 +136,7 @@ public class SenderPickUpActivity extends BaseUrlView implements SerialPortMessa
             if (requestCls == OpenDeviceBoxRequestBean.class) {
 //                OrderInfoBean orderInfoBean = JSON.parseObject(responseBean.getData(), OrderInfoBean.class);
 
-                openBoxByOpencode();
+//                openBoxByOpencode();
 
                 if (!TextUtils.isEmpty(post_no)) { //post_no不为空即为快递员包裹   为空为其他包裹
 
@@ -148,7 +148,6 @@ public class SenderPickUpActivity extends BaseUrlView implements SerialPortMessa
                         @Override
                         public void openBox(String openBoxId) {
                         }
-
                         @Override
                         public void getBack(String openBoxId) {
                             mPresenter.backOrder(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()), etPostPhone.getText().toString(),orderId);
