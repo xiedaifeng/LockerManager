@@ -135,7 +135,7 @@ public class SenderPickUpActivity extends BaseUrlView implements SerialPortMessa
 
                 openBoxByOpencode();
 
-                if (!TextUtils.isEmpty(post_no)) {
+                if (!TextUtils.isEmpty(post_no)) { //post_no不为空即为快递员包裹   为空为其他包裹
 
                     if (dialog == null) {
                         dialog = new BoxStateDialog(this);
