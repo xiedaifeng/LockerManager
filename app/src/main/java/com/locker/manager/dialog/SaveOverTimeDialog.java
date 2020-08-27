@@ -116,8 +116,10 @@ public class SaveOverTimeDialog extends BaseUrlDialog {
                 dismiss();
                 String text = tvExit.getText().toString();
                 if(TextUtils.equals("返回首页",text)){
-                    ViewManager.getInstance().finishAllView();
-                    skipActivity(HomeActivity.class);
+//                    ViewManager.getInstance().finishAllView();
+//                    skipActivity(HomeActivity.class);
+
+                    ViewManager.getInstance().finishOthersView(HomeActivity.class);
                 }
                 break;
         }

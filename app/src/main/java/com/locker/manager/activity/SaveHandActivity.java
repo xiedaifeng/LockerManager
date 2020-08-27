@@ -33,8 +33,10 @@ public class SaveHandActivity extends BaseUrlView {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_left:
-                ViewManager.getInstance().finishAllView();
-                skipActivity(HomeActivity.class);
+//                ViewManager.getInstance().finishAllView();
+//                skipActivity(HomeActivity.class);
+
+                ViewManager.getInstance().finishOthersView(HomeActivity.class);
                 break;
             case R.id.rl_parcel:
                 skipActivity(SaveSecondActivity.class);

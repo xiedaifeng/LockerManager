@@ -121,8 +121,10 @@ public class SenderDeliverActivity extends BaseUrlView implements SerialPortMess
                 if (countDownTime > 0) {
                     mHandler.sendEmptyMessageDelayed(countDownCode, 1000);
                 } else {
-                    ViewManager.getInstance().finishAllView();
-                    skipActivity(HomeActivity.class);
+//                    ViewManager.getInstance().finishAllView();
+//                    skipActivity(HomeActivity.class);
+
+                    ViewManager.getInstance().finishOthersView(HomeActivity.class);
                 }
             }
         }
@@ -161,6 +163,8 @@ public class SenderDeliverActivity extends BaseUrlView implements SerialPortMess
             public void onItemClick(int position, String str, int... i) {
             }
         });
+
+        mHandler.sendEmptyMessageDelayed(countDownCode, 1000);
     }
 
     @Override
@@ -179,8 +183,10 @@ public class SenderDeliverActivity extends BaseUrlView implements SerialPortMess
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_left:
-                ViewManager.getInstance().finishAllView();
-                skipActivity(HomeActivity.class);
+//                ViewManager.getInstance().finishAllView();
+//                skipActivity(HomeActivity.class);
+
+                ViewManager.getInstance().finishOthersView(HomeActivity.class);
                 break;
             case R.id.iv_help:
                 skipActivity(SaveHelpActivity.class);
@@ -213,8 +219,6 @@ public class SenderDeliverActivity extends BaseUrlView implements SerialPortMess
                     requestBean.boxsize = boxSize;
                     requestBean.post_no = TextUtils.isEmpty(postNo) ? "123456" : postNo;
                     mPresenter.createOrder(requestBean);
-
-                    mHandler.sendEmptyMessageDelayed(countDownCode, 1000);
                 } else {
 
                     if(timeDialog == null){

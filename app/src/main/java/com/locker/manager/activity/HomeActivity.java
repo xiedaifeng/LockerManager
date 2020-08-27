@@ -22,6 +22,7 @@ import com.locker.manager.command.CommandProtocol;
 import com.qiao.serialport.SerialPortOpenSDK;
 import com.qiao.serialport.listener.SerialPortMessageListener;
 import com.squareup.picasso.Picasso;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.yidao.module_lib.base.http.ResponseBean;
 import com.yidao.module_lib.utils.LogUtils;
 import com.yidao.module_lib.utils.PhoneInfoUtils;
@@ -122,16 +123,18 @@ public class HomeActivity extends BaseUrlView implements SerialPortMessageListen
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_left:
-                try {
-                    SerialPortOpenSDK.getInstance().send(
-                            new CommandProtocol.Builder()
-                                    .setCommand(CommandProtocol.COMMAND_OPEN)
-                                    .setCommandChannel(1)
-                                    .builder()
-                                    .getBytes());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    SerialPortOpenSDK.getInstance().send(
+//                            new CommandProtocol.Builder()
+//                                    .setCommand(CommandProtocol.COMMAND_OPEN)
+//                                    .setCommandChannel(1)
+//                                    .builder()
+//                                    .getBytes());
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+
+//                CrashReport.testJavaCrash();
 
 //                try {
 //                    SerialPortOpenSDK.getInstance().send(

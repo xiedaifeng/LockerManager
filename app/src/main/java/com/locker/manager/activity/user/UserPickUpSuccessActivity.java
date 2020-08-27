@@ -52,8 +52,10 @@ public class UserPickUpSuccessActivity extends BaseUrlView implements SerialPort
                 if (countDownTime > 0) {
                     mHandler.sendEmptyMessageDelayed(countDownCode, 1000);
                 } else {
-                    ViewManager.getInstance().finishAllView();
-                    skipActivity(HomeActivity.class);
+//                    ViewManager.getInstance().finishAllView();
+//                    skipActivity(HomeActivity.class);
+
+                    ViewManager.getInstance().finishOthersView(HomeActivity.class);
                 }
             }
         }
@@ -108,16 +110,23 @@ public class UserPickUpSuccessActivity extends BaseUrlView implements SerialPort
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_left:
-                ViewManager.getInstance().finishAllView();
-                skipActivity(HomeActivity.class);
+//                ViewManager.getInstance().finishAllView();
+//                skipActivity(HomeActivity.class);
+//
+
+                ViewManager.getInstance().finishOthersView(HomeActivity.class);
                 break;
             case R.id.tv_pick_success:
-                ViewManager.getInstance().finishAllView();
+//                ViewManager.getInstance().finishAllView();
+
+                ViewManager.getInstance().finishOthersView(HomeActivity.class);
                 skipActivity(SenderPickUpActivity.class);
                 break;
             case R.id.tv_hand_continue:
-                ViewManager.getInstance().finishAllView();
-                skipActivity(HomeActivity.class);
+//                ViewManager.getInstance().finishAllView();
+//                skipActivity(HomeActivity.class);
+
+                ViewManager.getInstance().finishOthersView(HomeActivity.class);
                 break;
         }
     }

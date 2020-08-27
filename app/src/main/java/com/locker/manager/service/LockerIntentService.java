@@ -16,6 +16,7 @@ import com.igexin.sdk.PushManager;
 import com.igexin.sdk.message.GTCmdMessage;
 import com.igexin.sdk.message.GTNotificationMessage;
 import com.igexin.sdk.message.GTTransmitMessage;
+import com.locker.manager.activity.HomeActivity;
 import com.locker.manager.activity.sender.SenderDeliverSuccessActivity;
 import com.locker.manager.app.Constant;
 import com.locker.manager.app.LockerApplication;
@@ -90,7 +91,7 @@ public class LockerIntentService extends GTIntentService implements SerialPortMe
                     e.printStackTrace();
                 }
                 if (TextUtils.equals(order_id, LockerApplication.sOrderId)) {
-                    ViewManager.getInstance().finishAllView();
+                    ViewManager.getInstance().finishOthersView(HomeActivity.class);
                     Intent intent = new Intent(LockerApplication.getApplication(), SenderDeliverSuccessActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.putExtra(Constant.OrderInfoKey, order_id);

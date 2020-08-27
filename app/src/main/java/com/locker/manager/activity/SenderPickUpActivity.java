@@ -111,8 +111,10 @@ public class SenderPickUpActivity extends BaseUrlView implements SerialPortMessa
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_left:
-                ViewManager.getInstance().finishAllView();
-                skipActivity(HomeActivity.class);
+//                ViewManager.getInstance().finishAllView();
+//                skipActivity(HomeActivity.class);
+
+                ViewManager.getInstance().finishOthersView(HomeActivity.class);
                 break;
             case R.id.tv_next:
                 String code = etPostPhone.getText().toString();
@@ -182,8 +184,8 @@ public class SenderPickUpActivity extends BaseUrlView implements SerialPortMessa
                 OrderInfoBean orderInfoBean = JSON.parseObject(responseBean.getData(), OrderInfoBean.class);
                 post_no = orderInfoBean.getPost_no();
                 orderId = orderInfoBean.getId();
-                String chao_hour = orderInfoBean.getChao_hour();
-                String chao_money = orderInfoBean.getChao_money();
+                String chao_hour = TextUtils.isEmpty(orderInfoBean.getChao_hour())?"0":orderInfoBean.getChao_hour();
+                String chao_money = TextUtils.isEmpty(orderInfoBean.getChao_money())?"0":orderInfoBean.getChao_money();
                 money = Float.parseFloat(chao_hour)*Float.parseFloat(chao_money);
                 mPresenter.getDeviceBoxTimeStatus(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()), etPostPhone.getText().toString());
             }

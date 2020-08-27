@@ -252,8 +252,10 @@ public class SenderActivity extends BaseUrlView {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_left:
-                ViewManager.getInstance().finishAllView();
-                skipActivity(HomeActivity.class);
+//                ViewManager.getInstance().finishAllView();
+//                skipActivity(HomeActivity.class);
+
+                ViewManager.getInstance().finishOthersView(HomeActivity.class);
                 break;
             case R.id.tv_next:
                 String postPhone = etPostPhone.getText().toString();

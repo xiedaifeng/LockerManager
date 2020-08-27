@@ -54,8 +54,10 @@ public class SenderPickUpSuccessActivity extends BaseUrlView {
                 if (countDownTime > 0) {
                     mHandler.sendEmptyMessageDelayed(countDownCode, 1000);
                 } else {
-                    ViewManager.getInstance().finishAllView();
-                    skipActivity(HomeActivity.class);
+//                    ViewManager.getInstance().finishAllView();
+//                    skipActivity(HomeActivity.class);
+
+                    ViewManager.getInstance().finishOthersView(HomeActivity.class);
                 }
             }
         }
@@ -82,16 +84,21 @@ public class SenderPickUpSuccessActivity extends BaseUrlView {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_left:
-                ViewManager.getInstance().finishAllView();
-                skipActivity(HomeActivity.class);
+//                ViewManager.getInstance().finishAllView();
+//                skipActivity(HomeActivity.class);
+
+                ViewManager.getInstance().finishOthersView(HomeActivity.class);
                 break;
             case R.id.tv_pick_success:
                 // TODO: 2020/7/13 倒计时结束或者柜门关闭都返回首页 
-                ViewManager.getInstance().finishAllView();
-                skipActivity(HomeActivity.class);
+//                ViewManager.getInstance().finishAllView();
+//                skipActivity(HomeActivity.class);
+
+                ViewManager.getInstance().finishOthersView(HomeActivity.class);
                 break;
             case R.id.tv_hand_continue:
-                ViewManager.getInstance().finishAllView();
+//                ViewManager.getInstance().finishAllView();
+                ViewManager.getInstance().finishOthersView(HomeActivity.class);
                 skipActivity(SaveSecondActivity.class);
                 break;
         }

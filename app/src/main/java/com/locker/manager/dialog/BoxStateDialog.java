@@ -123,10 +123,12 @@ public class BoxStateDialog extends BaseUrlDialog {
                 break;
             case R.id.dialog_finisn_tv:
             case R.id.dialog_close_btn:
-                ViewManager.getInstance().finishAllView();
-                Intent intent1 = new Intent(mContext, HomeActivity.class);
-                mContext.startActivity(intent1);
+//                ViewManager.getInstance().finishAllView();
+//                Intent intent1 = new Intent(mContext, HomeActivity.class);
+//                mContext.startActivity(intent1);
+
                 SoftKeyboardUtil.hideSoftKeyboard((Activity) mContext);
+                ViewManager.getInstance().finishOthersView(HomeActivity.class);
                 break;
         }
     }
@@ -150,9 +152,11 @@ public class BoxStateDialog extends BaseUrlDialog {
         @Override
         public void onFinish() {
             dismiss();
-            ViewManager.getInstance().finishAllView();
-            Intent intent1 = new Intent(mContext, HomeActivity.class);
-            mContext.startActivity(intent1);
+//            ViewManager.getInstance().finishAllView();
+//            Intent intent1 = new Intent(mContext, HomeActivity.class);
+//            mContext.startActivity(intent1);
+
+            ViewManager.getInstance().finishOthersView(HomeActivity.class);
             SoftKeyboardUtil.hideSoftKeyboard((Activity) mContext);
         }
     }

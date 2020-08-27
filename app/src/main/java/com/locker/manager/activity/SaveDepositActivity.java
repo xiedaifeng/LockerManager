@@ -118,8 +118,10 @@ public class SaveDepositActivity extends BaseUrlView implements SerialPortMessag
                 if (countDownTime > 0) {
                     mHandler.sendEmptyMessageDelayed(countDownCode, 1000);
                 } else {
-                    ViewManager.getInstance().finishAllView();
-                    skipActivity(HomeActivity.class);
+//                    ViewManager.getInstance().finishAllView();
+//                    skipActivity(HomeActivity.class);
+
+                    ViewManager.getInstance().finishOthersView(HomeActivity.class);
                 }
             }
         }
@@ -177,8 +179,10 @@ public class SaveDepositActivity extends BaseUrlView implements SerialPortMessag
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_left:
-                ViewManager.getInstance().finishAllView();
-                skipActivity(HomeActivity.class);
+//                ViewManager.getInstance().finishAllView();
+//                skipActivity(HomeActivity.class);
+
+                ViewManager.getInstance().finishOthersView(HomeActivity.class);
                 break;
             case R.id.iv_help:
                 skipActivity(SaveHelpActivity.class);

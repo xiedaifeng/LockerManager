@@ -59,5 +59,6 @@ public interface ILocalHost {
 
 
 
-    String myHostUrl = "http://txe.ralfqbk.xyz/index.php?s=";
+//    String myHostUrl = "http://txe.ralfqbk.xyz/index.php?s=";
+    String myHostUrl = "http://www.tan1688.com/index.php?s=";
 }

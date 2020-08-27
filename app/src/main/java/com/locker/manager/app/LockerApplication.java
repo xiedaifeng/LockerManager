@@ -2,28 +2,21 @@ package com.locker.manager.app;
 
 import android.app.ActivityManager;
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.model.GlideUrl;
-import com.example.http_lib.HttpClient;
-import com.example.http_lib.bean.CreateDeviceRequestBean;
 import com.igexin.sdk.IUserLoggerInterface;
 import com.igexin.sdk.PushManager;
 import com.locker.manager.task.ImageDownLoader;
 import com.locker.manager.task.LockerManagerTask;
 import com.qiao.launch.starter.TaskDispatcher;
 import com.squareup.picasso.Picasso;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.yidao.module_lib.base.BaseApplication;
-import com.yidao.module_lib.base.http.ResponseBean;
-import com.yidao.module_lib.base.http.callback.IHttpCallBack;
-import com.yidao.module_lib.base.ibase.IBaseModel;
-import com.yidao.module_lib.glide.UnsafeOkHttpClient;
-import com.yidao.module_lib.utils.CommonGlideUtils;
-import com.yidao.module_lib.utils.LogUtils;
-import com.yidao.module_lib.utils.PhoneInfoUtils;
 
-import java.io.InputStream;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Collections;
 
 import okhttp3.OkHttpClient;
@@ -59,6 +52,18 @@ public class LockerApplication extends BaseApplication {
             Picasso.setSingletonInstance(new Picasso.Builder(this).
                     downloader(new ImageDownLoader(client)).loggingEnabled(true)
                     .build());
+
+            Context context = getApplicationContext();
+// 获取当前包名
+            String packageName = context.getPackageName();
+// 获取当前进程名
+            String processName = getProcessName(android.os.Process.myPid());
+// 设置是否为上报进程
+            CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(context);
+            strategy.setUploadProcess(processName == null || processName.equals(packageName));
+// 初始化Bugly
+            CrashReport.initCrashReport(context, "f92e8e8e4f", true, strategy);
+//            CrashReport.initCrashReport(getApplicationContext(), "f92e8e8e4f", false);
         }
     }
 
@@ -85,5 +90,35 @@ public class LockerApplication extends BaseApplication {
      */
     public boolean isMainProcess() {
         return getApplicationContext().getPackageName().equals(getCurrentProcessName());
+    }
+
+
+    /**
+     * 获取进程号对应的进程名
+     *
+     * @param pid 进程号
+     * @return 进程名
+     */
+    private static String getProcessName(int pid) {
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new FileReader("/proc/" + pid + "/cmdline"));
+            String processName = reader.readLine();
+            if (!TextUtils.isEmpty(processName)) {
+                processName = processName.trim();
+            }
+            return processName;
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        } finally {
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            }
+        }
+        return null;
     }
 }
