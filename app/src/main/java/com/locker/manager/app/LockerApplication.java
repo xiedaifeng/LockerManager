@@ -25,9 +25,6 @@ import okhttp3.Protocol;
 
 public class LockerApplication extends BaseApplication {
 
-    public static String sOrderId = null;
-
-    public static String sOpenCode = null;
 
     @Override
     public void onCreate() {
@@ -62,7 +59,7 @@ public class LockerApplication extends BaseApplication {
             CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(context);
             strategy.setUploadProcess(processName == null || processName.equals(packageName));
 // 初始化Bugly
-            CrashReport.initCrashReport(context, "f92e8e8e4f", true, strategy);
+            CrashReport.initCrashReport(context, "f92e8e8e4f", false, strategy);
 //            CrashReport.initCrashReport(getApplicationContext(), "f92e8e8e4f", false);
         }
     }

@@ -304,7 +304,6 @@ public class SenderDeliverActivity extends BaseUrlView implements SerialPortMess
                 opencode = orderInfoBean.getOpencode();
                 orderId = orderInfoBean.getId();
                 money = orderInfoBean.getMoney();
-                LockerApplication.sOrderId = orderId;
 
                 if(TextUtils.isEmpty(money) || Float.parseFloat(money)<=0f){
                     openBoxByOpencode(opencode);
@@ -318,6 +317,12 @@ public class SenderDeliverActivity extends BaseUrlView implements SerialPortMess
                 timeDialog.hidePayView();
                 timeDialog.setTvTitle("包裹订单创建成功\n请扫描下方二维码支付寄存包裹");
                 timeDialog.show();
+
+
+                if(mHandler!=null){
+                    mHandler.removeMessages(countDownCode);
+                    tvCountDown.setText(String.format("%ss后返回首页", 30));
+                }
             }
         } else {
             ToastUtil.showShortToast(responseBean.getMessage());
@@ -357,6 +362,9 @@ public class SenderDeliverActivity extends BaseUrlView implements SerialPortMess
         super.onDestroy();
         if (mHandler != null) {
             mHandler.removeMessages(countDownCode);
+        }
+        if(timeDialog != null){
+            timeDialog.dismiss();
         }
     }
 }

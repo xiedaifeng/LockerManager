@@ -48,6 +48,15 @@ public class OrderInfoBean implements Serializable {
     private String opencode;
 
     private String post_no;
+    private String type;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public String getPost_no() {
         return post_no;

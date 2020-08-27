@@ -102,6 +102,7 @@ public class SaveDepositActivity extends BaseUrlView implements SerialPortMessag
     private int largeBoxNum = 0;
 
     private String opencode;
+    private String orderId;
 
     private final int countDownCode = 0x111;
 
@@ -294,8 +295,7 @@ public class SaveDepositActivity extends BaseUrlView implements SerialPortMessag
                 OrderInfoBean orderInfoBean = JSON.parseObject(responseBean.getData(), OrderInfoBean.class);
                 opencode = orderInfoBean.getOpencode();
                 money = orderInfoBean.getMoney();
-
-                LockerApplication.sOrderId = orderInfoBean.getId();
+                orderId = orderInfoBean.getId();
 
                 if(TextUtils.isEmpty(money) || Float.parseFloat(money)<=0f){
                     openBoxByOpencode(opencode);
@@ -325,7 +325,7 @@ public class SaveDepositActivity extends BaseUrlView implements SerialPortMessag
         CommandProtocol commandProtocol = new CommandProtocol.Builder().setBytes(data).parseMessage();
         if(CommandProtocol.COMMAND_OPEN_RESPONSE == commandProtocol.getCommand()){
             Bundle bundle = new Bundle();
-            bundle.putString(Constant.OrderInfoKey,LockerApplication.sOrderId);
+            bundle.putString(Constant.OrderInfoKey,orderId);
             skipActivityByFinish(SenderDeliverSuccessActivity.class,bundle);
         }
     }

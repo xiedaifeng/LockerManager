@@ -17,7 +17,10 @@ import com.igexin.sdk.message.GTCmdMessage;
 import com.igexin.sdk.message.GTNotificationMessage;
 import com.igexin.sdk.message.GTTransmitMessage;
 import com.locker.manager.activity.HomeActivity;
+import com.locker.manager.activity.SenderPickUpActivity;
 import com.locker.manager.activity.sender.SenderDeliverSuccessActivity;
+import com.locker.manager.activity.sender.SenderPickUpSuccessActivity;
+import com.locker.manager.activity.user.UserPickUpSuccessActivity;
 import com.locker.manager.app.Constant;
 import com.locker.manager.app.LockerApplication;
 import com.locker.manager.command.CommandProtocol;
@@ -46,12 +49,13 @@ public class LockerIntentService extends GTIntentService implements SerialPortMe
         CreateDeviceRequestBean requestBean = new CreateDeviceRequestBean();
         requestBean.device_id = PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getApplicationContext());
         requestBean.getui_cid = cid;
-        LogUtils.e("CreateDeviceRequestBean:"+requestBean.device_id);
+        LogUtils.e("CreateDeviceRequestBean:" + requestBean.device_id);
         HttpClient.request(requestBean, false, new IHttpCallBack() {
             @Override
             public void success(ResponseBean responseBean) {
                 LogUtils.e("success:createDevice");
             }
+
             @Override
             public void failed(ResponseBean responseBean) {
                 LogUtils.e("failed:createDevice");
@@ -69,6 +73,7 @@ public class LockerIntentService extends GTIntentService implements SerialPortMe
         LogUtils.e("onReceiveMessageData:" + content + "," + payload);
         JSONObject object = JSON.parseObject(payload);
         String order_id = object.getString("order_id");
+        String type = object.getString("type");
 
 
         GetOrderInfoRequestBean requestBean = new GetOrderInfoRequestBean();
@@ -90,13 +95,38 @@ public class LockerIntentService extends GTIntentService implements SerialPortMe
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                if (TextUtils.equals(order_id, LockerApplication.sOrderId)) {
+
+                String status = orderInfoBean.getStatus();
+                String post_no = orderInfoBean.getPost_no();
+                if (TextUtils.equals("qu", type)) { //取件推送
+                    if(TextUtils.isEmpty(post_no)){
+                        ViewManager.getInstance().finishOthersView(HomeActivity.class);
+                        Intent intent = new Intent(LockerApplication.getApplication(), UserPickUpSuccessActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.putExtra(Constant.OrderInfoKey, order_id);
+                        LockerApplication.getApplication().startActivity(intent);
+                    } else {
+//                        if(TextUtils.equals("1",status)){
+//
+//                        } else if(TextUtils.equals("4",status)){
+//                            ViewManager.getInstance().finishOthersView(HomeActivity.class);
+//                            Intent intent = new Intent(LockerApplication.getApplication(), UserPickUpSuccessActivity.class);
+//                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                            intent.putExtra(Constant.OrderInfoKey, order_id);
+//                            LockerApplication.getApplication().startActivity(intent);
+//                        }
+                    }
+                } else if(TextUtils.equals("cun",type)){                                                                    //存件推送
                     ViewManager.getInstance().finishOthersView(HomeActivity.class);
                     Intent intent = new Intent(LockerApplication.getApplication(), SenderDeliverSuccessActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.putExtra(Constant.OrderInfoKey, order_id);
                     LockerApplication.getApplication().startActivity(intent);
-                    LockerApplication.sOrderId = null;
+                } else if(TextUtils.equals("tui",type)){
+                    Intent intent = new Intent(LockerApplication.getApplication(), UserPickUpSuccessActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra(Constant.OrderInfoKey, order_id);
+                    LockerApplication.getApplication().startActivity(intent);
                 }
                 ToastUtil.showLongToast("格口号" + boxno + "已打开");
             }
@@ -106,11 +136,6 @@ public class LockerIntentService extends GTIntentService implements SerialPortMe
                 ToastUtil.showShortToast(responseBean.getMessage());
             }
         });
-
-//        Intent intent = new Intent(LockerApplication.getApplication(), UserPickUpSuccessActivity.class);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        intent.putExtra(Constant.OrderInfoKey,order_id);
-//        LockerApplication.getApplication().startActivity(intent);
     }
 
     // cid 离线上线通知
@@ -153,9 +178,9 @@ public class LockerIntentService extends GTIntentService implements SerialPortMe
     @Override
     public void onMessage(int error, String errorMessage, byte[] data) throws Exception {
         CommandProtocol commandProtocol = new CommandProtocol.Builder().setBytes(data).parseMessage();
-        if(CommandProtocol.COMMAND_OPEN_RESPONSE == commandProtocol.getCommand()){
+        if (CommandProtocol.COMMAND_OPEN_RESPONSE == commandProtocol.getCommand()) {
             LogUtils.e("COMMAND_OPEN");
-            if(!TextUtils.isEmpty(boxno)){
+            if (!TextUtils.isEmpty(boxno)) {
                 UpdateDeviceBoxStatusRequestBean requestBean = new UpdateDeviceBoxStatusRequestBean();
                 requestBean.device_id = PhoneInfoUtils.getLocalMacAddressFromWifiInfo(LockerApplication.getApplication());
                 requestBean.boxno = boxno;
@@ -164,6 +189,7 @@ public class LockerIntentService extends GTIntentService implements SerialPortMe
                     @Override
                     public void success(ResponseBean responseBean) {
                     }
+
                     @Override
                     public void failed(ResponseBean responseBean) {
                     }

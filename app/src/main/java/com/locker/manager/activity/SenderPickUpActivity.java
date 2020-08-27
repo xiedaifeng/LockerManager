@@ -176,7 +176,7 @@ public class SenderPickUpActivity extends BaseUrlView implements SerialPortMessa
                 }
             }
             if (requestCls == BackOrderRequestBean.class) {
-                openBoxByOpencode();
+//                openBoxByOpencode();
             }
             if (requestCls == UpdateDeviceBoxStatusRequestBean.class) {
             }

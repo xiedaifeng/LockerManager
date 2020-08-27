@@ -3,6 +3,7 @@ package com.locker.manager.activity.user;
 import android.annotation.SuppressLint;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -11,6 +12,7 @@ import androidx.annotation.NonNull;
 import com.alibaba.fastjson.JSON;
 import com.example.http_lib.bean.GetOrderInfoRequestBean;
 import com.example.http_lib.response.OrderInfoBean;
+import com.example.http_lib.utils.UserCacheHelper;
 import com.locker.manager.R;
 import com.locker.manager.activity.HomeActivity;
 import com.locker.manager.activity.SenderPickUpActivity;
@@ -27,7 +29,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 
-public class UserPickUpSuccessActivity extends BaseUrlView implements SerialPortMessageListener {
+public class UserPickUpSuccessActivity extends BaseUrlView {
 
 
     @BindView(R.id.tv_title)
@@ -36,10 +38,12 @@ public class UserPickUpSuccessActivity extends BaseUrlView implements SerialPort
     TextView tvCaseState;
     @BindView(R.id.tv_count_down)
     TextView tvCountDown;
+    @BindView(R.id.tv_hot_phone)
+    TextView tvHotPhone;
 
     private final int countDownCode = 0x110;
 
-    private int countDownTime = 60;
+    private int countDownTime = 30;
 
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler(){
@@ -70,41 +74,35 @@ public class UserPickUpSuccessActivity extends BaseUrlView implements SerialPort
     public void init() {
         setCurrentTime(tvTitle,System.currentTimeMillis());
 
+        String hotPhone = UserCacheHelper.getHotPhone();
+        if(!TextUtils.isEmpty(hotPhone)){
+            tvHotPhone.setText(String.format("如有疑问，请致电客服：%s", hotPhone));
+        }
+
         if(getIntent().hasExtra(Constant.OrderInfoKey)){
             String orderId = getIntent().getStringExtra(Constant.OrderInfoKey);
             mPresenter.getOrderInfo(orderId);
         }
 
-        if(getIntent().hasExtra(Constant.OpencodeKey)){
-            String opencode = getIntent().getStringExtra(Constant.OpencodeKey);
-            String boxno = opencode.substring(0,2);
-            tvCaseState.setText(String.format("格口号：%s（已开）",boxno));
-            try {
-                SerialPortOpenSDK.getInstance().send(
-                        new CommandProtocol.Builder()
-                                .setCommand(CommandProtocol.COMMAND_OPEN)
-                                .setCommandChannel(boxno)
-                                .builder()
-                                .getBytes());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+//        if(getIntent().hasExtra(Constant.OpencodeKey)){
+//            String opencode = getIntent().getStringExtra(Constant.OpencodeKey);
+//            String boxno = opencode.substring(0,2);
+//            tvCaseState.setText(String.format("格口号：%s（已开）",boxno));
+//            try {
+//                SerialPortOpenSDK.getInstance().send(
+//                        new CommandProtocol.Builder()
+//                                .setCommand(CommandProtocol.COMMAND_OPEN)
+//                                .setCommandChannel(boxno)
+//                                .builder()
+//                                .getBytes());
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
 
         mHandler.sendEmptyMessageDelayed(countDownCode,1000);
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        SerialPortOpenSDK.getInstance().unregirster(this);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        SerialPortOpenSDK.getInstance().regirster(this);
-    }
 
     @OnClick({R.id.iv_left, R.id.tv_pick_success, R.id.tv_hand_continue})
     public void onViewClicked(View view) {
@@ -140,28 +138,19 @@ public class UserPickUpSuccessActivity extends BaseUrlView implements SerialPort
                 OrderInfoBean orderInfoBean = JSON.parseObject(responseBean.getData(), OrderInfoBean.class);
                 String boxno = orderInfoBean.getBoxno();
                 tvCaseState.setText(String.format("格口号：%s（已开）",boxno));
-                try {
-                    SerialPortOpenSDK.getInstance().send(
-                            new CommandProtocol.Builder()
-                                    .setCommand(CommandProtocol.COMMAND_OPEN)
-                                    .setCommandChannel(boxno)
-                                    .builder()
-                                    .getBytes());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    SerialPortOpenSDK.getInstance().send(
+//                            new CommandProtocol.Builder()
+//                                    .setCommand(CommandProtocol.COMMAND_OPEN)
+//                                    .setCommandChannel(boxno)
+//                                    .builder()
+//                                    .getBytes());
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
             }
         } else {
-            ViewManager.getInstance().finishView();
             ToastUtil.showShortToast(responseBean.getMessage());
-        }
-    }
-
-    @Override
-    public void onMessage(int error, String errorMessage, byte[] data) throws Exception {
-        CommandProtocol commandProtocol = new CommandProtocol.Builder().setBytes(data).parseMessage();
-        if(CommandProtocol.COMMAND_OPEN_RESPONSE == commandProtocol.getCommand()){
-
         }
     }
 
