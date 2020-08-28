@@ -18,13 +18,8 @@ import com.example.http_lib.response.NoticeBean;
 import com.example.http_lib.utils.UserCacheHelper;
 import com.locker.manager.R;
 import com.locker.manager.base.BaseUrlView;
-import com.locker.manager.command.CommandProtocol;
-import com.qiao.serialport.SerialPortOpenSDK;
-import com.qiao.serialport.listener.SerialPortMessageListener;
 import com.squareup.picasso.Picasso;
-import com.tencent.bugly.crashreport.CrashReport;
 import com.yidao.module_lib.base.http.ResponseBean;
-import com.yidao.module_lib.utils.LogUtils;
 import com.yidao.module_lib.utils.PhoneInfoUtils;
 
 import java.util.List;
@@ -33,7 +28,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 
-public class HomeActivity extends BaseUrlView implements SerialPortMessageListener {
+public class HomeActivity extends BaseUrlView  {
 
     @BindView(R.id.iv_left)
     ImageView ivLeft;
@@ -107,17 +102,17 @@ public class HomeActivity extends BaseUrlView implements SerialPortMessageListen
 //        mPresenter.createOrder(requestBean1);
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        SerialPortOpenSDK.getInstance().unregirster(this);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        SerialPortOpenSDK.getInstance().regirster(this);
-    }
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//        SerialPortOpenSDK.getInstance().unregirster(this);
+//    }
+//
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        SerialPortOpenSDK.getInstance().regirster(this);
+//    }
 
     @OnClick({R.id.iv_left, R.id.tv_hand_save, R.id.tv_help})
     public void onViewClicked(View view) {
@@ -171,24 +166,24 @@ public class HomeActivity extends BaseUrlView implements SerialPortMessageListen
         }
     }
 
-    @Override
-    public void onMessage(int error, String errorMessage, byte[] data) throws Exception {
+//    @Override
+//    public void onMessage(int error, String errorMessage, byte[] data) throws Exception {
 //        Command command=new Command.Builder().setBytes(data).parse();
 //        if (command.getError()==0x01&&command.getCommandFixed_1().equals("30")){
 //           String channel= command.getCommmandChannel();
 //           String state=command.getCommandState();
 //        }
-
-        CommandProtocol commandProtocol = new CommandProtocol.Builder().setBytes(data).parseMessage();
-        if (CommandProtocol.COMMAND_SELECT_DEPOSIT_STATE == commandProtocol.getCommand()) {
-            int boxNum = commandProtocol.getData().size();
-            LogUtils.e("boxNum:" + boxNum);
-//            mPresenter.createDeviceBox(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()), boxNum + "");
-        }
-        if (CommandProtocol.COMMAND_OPEN_RESPONSE == commandProtocol.getCommand()) {
-            LogUtils.e("COMMAND_OPEN");
-        }
-    }
+//
+//        CommandProtocol commandProtocol = new CommandProtocol.Builder().setBytes(data).parseMessage();
+//        if (CommandProtocol.COMMAND_SELECT_DEPOSIT_STATE == commandProtocol.getCommand()) {
+//            int boxNum = commandProtocol.getData().size();
+//            LogUtils.e("boxNum:" + boxNum);
+////            mPresenter.createDeviceBox(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()), boxNum + "");
+//        }
+//        if (CommandProtocol.COMMAND_OPEN_RESPONSE == commandProtocol.getCommand()) {
+//            LogUtils.e("COMMAND_OPEN");
+//        }
+//    }
 
 
     @Override

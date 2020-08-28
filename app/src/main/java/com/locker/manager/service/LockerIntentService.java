@@ -68,13 +68,16 @@ public class LockerIntentService extends GTIntentService implements SerialPortMe
     // 处理透传消息{"order_id":"xx"}
     @Override
     public void onReceiveMessageData(Context context, GTTransmitMessage gtTransmitMessage) {
-        String content = gtTransmitMessage.getMessageId() + gtTransmitMessage.getPayloadId() + gtTransmitMessage.getTaskId();
         String payload = new String(gtTransmitMessage.getPayload());
-        LogUtils.e("onReceiveMessageData:" + content + "," + payload);
+        LogUtils.e("onReceiveMessageData:"+ payload);
         JSONObject object = JSON.parseObject(payload);
         String order_id = object.getString("order_id");
         String type = object.getString("type");
+        String device_id = object.getString("device_id");
 
+        if(!TextUtils.equals(device_id,PhoneInfoUtils.getLocalMacAddressFromWifiInfo(context))){
+            return;
+        }
 
         GetOrderInfoRequestBean requestBean = new GetOrderInfoRequestBean();
         requestBean.order_id = order_id;
@@ -85,7 +88,6 @@ public class LockerIntentService extends GTIntentService implements SerialPortMe
                 OrderInfoBean orderInfoBean = JSON.parseObject(responseBean.getData(), OrderInfoBean.class);
                 boxno = orderInfoBean.getBoxno();
                 try {
-//                    new CommandProtocol.Builder().setCommand(CommandProtocol.COMMAND_OPEN).setCommandChannel(boxno).builder();
                     SerialPortOpenSDK.getInstance().send(
                             new CommandProtocol.Builder()
                                     .setCommand(CommandProtocol.COMMAND_OPEN)
@@ -96,37 +98,31 @@ public class LockerIntentService extends GTIntentService implements SerialPortMe
                     e.printStackTrace();
                 }
 
-                String status = orderInfoBean.getStatus();
                 String post_no = orderInfoBean.getPost_no();
                 if (TextUtils.equals("qu", type)) { //取件推送
-                    if(TextUtils.isEmpty(post_no)){
+                    if(TextUtils.isEmpty(post_no) && TextUtils.equals(order_id,LockerApplication.sQuOrderId)){
                         ViewManager.getInstance().finishOthersView(HomeActivity.class);
                         Intent intent = new Intent(LockerApplication.getApplication(), UserPickUpSuccessActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         intent.putExtra(Constant.OrderInfoKey, order_id);
                         LockerApplication.getApplication().startActivity(intent);
+                        LockerApplication.sQuOrderId = null;
                     } else {
-//                        if(TextUtils.equals("1",status)){
-//
-//                        } else if(TextUtils.equals("4",status)){
-//                            ViewManager.getInstance().finishOthersView(HomeActivity.class);
-//                            Intent intent = new Intent(LockerApplication.getApplication(), UserPickUpSuccessActivity.class);
-//                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                            intent.putExtra(Constant.OrderInfoKey, order_id);
-//                            LockerApplication.getApplication().startActivity(intent);
-//                        }
+
                     }
-                } else if(TextUtils.equals("cun",type)){                                                                    //存件推送
+                } else if(TextUtils.equals("cun",type) && TextUtils.equals(order_id,LockerApplication.sOrderId)){                                                                    //存件推送
                     ViewManager.getInstance().finishOthersView(HomeActivity.class);
                     Intent intent = new Intent(LockerApplication.getApplication(), SenderDeliverSuccessActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.putExtra(Constant.OrderInfoKey, order_id);
                     LockerApplication.getApplication().startActivity(intent);
-                } else if(TextUtils.equals("tui",type)){
+                    LockerApplication.sOrderId = null;
+                } else if(TextUtils.equals("tui",type) && TextUtils.equals(order_id,LockerApplication.sTuiOrderId)){
                     Intent intent = new Intent(LockerApplication.getApplication(), UserPickUpSuccessActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.putExtra(Constant.OrderInfoKey, order_id);
                     LockerApplication.getApplication().startActivity(intent);
+                    LockerApplication.sTuiOrderId = null;
                 }
                 ToastUtil.showLongToast("格口号" + boxno + "已打开");
             }

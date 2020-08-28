@@ -1,8 +1,6 @@
 package com.locker.manager.activity;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
@@ -21,7 +19,6 @@ import com.example.http_lib.bean.GetAllBoxDetailRequestBean;
 import com.example.http_lib.response.DeviceBoxDetailBean;
 import com.example.http_lib.response.OrderInfoBean;
 import com.locker.manager.R;
-import com.locker.manager.activity.sender.SenderDeliverSuccessActivity;
 import com.locker.manager.adapter.NumAdapter;
 import com.locker.manager.app.Constant;
 import com.locker.manager.app.LockerApplication;
@@ -30,7 +27,6 @@ import com.locker.manager.callback.OnItemCallBack;
 import com.locker.manager.command.CommandProtocol;
 import com.locker.manager.dialog.SaveOverTimeDialog;
 import com.qiao.serialport.SerialPortOpenSDK;
-import com.qiao.serialport.listener.SerialPortMessageListener;
 import com.yidao.module_lib.base.http.ResponseBean;
 import com.yidao.module_lib.manager.ViewManager;
 import com.yidao.module_lib.utils.PhoneInfoUtils;
@@ -43,7 +39,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 
-public class SaveDepositActivity extends BaseUrlView implements SerialPortMessageListener {
+public class SaveDepositActivity extends BaseUrlView  {
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
@@ -163,17 +159,17 @@ public class SaveDepositActivity extends BaseUrlView implements SerialPortMessag
         mHandler.sendEmptyMessageDelayed(countDownCode,1000);
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        SerialPortOpenSDK.getInstance().unregirster(this);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        SerialPortOpenSDK.getInstance().regirster(this);
-    }
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//        SerialPortOpenSDK.getInstance().unregirster(this);
+//    }
+//
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        SerialPortOpenSDK.getInstance().regirster(this);
+//    }
 
 
     @OnClick({R.id.iv_left, R.id.iv_help, R.id.tv_last, R.id.tv_save, R.id.ll_small, R.id.ll_middle, R.id.ll_large})
@@ -224,8 +220,6 @@ public class SaveDepositActivity extends BaseUrlView implements SerialPortMessag
                     timeDialog.setTvTitle("包裹订单创建成功\n请扫描下方二维码支付寄存包裹");
                     timeDialog.show();
                 }
-
-//                skipActivity(SenderPickUpSuccessActivity.class);
                 break;
             case R.id.ll_small:
                 chooseCase(0);
@@ -296,6 +290,7 @@ public class SaveDepositActivity extends BaseUrlView implements SerialPortMessag
                 opencode = orderInfoBean.getOpencode();
                 money = orderInfoBean.getMoney();
                 orderId = orderInfoBean.getId();
+                LockerApplication.sOrderId = orderId;
 
                 if(TextUtils.isEmpty(money) || Float.parseFloat(money)<=0f){
                     openBoxByOpencode(opencode);
@@ -320,15 +315,15 @@ public class SaveDepositActivity extends BaseUrlView implements SerialPortMessag
         }
     }
 
-    @Override
-    public void onMessage(int error, String errorMessage, byte[] data) throws Exception {
-        CommandProtocol commandProtocol = new CommandProtocol.Builder().setBytes(data).parseMessage();
-        if(CommandProtocol.COMMAND_OPEN_RESPONSE == commandProtocol.getCommand()){
-            Bundle bundle = new Bundle();
-            bundle.putString(Constant.OrderInfoKey,orderId);
-            skipActivityByFinish(SenderDeliverSuccessActivity.class,bundle);
-        }
-    }
+//    @Override
+//    public void onMessage(int error, String errorMessage, byte[] data) throws Exception {
+//        CommandProtocol commandProtocol = new CommandProtocol.Builder().setBytes(data).parseMessage();
+//        if(CommandProtocol.COMMAND_OPEN_RESPONSE == commandProtocol.getCommand()){
+//            Bundle bundle = new Bundle();
+//            bundle.putString(Constant.OrderInfoKey,orderId);
+//            skipActivityByFinish(SenderDeliverSuccessActivity.class,bundle);
+//        }
+//    }
 
     private void openBoxByOpencode(String opencode){
         if (TextUtils.isEmpty(opencode)||opencode.length()<=1){
