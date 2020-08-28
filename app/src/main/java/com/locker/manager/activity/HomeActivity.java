@@ -20,6 +20,7 @@ import com.locker.manager.R;
 import com.locker.manager.base.BaseUrlView;
 import com.squareup.picasso.Picasso;
 import com.yidao.module_lib.base.http.ResponseBean;
+import com.yidao.module_lib.manager.PermissionManager;
 import com.yidao.module_lib.utils.PhoneInfoUtils;
 
 import java.util.List;
@@ -52,6 +53,16 @@ public class HomeActivity extends BaseUrlView  {
 
     @Override
     public void init() {
+
+        PermissionManager.getInstance().requestPermissions(this);
+        PermissionManager.getInstance().setIPermissionLiatener(new PermissionManager.IPermissionListener() {
+            @Override
+            public void getPermissionSuccess() {
+
+            }
+        });
+
+
         setCurrentTime(tvTitle, System.currentTimeMillis());
 
         ivLeft.setVisibility(View.VISIBLE);
