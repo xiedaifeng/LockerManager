@@ -55,6 +55,7 @@
         <activity android:name=".activity.SaveDepositActivity" android:screenOrientation="landscape" android:windowSoftInputMode="stateHidden"/>
 
         <activity android:name=".activity.SaveFirstActivity" android:screenOrientation="landscape" android:windowSoftInputMode="stateHidden"/>
+        <activity android:name=".activity.TestActivity" android:screenOrientation="landscape" android:windowSoftInputMode="stateHidden"/>
 
         <receiver android:name=".activity.receiver.TimerReceiver"/>
 

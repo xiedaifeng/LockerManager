@@ -133,9 +133,15 @@ public class CommandProtocol {
         public CommandProtocol builder(){
             int boxCh=0;
             if (commandChannel instanceof Integer){
-                boxCh=Integer.parseInt((int)commandChannel+"",16);;
+                boxCh=Integer.parseInt((int)commandChannel+"",16);
+
+//                boxCh=Integer.parseInt(commandChannel+"");
+//                String hexBox = Integer.toHexString(boxCh);
             }else if (commandChannel instanceof String){
                 boxCh=Integer.parseInt((String) commandChannel, 16);
+
+//                boxCh=Integer.parseInt((String) commandChannel);
+//                String hexBox = Integer.toHexString(boxCh);
             }
            byte[] bytesBox= new byte[]{(byte)(boxCh / 256), (byte)(boxCh % 256)};
             if (bytesBox!=null){

@@ -91,7 +91,7 @@ public class LockerIntentService extends GTIntentService implements SerialPortMe
                     SerialPortOpenSDK.getInstance().send(
                             new CommandProtocol.Builder()
                                     .setCommand(CommandProtocol.COMMAND_OPEN)
-                                    .setCommandChannel(boxno)
+                                    .setCommandChannel(Integer.toHexString(Integer.parseInt(boxno)))
                                     .builder()
                                     .getBytes());
                 } catch (Exception e) {

@@ -129,6 +129,9 @@ public class HomeActivity extends BaseUrlView  {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_left:
+
+                skipActivity(TestActivity.class);
+
 //                try {
 //                    SerialPortOpenSDK.getInstance().send(
 //                            new CommandProtocol.Builder()
