@@ -20,9 +20,12 @@ import com.locker.manager.adapter.NumAdapter;
 import com.locker.manager.app.Constant;
 import com.locker.manager.base.BaseUrlView;
 import com.locker.manager.callback.OnItemCallBack;
+import com.locker.manager.callback.OnItemClickListener;
+import com.locker.manager.manager.VibratorManager;
 import com.yidao.module_lib.base.http.ResponseBean;
 import com.yidao.module_lib.manager.ViewManager;
 import com.yidao.module_lib.utils.EditTextInputUtils;
+import com.yidao.module_lib.utils.LogUtils;
 import com.yidao.module_lib.utils.PhoneUtils;
 import com.yidao.module_lib.utils.SoftKeyboardUtil;
 import com.yidao.module_lib.utils.ToastUtil;
@@ -94,48 +97,48 @@ public class SaveFirstActivity extends BaseUrlView {
         NumAdapter adapter = new NumAdapter(getCtx());
         recyclerView.setAdapter(adapter);
 
-        adapter.setOnItemCallBack(new OnItemCallBack<String>() {
+        adapter.setOnItemCallBack(new OnItemClickListener<String>() {
+
             @Override
-            public void onItemClick(int position, String str, int... i) {
+            public void onItemClick(int position, String str) {
                 if (TextUtils.equals("重置", str)) {
                     if (etPostPhone.isFocused()) {
                         etPostPhone.setText("");
-                    }
-                    if (etFetchPhone.isFocused()) {
+                    }else if (etFetchPhone.isFocused()) {
                         etFetchPhone.setText("");
-                    }
-                    if (etPostVerify.isFocused()) {
+                    } else if (etPostVerify.isFocused()) {
                         etPostVerify.setText("");
-                    }
-                    if (etFetchVerify.isFocused()) {
+                    } else if (etFetchVerify.isFocused()) {
                         etFetchVerify.setText("");
                     }
                 } else if (TextUtils.equals("回删", str)) {
                     if (etPostPhone.isFocused()) {
                         EditTextInputUtils.deleteString(etPostPhone);
-                    }
-                    if (etFetchPhone.isFocused()) {
+                    } else if (etFetchPhone.isFocused()) {
                         EditTextInputUtils.deleteString(etFetchPhone);
-                    }
-                    if (etPostVerify.isFocused()) {
+                    } else if (etPostVerify.isFocused()) {
                         EditTextInputUtils.deleteString(etPostVerify);
-                    }
-                    if (etFetchVerify.isFocused()) {
+                    } else if (etFetchVerify.isFocused()) {
                         EditTextInputUtils.deleteString(etFetchVerify);
                     }
                 } else {
                     if (etPostPhone.isFocused()) {
                         EditTextInputUtils.addString(etPostPhone, str);
-                    }
-                    if (etFetchPhone.isFocused()) {
+                    } else if (etFetchPhone.isFocused()) {
                         EditTextInputUtils.addString(etFetchPhone, str);
-                    }
-                    if (etPostVerify.isFocused()) {
+                    } else if (etPostVerify.isFocused()) {
                         EditTextInputUtils.addString(etPostVerify, str);
-                    }
-                    if (etFetchVerify.isFocused()) {
+                    } else if (etFetchVerify.isFocused()) {
                         EditTextInputUtils.addString(etFetchVerify, str);
                     }
+                }
+                VibratorManager.getInstance().vibrate(50);
+            }
+
+            @Override
+            public void onItemLongClick(int position, String str) {
+                if (TextUtils.equals("回删", str)) {
+
                 }
             }
         });
@@ -233,9 +236,11 @@ public class SaveFirstActivity extends BaseUrlView {
                 ViewManager.getInstance().finishOthersView(HomeActivity.class);
                 break;
             case R.id.iv_help:
+                VibratorManager.getInstance().vibrate(50);
                 skipActivity(SaveHelpActivity.class);
                 break;
             case R.id.tv_next:
+                VibratorManager.getInstance().vibrate(50);
                 String postPhone = etPostPhone.getText().toString();
                 String fetchPhone = etFetchPhone.getText().toString();
                 if (!PhoneUtils.isPhone(postPhone)) {
@@ -273,6 +278,7 @@ public class SaveFirstActivity extends BaseUrlView {
                 skipActivity(SaveDepositActivity.class, bundle);
                 break;
             case R.id.tv_fetch_agree:
+                VibratorManager.getInstance().vibrate(50);
                 fetchPhone = etFetchPhone.getText().toString();
                 if (!PhoneUtils.isPhone(fetchPhone)) {
                     ToastUtil.showShortToast("请输入正确的手机号");
@@ -281,6 +287,7 @@ public class SaveFirstActivity extends BaseUrlView {
                 mPresenter.sendSms(fetchPhone);
                 break;
             case R.id.tv_post_send:
+                VibratorManager.getInstance().vibrate(50);
                 postPhone = etPostPhone.getText().toString();
                 if (!PhoneUtils.isPhone(postPhone)) {
                     ToastUtil.showShortToast("请输入正确的手机号");
@@ -289,6 +296,7 @@ public class SaveFirstActivity extends BaseUrlView {
                 mPresenter.sendSms(postPhone);
                 break;
             case R.id.tv_fetch_agree1:
+                VibratorManager.getInstance().vibrate(50);
                 postPhone = etPostPhone.getText().toString();
                 if (!PhoneUtils.isPhone(postPhone)) {
                     ToastUtil.showShortToast("请输入正确的手机号");
@@ -348,7 +356,7 @@ public class SaveFirstActivity extends BaseUrlView {
                     tvFetchAgree.setVisibility(View.VISIBLE);
                     tvFetchAgree1.setVisibility(View.GONE);
                 }
-                ToastUtil.showShortToast("非平台用户，需向对方手机发送验证码");
+                ToastUtil.showLongToast("非平台用户，需向对方手机发送验证码");
             }
             if (requestCls == CheckSmsRequestBean.class) {
                 if (TextUtils.equals("post", responseBean.getCarry().toString())) {
@@ -365,7 +373,7 @@ public class SaveFirstActivity extends BaseUrlView {
                 }
             }
             if (requestCls != GetUserInfoByMobileRequestBean.class) {
-                ToastUtil.showShortToast(responseBean.getMessage());
+                ToastUtil.showLongToast(responseBean.getMessage());
             }
         }
     }

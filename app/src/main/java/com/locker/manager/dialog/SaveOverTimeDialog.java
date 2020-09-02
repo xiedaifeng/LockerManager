@@ -1,8 +1,6 @@
 package com.locker.manager.dialog;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.CountDownTimer;
 import android.text.TextUtils;
 import android.view.View;
@@ -16,10 +14,8 @@ import com.locker.manager.base.BaseUrlDialog;
 import com.squareup.picasso.Picasso;
 import com.yidao.module_lib.base.http.ResponseBean;
 import com.yidao.module_lib.manager.ViewManager;
-import com.yidao.module_lib.utils.CommonGlideUtils;
 import com.yidao.module_lib.utils.LogUtils;
 import com.yidao.module_lib.utils.PhoneInfoUtils;
-import com.yidao.module_lib.utils.SoftKeyboardUtil;
 import com.yidao.module_lib.utils.ToastUtil;
 
 import butterknife.BindView;
@@ -45,6 +41,14 @@ public class SaveOverTimeDialog extends BaseUrlDialog {
     private Context mContext;
 
     private TimeCount timeCount = null;
+
+
+    private IOnCountDownCallback countDownCallback;
+
+
+    public void setCountDownCallback(IOnCountDownCallback countDownCallback) {
+        this.countDownCallback = countDownCallback;
+    }
 
     public SaveOverTimeDialog(Context context) {
         super(context);
@@ -146,6 +150,9 @@ public class SaveOverTimeDialog extends BaseUrlDialog {
             viewGap.setVisibility(View.VISIBLE);
             tvCancel.setVisibility(View.VISIBLE);
             tvExit.setText("返回首页");
+            if(countDownCallback!=null){
+                countDownCallback.onFinish();
+            }
         }
     }
 
@@ -159,5 +166,9 @@ public class SaveOverTimeDialog extends BaseUrlDialog {
         } else {
             ToastUtil.showShortToast(responseBean.getMessage());
         }
+    }
+
+    public interface IOnCountDownCallback{
+        void onFinish();
     }
 }

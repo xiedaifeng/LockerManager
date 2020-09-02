@@ -1,11 +1,15 @@
 package com.locker.manager.activity;
 
+import android.annotation.SuppressLint;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,8 +25,10 @@ import com.locker.manager.adapter.NumAdapter;
 import com.locker.manager.app.LockerApplication;
 import com.locker.manager.base.BaseUrlView;
 import com.locker.manager.callback.OnItemCallBack;
+import com.locker.manager.callback.OnItemClickListener;
 import com.locker.manager.dialog.BoxStateDialog;
 import com.locker.manager.dialog.SaveOverTimeDialog;
+import com.locker.manager.manager.VibratorManager;
 import com.yidao.module_lib.base.http.ResponseBean;
 import com.yidao.module_lib.manager.ViewManager;
 import com.yidao.module_lib.utils.EditTextInputUtils;
@@ -47,6 +53,8 @@ public class SenderPickUpActivity extends BaseUrlView {
     TextView tvTitle;
     @BindView(R.id.et_post_phone)
     EditText etPostPhone;
+    @BindView(R.id.tv_back_home)
+    TextView tvBackHome;
 
     private BoxStateDialog dialog = null;
 
@@ -54,7 +62,31 @@ public class SenderPickUpActivity extends BaseUrlView {
     private String post_no;
     private String orderId;
 
-    private float money;
+    private String money;
+
+    private final int countDownCode = 0x113;
+
+    private int countDownTime = 30;
+
+    @SuppressLint("HandlerLeak")
+    private Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            super.handleMessage(msg);
+            if(msg.what == countDownCode) {
+                countDownTime--;
+                tvBackHome.setText(String.format("%ss后返回首页", countDownTime));
+                if (countDownTime > 0) {
+                    mHandler.sendEmptyMessageDelayed(countDownCode, 1000);
+                } else {
+//                    ViewManager.getInstance().finishAllView();
+//                    skipActivity(HomeActivity.class);
+
+                    ViewManager.getInstance().finishOthersView(HomeActivity.class);
+                }
+            }
+        }
+    };
 
     @Override
     protected int getView() {
@@ -69,9 +101,9 @@ public class SenderPickUpActivity extends BaseUrlView {
         NumAdapter adapter = new NumAdapter(getCtx());
         recyclerView.setAdapter(adapter);
 
-        adapter.setOnItemCallBack(new OnItemCallBack<String>() {
+        adapter.setOnItemCallBack(new OnItemClickListener<String>() {
             @Override
-            public void onItemClick(int position, String str, int... i) {
+            public void onItemClick(int position, String str) {
                 if (TextUtils.equals("重置", str)) {
                     if (etPostPhone.isFocused()) {
                         etPostPhone.setText("");
@@ -85,6 +117,12 @@ public class SenderPickUpActivity extends BaseUrlView {
                         EditTextInputUtils.addString(etPostPhone, str);
                     }
                 }
+                VibratorManager.getInstance().vibrate(50);
+            }
+
+            @Override
+            public void onItemLongClick(int position, String str) {
+
             }
         });
 
@@ -101,6 +139,7 @@ public class SenderPickUpActivity extends BaseUrlView {
                 ViewManager.getInstance().finishOthersView(HomeActivity.class);
                 break;
             case R.id.tv_next:
+                VibratorManager.getInstance().vibrate(50);
                 String code = etPostPhone.getText().toString();
                 if (TextUtils.isEmpty(code)) {
                     ToastUtil.showShortToast("取件码不能为空");
@@ -110,6 +149,7 @@ public class SenderPickUpActivity extends BaseUrlView {
 //                mPresenter.getDeviceBoxTimeStatus(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()), code);
                 break;
             case R.id.iv_help:
+                VibratorManager.getInstance().vibrate(50);
                 skipActivity(SaveHelpActivity.class);
                 break;
         }
@@ -148,8 +188,20 @@ public class SenderPickUpActivity extends BaseUrlView {
                 String code = responseBean.getData();
                 if (TextUtils.equals("1", code)) { //超时请支付费用
                     if (timeDialog == null) {
-                        timeDialog = new SaveOverTimeDialog(getCtx(), etPostPhone.getText().toString(),money+"");
+                        timeDialog = new SaveOverTimeDialog(getCtx(), etPostPhone.getText().toString(),money);
                     }
+                    timeDialog.setCountDownCallback(new SaveOverTimeDialog.IOnCountDownCallback() {
+                        @Override
+                        public void onFinish() {
+                            timeDialog.dismiss();
+                            tvBackHome.setVisibility(View.VISIBLE);
+                            if(mHandler!=null){
+                                mHandler.removeMessages(countDownCode);
+                                countDownTime = 30;
+                                mHandler.sendEmptyMessageDelayed(countDownCode,1000);
+                            }
+                        }
+                    });
                     timeDialog.hidePayView();
                     timeDialog.show();
                 } else if (TextUtils.equals("0", code)) {
@@ -168,8 +220,17 @@ public class SenderPickUpActivity extends BaseUrlView {
                 LockerApplication.sQuOrderId = orderId;
                 String chao_hour = TextUtils.isEmpty(orderInfoBean.getChao_hour())?"0":orderInfoBean.getChao_hour();
                 String chao_money = TextUtils.isEmpty(orderInfoBean.getChao_money())?"0":orderInfoBean.getChao_money();
-                money = Float.parseFloat(chao_hour)*Float.parseFloat(chao_money);
+//                money = Float.parseFloat(chao_hour)*Float.parseFloat(chao_money);
+
+                money = orderInfoBean.getChaoshi_money();
                 mPresenter.getDeviceBoxTimeStatus(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()), etPostPhone.getText().toString());
+
+
+                if(mHandler!=null){
+                    mHandler.removeMessages(countDownCode);
+                    tvBackHome.setVisibility(View.GONE);
+                }
+
             }
         } else {
             ToastUtil.showShortToast(responseBean.getMessage());
@@ -184,6 +245,9 @@ public class SenderPickUpActivity extends BaseUrlView {
         }
         if(dialog!=null && dialog.isShowing()){
             dialog.dismiss();
+        }
+        if(mHandler!=null){
+            mHandler.removeMessages(countDownCode);
         }
     }
 }

@@ -18,6 +18,7 @@ import com.locker.manager.activity.HomeActivity;
 import com.locker.manager.activity.SaveSecondActivity;
 import com.locker.manager.app.Constant;
 import com.locker.manager.base.BaseUrlView;
+import com.locker.manager.manager.VibratorManager;
 import com.yidao.module_lib.base.http.ResponseBean;
 import com.yidao.module_lib.manager.ViewManager;
 import com.yidao.module_lib.utils.ToastUtil;
@@ -99,12 +100,12 @@ public class SenderDeliverSuccessActivity extends BaseUrlView {
             case R.id.tv_pick_success:
 //                ViewManager.getInstance().finishAllView();
 //                skipActivity(HomeActivity.class);
-
+                VibratorManager.getInstance().vibrate(50);
                 ViewManager.getInstance().finishOthersView(HomeActivity.class);
                 break;
             case R.id.tv_hand_continue:
 //                ViewManager.getInstance().finishAllView();
-
+                VibratorManager.getInstance().vibrate(50);
                 ViewManager.getInstance().finishOthersView(HomeActivity.class);
                 skipActivity(SaveSecondActivity.class);
                 break;

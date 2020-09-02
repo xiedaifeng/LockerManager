@@ -1,12 +1,17 @@
 package com.locker.manager.activity;
 
 
+import android.annotation.SuppressLint;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
+
+import androidx.annotation.NonNull;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -18,9 +23,12 @@ import com.example.http_lib.response.NoticeBean;
 import com.example.http_lib.utils.UserCacheHelper;
 import com.locker.manager.R;
 import com.locker.manager.base.BaseUrlView;
+import com.locker.manager.dialog.SaveOverTimeDialog;
+import com.locker.manager.manager.VibratorManager;
 import com.squareup.picasso.Picasso;
 import com.yidao.module_lib.base.http.ResponseBean;
 import com.yidao.module_lib.manager.PermissionManager;
+import com.yidao.module_lib.manager.ViewManager;
 import com.yidao.module_lib.utils.PhoneInfoUtils;
 
 import java.util.List;
@@ -73,62 +81,15 @@ public class HomeActivity extends BaseUrlView  {
         mPresenter.hotPhone();
         mPresenter.getSystemNotice();
         mPresenter.getDeviceInfo(mac);
-
-//        mPresenter.createDeviceBox(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()),   "12");
-
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                try {
-//                    SerialPortOpenSDK.getInstance().send(
-//                            new CommandProtocol.Builder()
-//                                    .setCommand(CommandProtocol.COMMAND_SELECT_BOX_STATE)
-//                                    .setCommandChannel(1)
-//                                    .builder()
-//                                    .getBytes());
-//                    setTip("查询指令发送成功");
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }, 500);
-
-//        mPresenter.createDeviceBox(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()),"12");
-//
-//        mPresenter.getDeviceInfo(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()));
-//
-//        mPresenter.getDeviceBoxInfo(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()),"1");
-//
-//        UpdateDeviceBoxStatusRequestBean requestBean = new UpdateDeviceBoxStatusRequestBean();
-//        requestBean.device_id = PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx());
-//        requestBean.boxno = "1";
-//        requestBean.openstatus = "open";
-//        mPresenter.updateDeviceBoxStatus(requestBean);
-
-//        CreateOrderRequestBean requestBean1 = new CreateOrderRequestBean();
-//        requestBean1.cun_phone = "15757829477";
-//        requestBean1.qu_phone = "15757829477";
-//        requestBean1.device_id = PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx());
-//        requestBean1.boxsize = "big";
-//        mPresenter.createOrder(requestBean1);
     }
 
-//    @Override
-//    protected void onPause() {
-//        super.onPause();
-//        SerialPortOpenSDK.getInstance().unregirster(this);
-//    }
-//
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        SerialPortOpenSDK.getInstance().regirster(this);
-//    }
 
     @OnClick({R.id.iv_left, R.id.tv_hand_save, R.id.tv_help})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_left:
+
+//                showSaveOverDialog();
 
                 skipActivity(TestActivity.class);
 
@@ -173,9 +134,11 @@ public class HomeActivity extends BaseUrlView  {
                 break;
             case R.id.tv_hand_save:
                 skipActivity(SaveHandActivity.class);
+                VibratorManager.getInstance().vibrate(50);
                 break;
             case R.id.tv_help:
                 skipActivity(SaveHelpActivity.class);
+                VibratorManager.getInstance().vibrate(50);
                 break;
         }
     }

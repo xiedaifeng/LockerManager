@@ -6,6 +6,7 @@ import android.widget.TextView;
 import com.locker.manager.R;
 import com.locker.manager.activity.sender.SenderActivity;
 import com.locker.manager.base.BaseUrlView;
+import com.locker.manager.manager.VibratorManager;
 import com.yidao.module_lib.manager.ViewManager;
 
 import butterknife.BindView;
@@ -40,11 +41,19 @@ public class SaveSecondActivity extends BaseUrlView {
                 ViewManager.getInstance().finishOthersView(HomeActivity.class);
                 break;
             case R.id.rl_parcel:
+                if(isFastClick()){
+                    return;
+                }
                 skipActivity(SaveFirstActivity.class);
+                VibratorManager.getInstance().vibrate(50);
                 break;
             case R.id.rl_sender:
+                if(isFastClick()){
+                    return;
+                }
 //                skipActivity(SenderDeliverAndBackActivity.class);
                 skipActivity(SenderActivity.class);
+                VibratorManager.getInstance().vibrate(50);
                 break;
         }
     }

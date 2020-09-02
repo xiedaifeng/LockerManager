@@ -204,6 +204,7 @@ public class Command {
                 }
                 bytes[strings.length]=sum;
                 this.bytes=bytes;
+                Log.e("bulider",ByteUtil.ByteArrToHex(this.bytes));
             }catch (Exception e){
                 e.printStackTrace();
             }

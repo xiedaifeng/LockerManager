@@ -5,6 +5,7 @@ import android.widget.TextView;
 
 import com.locker.manager.R;
 import com.locker.manager.base.BaseUrlView;
+import com.locker.manager.manager.VibratorManager;
 import com.yidao.module_lib.manager.ViewManager;
 
 import butterknife.BindView;
@@ -39,10 +40,18 @@ public class SaveHandActivity extends BaseUrlView {
                 ViewManager.getInstance().finishOthersView(HomeActivity.class);
                 break;
             case R.id.rl_parcel:
+                if(isFastClick()){
+                    return;
+                }
                 skipActivity(SaveSecondActivity.class);
+                VibratorManager.getInstance().vibrate(50);
                 break;
             case R.id.rl_sender:
+                if(isFastClick()){
+                    return;
+                }
                 skipActivity(SenderPickUpActivity.class);
+                VibratorManager.getInstance().vibrate(50);
                 break;
         }
     }

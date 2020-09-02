@@ -24,6 +24,8 @@ import com.locker.manager.adapter.NumAdapter;
 import com.locker.manager.app.Constant;
 import com.locker.manager.base.BaseUrlView;
 import com.locker.manager.callback.OnItemCallBack;
+import com.locker.manager.callback.OnItemClickListener;
+import com.locker.manager.manager.VibratorManager;
 import com.yidao.module_lib.base.http.ResponseBean;
 import com.yidao.module_lib.manager.ViewManager;
 import com.yidao.module_lib.utils.EditTextInputUtils;
@@ -95,58 +97,52 @@ public class SenderActivity extends BaseUrlView {
         NumAdapter adapter = new NumAdapter(getCtx());
         recyclerView.setAdapter(adapter);
 
-        adapter.setOnItemCallBack(new OnItemCallBack<String>() {
+        adapter.setOnItemCallBack(new OnItemClickListener<String>() {
             @Override
-            public void onItemClick(int position, String str, int... i) {
+            public void onItemClick(int position, String str) {
                 if (TextUtils.equals("重置", str)) {
                     if (etPostPhone.isFocused()) {
                         etPostPhone.setText("");
-                    }
-                    if (etFetchPhone.isFocused()) {
+                    } else if (etFetchPhone.isFocused()) {
                         etFetchPhone.setText("");
-                    }
-                    if(etParcelNum.isFocused()){
+                    } else if(etParcelNum.isFocused()){
                         etParcelNum.setText("");
-                    }
-                    if (etPostVerify.isFocused()) {
+                    } else if (etPostVerify.isFocused()) {
                         etPostVerify.setText("");
-                    }
-                    if (etFetchVerify.isFocused()) {
+                    } else if (etFetchVerify.isFocused()) {
                         etFetchVerify.setText("");
                     }
                 } else if (TextUtils.equals("回删", str)) {
                     if (etPostPhone.isFocused()) {
                         EditTextInputUtils.deleteString(etPostPhone);
-                    }
-                    if (etFetchPhone.isFocused()) {
+                    } else if (etFetchPhone.isFocused()) {
                         EditTextInputUtils.deleteString(etFetchPhone);
-                    }
-                    if (etParcelNum.isFocused()) {
+                    } else if (etParcelNum.isFocused()) {
                         EditTextInputUtils.deleteString(etParcelNum);
-                    }
-                    if (etPostVerify.isFocused()) {
+                    } else if (etPostVerify.isFocused()) {
                         EditTextInputUtils.deleteString(etPostVerify);
-                    }
-                    if (etFetchVerify.isFocused()) {
+                    } else if (etFetchVerify.isFocused()) {
                         EditTextInputUtils.deleteString(etFetchVerify);
                     }
                 } else {
                     if (etPostPhone.isFocused()) {
                         EditTextInputUtils.addString(etPostPhone, str);
-                    }
-                    if (etFetchPhone.isFocused()) {
+                    } else if (etFetchPhone.isFocused()) {
                         EditTextInputUtils.addString(etFetchPhone, str);
-                    }
-                    if (etParcelNum.isFocused()) {
+                    } else if (etParcelNum.isFocused()) {
                         EditTextInputUtils.addString(etParcelNum, str);
-                    }
-                    if (etPostVerify.isFocused()) {
+                    } else if (etPostVerify.isFocused()) {
                         EditTextInputUtils.addString(etPostVerify, str);
-                    }
-                    if (etFetchVerify.isFocused()) {
+                    } else if (etFetchVerify.isFocused()) {
                         EditTextInputUtils.addString(etFetchVerify, str);
                     }
                 }
+                VibratorManager.getInstance().vibrate(50);
+            }
+
+            @Override
+            public void onItemLongClick(int position, String str) {
+
             }
         });
 
@@ -172,11 +168,6 @@ public class SenderActivity extends BaseUrlView {
                     tvPostMsg.setVisibility(View.INVISIBLE);
                     rlPostVerify.setVisibility(View.GONE);
                 }
-//                if(TextUtils.isEmpty(s.toString())){
-//                    tvPostSend.setVisibility(View.GONE);
-//                    tvPostMsg.setVisibility(View.INVISIBLE);
-//                    rlPostVerify.setVisibility(View.GONE);
-//                }
             }
         });
 
@@ -196,21 +187,6 @@ public class SenderActivity extends BaseUrlView {
                     tvFetchMsg.setVisibility(View.INVISIBLE);
                     rlFetchVerify.setVisibility(View.GONE);
                 }
-
-
-//                if(PhoneUtils.isPhone(s.toString()) && !TextUtils.equals(s.toString(),etPostPhone.getText().toString())){
-//                    mPresenter.getUserInfoByMobile(s.toString(),"fetch");
-//                }
-//                if(PhoneUtils.isPhone(s.toString()) && TextUtils.equals(s.toString(),etPostPhone.getText().toString())){
-//                    tvFetchAgree.setVisibility(View.GONE);
-//                    tvFetchMsg.setVisibility(View.INVISIBLE);
-//                    rlFetchVerify.setVisibility(View.GONE);
-//                }
-//                if(TextUtils.isEmpty(s.toString())){
-//                    tvFetchAgree.setVisibility(View.GONE);
-//                    tvFetchMsg.setVisibility(View.INVISIBLE);
-//                    rlFetchVerify.setVisibility(View.GONE);
-//                }
             }
         });
         etPostVerify.addTextChangedListener(new TextWatcher() {
@@ -258,6 +234,7 @@ public class SenderActivity extends BaseUrlView {
                 ViewManager.getInstance().finishOthersView(HomeActivity.class);
                 break;
             case R.id.tv_next:
+                VibratorManager.getInstance().vibrate(50);
                 String postPhone = etPostPhone.getText().toString();
                 String fetchPhone = etFetchPhone.getText().toString();
                 if (!PhoneUtils.isPhone(postPhone)) {
@@ -308,6 +285,7 @@ public class SenderActivity extends BaseUrlView {
                 skipActivity(SaveHelpActivity.class);
                 break;
             case R.id.tv_fetch_agree:
+                VibratorManager.getInstance().vibrate(50);
                 fetchPhone = etFetchPhone.getText().toString();
                 if (!PhoneUtils.isPhone(fetchPhone)) {
                     ToastUtil.showShortToast("请输入正确的手机号");
@@ -316,6 +294,7 @@ public class SenderActivity extends BaseUrlView {
                 mPresenter.sendSms(fetchPhone);
                 break;
             case R.id.tv_post_send:
+                VibratorManager.getInstance().vibrate(50);
                 postPhone = etPostPhone.getText().toString();
                 if (!PhoneUtils.isPhone(postPhone)) {
                     ToastUtil.showShortToast("请输入正确的手机号");

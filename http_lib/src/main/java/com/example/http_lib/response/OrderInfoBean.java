@@ -1,5 +1,7 @@
 package com.example.http_lib.response;
 
+import android.text.TextUtils;
+
 import java.io.Serializable;
 
 public class OrderInfoBean implements Serializable {
@@ -49,6 +51,16 @@ public class OrderInfoBean implements Serializable {
 
     private String post_no;
     private String type;
+
+    private String chaoshi_money;
+
+    public String getChaoshi_money() {
+        return TextUtils.isEmpty(chaoshi_money) ? "0" : chaoshi_money;
+    }
+
+    public void setChaoshi_money(String chaoshi_money) {
+        this.chaoshi_money = chaoshi_money;
+    }
 
     public String getType() {
         return type;

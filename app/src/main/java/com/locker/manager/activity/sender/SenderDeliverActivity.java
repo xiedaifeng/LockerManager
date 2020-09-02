@@ -28,6 +28,7 @@ import com.locker.manager.base.BaseUrlView;
 import com.locker.manager.callback.OnItemCallBack;
 import com.locker.manager.command.CommandProtocol;
 import com.locker.manager.dialog.SaveOverTimeDialog;
+import com.locker.manager.manager.VibratorManager;
 import com.qiao.serialport.SerialPortOpenSDK;
 import com.yidao.module_lib.base.http.ResponseBean;
 import com.yidao.module_lib.manager.ViewManager;
@@ -155,26 +156,8 @@ public class SenderDeliverActivity extends BaseUrlView {
 
         chooseCase(0);
 
-        adapter.setOnItemCallBack(new OnItemCallBack<String>() {
-            @Override
-            public void onItemClick(int position, String str, int... i) {
-            }
-        });
-
         mHandler.sendEmptyMessageDelayed(countDownCode, 1000);
     }
-
-//    @Override
-//    protected void onPause() {
-//        super.onPause();
-//        SerialPortOpenSDK.getInstance().unregirster(this);
-//    }
-//
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        SerialPortOpenSDK.getInstance().regirster(this);
-//    }
 
     @OnClick({R.id.iv_left, R.id.iv_help, R.id.tv_last, R.id.tv_save, R.id.ll_small, R.id.ll_middle, R.id.ll_large})
     public void onViewClicked(View view) {
@@ -189,9 +172,11 @@ public class SenderDeliverActivity extends BaseUrlView {
                 skipActivity(SaveHelpActivity.class);
                 break;
             case R.id.tv_last:
+                VibratorManager.getInstance().vibrate(50);
                 ViewManager.getInstance().finishView();
                 break;
             case R.id.tv_save:
+                VibratorManager.getInstance().vibrate(50);
                 if (mPosition == 0 && smallBoxNum == 0) {
                     ToastUtil.showShortToast("暂无相应型号的箱子可用");
                     return;
@@ -218,13 +203,15 @@ public class SenderDeliverActivity extends BaseUrlView {
                     mPresenter.createOrder(requestBean);
                 } else {
 
-                    if(timeDialog == null){
-                        timeDialog = new SaveOverTimeDialog(getCtx(), opencode,money);
-                    }
-                    timeDialog.setPrice(money);
-                    timeDialog.hidePayView();
-                    timeDialog.setTvTitle("包裹订单创建成功\n请扫描下方二维码支付寄存包裹");
-                    timeDialog.show();
+//                    if(timeDialog == null){
+//                        timeDialog = new SaveOverTimeDialog(getCtx(), opencode,money);
+//                    }
+//                    timeDialog.setPrice(money);
+//                    timeDialog.hidePayView();
+//                    timeDialog.setTvTitle("包裹订单创建成功\n请扫描下方二维码支付寄存包裹");
+//                    timeDialog.show();
+
+                    showSaveOverDialog();
                 }
 
 //                mPresenter.getOrderInfo(orderId);
@@ -234,12 +221,15 @@ public class SenderDeliverActivity extends BaseUrlView {
 //                skipActivity(SenderDeliverSuccessActivity.class,bundle);
                 break;
             case R.id.ll_small:
+                VibratorManager.getInstance().vibrate(50);
                 chooseCase(0);
                 break;
             case R.id.ll_middle:
+                VibratorManager.getInstance().vibrate(50);
                 chooseCase(1);
                 break;
             case R.id.ll_large:
+                VibratorManager.getInstance().vibrate(50);
                 chooseCase(2);
                 break;
         }
@@ -308,13 +298,15 @@ public class SenderDeliverActivity extends BaseUrlView {
                     return;
                 }
 
-                if(timeDialog == null){
-                    timeDialog = new SaveOverTimeDialog(getCtx(), opencode,money);
-                }
-                timeDialog.setPrice(money);
-                timeDialog.hidePayView();
-                timeDialog.setTvTitle("包裹订单创建成功\n请扫描下方二维码支付寄存包裹");
-                timeDialog.show();
+//                if(timeDialog == null){
+//                    timeDialog = new SaveOverTimeDialog(getCtx(), opencode,money);
+//                }
+//                timeDialog.setPrice(money);
+//                timeDialog.hidePayView();
+//                timeDialog.setTvTitle("包裹订单创建成功\n请扫描下方二维码支付寄存包裹");
+//                timeDialog.show();
+
+                showSaveOverDialog();
 
 
                 if(mHandler!=null){
@@ -336,6 +328,28 @@ public class SenderDeliverActivity extends BaseUrlView {
 //                skipActivity(SenderDeliverSuccessActivity.class,bundle);
 //        }
 //    }
+
+    private void showSaveOverDialog(){
+        if(timeDialog == null){
+            timeDialog = new SaveOverTimeDialog(getCtx(), opencode, money);
+        }
+        timeDialog.setCountDownCallback(new SaveOverTimeDialog.IOnCountDownCallback() {
+            @Override
+            public void onFinish() {
+                timeDialog.dismiss();
+                opencode = null;
+                if(mHandler!=null){
+                    mHandler.removeMessages(countDownCode);
+                    countDownTime = 30;
+                    mHandler.sendEmptyMessageDelayed(countDownCode,1000);
+                }
+            }
+        });
+        timeDialog.setPrice(money);
+        timeDialog.hidePayView();
+        timeDialog.setTvTitle("包裹订单创建成功\n请扫描下方二维码支付寄存包裹");
+        timeDialog.show();
+    }
 
     private void openBoxByOpencode(String opencode){
         if (TextUtils.isEmpty(opencode)||opencode.length()<=1){

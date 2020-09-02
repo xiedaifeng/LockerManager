@@ -10,6 +10,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.locker.manager.R;
 import com.locker.manager.callback.OnItemCallBack;
+import com.locker.manager.callback.OnItemClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,9 +22,9 @@ public class NumAdapter extends BaseQuickAdapter<String,BaseViewHolder> {
 
     private Context mContext;
 
-    private OnItemCallBack mOnItemCallBack;
+    private OnItemClickListener mOnItemCallBack;
 
-    public void setOnItemCallBack(OnItemCallBack<String> onItemCallBack) {
+    public void setOnItemCallBack(OnItemClickListener<String> onItemCallBack) {
         mOnItemCallBack = onItemCallBack;
     }
 
@@ -65,6 +66,16 @@ public class NumAdapter extends BaseQuickAdapter<String,BaseViewHolder> {
                 if(mOnItemCallBack!=null){
                     mOnItemCallBack.onItemClick(position,s);
                 }
+            }
+        });
+
+        tvNum.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if(mOnItemCallBack!=null){
+                    mOnItemCallBack.onItemLongClick(position,s);
+                }
+                return false;
             }
         });
     }

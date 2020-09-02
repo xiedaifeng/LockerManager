@@ -11,6 +11,7 @@ import com.locker.manager.R;
 import com.locker.manager.adapter.TestAdapter;
 import com.locker.manager.base.BaseUrlView;
 import com.locker.manager.callback.OnItemCallBack;
+import com.locker.manager.command.Command;
 import com.locker.manager.command.CommandProtocol;
 import com.qiao.serialport.SerialPortOpenSDK;
 import com.qiao.serialport.listener.SerialPortMessageListener;
@@ -25,7 +26,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 
-public class TestActivity extends BaseUrlView  implements SerialPortMessageListener {
+public class TestActivity extends BaseUrlView implements SerialPortMessageListener {
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
@@ -39,7 +40,7 @@ public class TestActivity extends BaseUrlView  implements SerialPortMessageListe
 
     @Override
     public void init() {
-        recyclerView.setLayoutManager(new GridLayoutManager(getCtx(),5));
+        recyclerView.setLayoutManager(new GridLayoutManager(getCtx(), 5));
         TestAdapter adapter = new TestAdapter(getCtx());
         recyclerView.setAdapter(adapter);
 
@@ -54,6 +55,13 @@ public class TestActivity extends BaseUrlView  implements SerialPortMessageListe
                                     .setCommandChannel(Integer.toHexString(Integer.parseInt(boxno)))
                                     .builder()
                                     .getBytes());
+
+
+//                    SerialPortOpenSDK.getInstance().send(
+//                            new Command.Builder().setCommand(Command.Consts.COMMAND_WRITE)
+//                                    .setCommmandChannel(Integer.toHexString(Integer.parseInt(boxno)))
+//                                    .build()
+//                                    .getBytes());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -97,12 +105,12 @@ public class TestActivity extends BaseUrlView  implements SerialPortMessageListe
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if(TextUtils.equals("00",state)){
-                        ToastUtil.showLongToast("对应的格口"+mBoxNo+"打开成功");
-                    } else if(TextUtils.equals("01",state)){
-                        ToastUtil.showLongToast("对应的格口"+mBoxNo+"打开失败");
+                    if (TextUtils.equals("00", state)) {
+                        ToastUtil.showLongToast("对应的格口" + mBoxNo + "打开成功");
+                    } else if (TextUtils.equals("01", state)) {
+                        ToastUtil.showLongToast("对应的格口" + mBoxNo + "打开失败");
                     } else {
-                        ToastUtil.showLongToast("未知状态："+new String(commandProtocol.getBytes()));
+                        ToastUtil.showLongToast("未知状态：" + new String(commandProtocol.getBytes()));
                     }
                 }
             });

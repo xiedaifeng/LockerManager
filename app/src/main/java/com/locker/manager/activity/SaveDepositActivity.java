@@ -26,6 +26,7 @@ import com.locker.manager.base.BaseUrlView;
 import com.locker.manager.callback.OnItemCallBack;
 import com.locker.manager.command.CommandProtocol;
 import com.locker.manager.dialog.SaveOverTimeDialog;
+import com.locker.manager.manager.VibratorManager;
 import com.qiao.serialport.SerialPortOpenSDK;
 import com.yidao.module_lib.base.http.ResponseBean;
 import com.yidao.module_lib.manager.ViewManager;
@@ -98,6 +99,8 @@ public class SaveDepositActivity extends BaseUrlView  {
     private int largeBoxNum = 0;
 
     private String opencode;
+    private String money;
+
     private String orderId;
 
     private final int countDownCode = 0x111;
@@ -123,7 +126,6 @@ public class SaveDepositActivity extends BaseUrlView  {
             }
         }
     };
-    private String money;
 
     @Override
     protected int getView() {
@@ -149,12 +151,6 @@ public class SaveDepositActivity extends BaseUrlView  {
         mViews.add(llLarge);
 
         chooseCase(0);
-
-        adapter.setOnItemCallBack(new OnItemCallBack<String>() {
-            @Override
-            public void onItemClick(int position, String str, int... i) {
-            }
-        });
 
         mHandler.sendEmptyMessageDelayed(countDownCode,1000);
     }
@@ -185,9 +181,11 @@ public class SaveDepositActivity extends BaseUrlView  {
                 skipActivity(SaveHelpActivity.class);
                 break;
             case R.id.tv_last:
+                VibratorManager.getInstance().vibrate(50);
                 ViewManager.getInstance().finishView();
                 break;
             case R.id.tv_save:
+                VibratorManager.getInstance().vibrate(50);
                 if (mPosition == 0 && smallBoxNum == 0) {
                     ToastUtil.showShortToast("暂无相应型号的箱子可用");
                     return;
@@ -212,22 +210,27 @@ public class SaveDepositActivity extends BaseUrlView  {
                     requestBean.boxsize = boxSize;
                     mPresenter.createOrder(requestBean);
                 } else {
-                    if(timeDialog == null){
-                        timeDialog = new SaveOverTimeDialog(getCtx(), opencode,money);
-                    }
-                    timeDialog.setPrice(money);
-                    timeDialog.hidePayView();
-                    timeDialog.setTvTitle("包裹订单创建成功\n请扫描下方二维码支付寄存包裹");
-                    timeDialog.show();
+//                    if(timeDialog == null){
+//                        timeDialog = new SaveOverTimeDialog(getCtx(), opencode,money);
+//                    }
+//                    timeDialog.setPrice(money);
+//                    timeDialog.hidePayView();
+//                    timeDialog.setTvTitle("包裹订单创建成功\n请扫描下方二维码支付寄存包裹");
+//                    timeDialog.show();
+
+                    showSaveOverDialog();
                 }
                 break;
             case R.id.ll_small:
+                VibratorManager.getInstance().vibrate(50);
                 chooseCase(0);
                 break;
             case R.id.ll_middle:
+                VibratorManager.getInstance().vibrate(50);
                 chooseCase(1);
                 break;
             case R.id.ll_large:
+                VibratorManager.getInstance().vibrate(50);
                 chooseCase(2);
                 break;
         }
@@ -297,13 +300,15 @@ public class SaveDepositActivity extends BaseUrlView  {
                     return;
                 }
 
-                if(timeDialog == null){
-                    timeDialog = new SaveOverTimeDialog(getCtx(), opencode, money);
-                }
-                timeDialog.setPrice(money);
-                timeDialog.hidePayView();
-                timeDialog.setTvTitle("包裹订单创建成功\n请扫描下方二维码支付寄存包裹");
-                timeDialog.show();
+//                if(timeDialog == null){
+//                    timeDialog = new SaveOverTimeDialog(getCtx(), opencode, money);
+//                }
+//                timeDialog.setPrice(money);
+//                timeDialog.hidePayView();
+//                timeDialog.setTvTitle("包裹订单创建成功\n请扫描下方二维码支付寄存包裹");
+//                timeDialog.show();
+
+                showSaveOverDialog();
 
                 if(mHandler!=null){
                     mHandler.removeMessages(countDownCode);
@@ -324,6 +329,28 @@ public class SaveDepositActivity extends BaseUrlView  {
 //            skipActivityByFinish(SenderDeliverSuccessActivity.class,bundle);
 //        }
 //    }
+
+    private void showSaveOverDialog(){
+        if(timeDialog == null){
+            timeDialog = new SaveOverTimeDialog(getCtx(), opencode, money);
+        }
+        timeDialog.setCountDownCallback(new SaveOverTimeDialog.IOnCountDownCallback() {
+            @Override
+            public void onFinish() {
+                timeDialog.dismiss();
+                opencode = null;
+                if(mHandler!=null){
+                    mHandler.removeMessages(countDownCode);
+                    countDownTime = 30;
+                    mHandler.sendEmptyMessageDelayed(countDownCode,1000);
+                }
+            }
+        });
+        timeDialog.setPrice(money);
+        timeDialog.hidePayView();
+        timeDialog.setTvTitle("包裹订单创建成功\n请扫描下方二维码支付寄存包裹");
+        timeDialog.show();
+    }
 
     private void openBoxByOpencode(String opencode){
         if (TextUtils.isEmpty(opencode)||opencode.length()<=1){
