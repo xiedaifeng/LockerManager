@@ -211,7 +211,7 @@ public class SenderDeliverActivity extends BaseUrlView {
 //                    timeDialog.setTvTitle("包裹订单创建成功\n请扫描下方二维码支付寄存包裹");
 //                    timeDialog.show();
 
-                    showSaveOverDialog();
+                    showSaveOverDialog(false);
                 }
 
 //                mPresenter.getOrderInfo(orderId);
@@ -298,16 +298,7 @@ public class SenderDeliverActivity extends BaseUrlView {
                     return;
                 }
 
-//                if(timeDialog == null){
-//                    timeDialog = new SaveOverTimeDialog(getCtx(), opencode,money);
-//                }
-//                timeDialog.setPrice(money);
-//                timeDialog.hidePayView();
-//                timeDialog.setTvTitle("包裹订单创建成功\n请扫描下方二维码支付寄存包裹");
-//                timeDialog.show();
-
-                showSaveOverDialog();
-
+                showSaveOverDialog(true);
 
                 if(mHandler!=null){
                     mHandler.removeMessages(countDownCode);
@@ -329,14 +320,25 @@ public class SenderDeliverActivity extends BaseUrlView {
 //        }
 //    }
 
-    private void showSaveOverDialog(){
-        if(timeDialog == null){
-            timeDialog = new SaveOverTimeDialog(getCtx(), opencode, money);
+    private void showSaveOverDialog(boolean isNeedCreate){
+        if(timeDialog!=null && isNeedCreate){
+            timeDialog.releaseTimer();
+            timeDialog.setCountDownCallback(null);
         }
+
+        if(isNeedCreate){
+            timeDialog = new SaveOverTimeDialog(getCtx(), opencode, money);
+        } else {
+            if (timeDialog == null) {
+                timeDialog = new SaveOverTimeDialog(getCtx(), opencode, money);
+            }
+        }
+
         timeDialog.setCountDownCallback(new SaveOverTimeDialog.IOnCountDownCallback() {
             @Override
             public void onFinish() {
                 timeDialog.dismiss();
+                timeDialog = null;
                 opencode = null;
                 if(mHandler!=null){
                     mHandler.removeMessages(countDownCode);
@@ -376,6 +378,8 @@ public class SenderDeliverActivity extends BaseUrlView {
             mHandler.removeMessages(countDownCode);
         }
         if(timeDialog != null){
+            timeDialog.releaseTimer();
+            timeDialog.setCountDownCallback(null);
             timeDialog.dismiss();
         }
     }

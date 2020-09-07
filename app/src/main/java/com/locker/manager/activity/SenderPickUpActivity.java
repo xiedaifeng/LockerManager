@@ -133,13 +133,11 @@ public class SenderPickUpActivity extends BaseUrlView {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_left:
-//                ViewManager.getInstance().finishAllView();
-//                skipActivity(HomeActivity.class);
-
                 ViewManager.getInstance().finishOthersView(HomeActivity.class);
                 break;
             case R.id.tv_next:
                 VibratorManager.getInstance().vibrate(50);
+
                 String code = etPostPhone.getText().toString();
                 if (TextUtils.isEmpty(code)) {
                     ToastUtil.showShortToast("取件码不能为空");
@@ -155,13 +153,72 @@ public class SenderPickUpActivity extends BaseUrlView {
         }
     }
 
+    @OnClick({R.id.tv_0, R.id.tv_1, R.id.tv_2, R.id.tv_3, R.id.tv_4, R.id.tv_5, R.id.tv_6, R.id.tv_7, R.id.tv_8, R.id.tv_9, R.id.tv_reset, R.id.tv_delete})
+    public void onViewNumClicked(View view) {
+        VibratorManager.getInstance().vibrate(50);
+        switch (view.getId()) {
+            case R.id.tv_0:
+                addString("0");
+                break;
+            case R.id.tv_1:
+                addString("1");
+                break;
+            case R.id.tv_2:
+                addString("2");
+                break;
+            case R.id.tv_3:
+                addString("3");
+                break;
+            case R.id.tv_4:
+                addString("4");
+                break;
+            case R.id.tv_5:
+                addString("5");
+                break;
+            case R.id.tv_6:
+                addString("6");
+                break;
+            case R.id.tv_7:
+                addString("7");
+                break;
+            case R.id.tv_8:
+                addString("8");
+                break;
+            case R.id.tv_9:
+                addString("9");
+                break;
+            case R.id.tv_reset:
+                reSetString();
+                break;
+            case R.id.tv_delete:
+                deleteString();
+                break;
+        }
+    }
+
+    private void addString(String str) {
+        if (etPostPhone.isFocused()) {
+            EditTextInputUtils.addString(etPostPhone, str);
+        }
+    }
+
+    private void reSetString() {
+        if (etPostPhone.isFocused()) {
+            etPostPhone.setText("");
+        }
+    }
+
+    private void deleteString() {
+        if (etPostPhone.isFocused()) {
+            EditTextInputUtils.deleteString(etPostPhone);
+        }
+    }
+
     @Override
     public void onResponse(boolean success, Class requestCls, ResponseBean responseBean) {
         super.onResponse(success, requestCls, responseBean);
         if (success) {
             if (requestCls == OpenDeviceBoxRequestBean.class) {
-//                OrderInfoBean orderInfoBean = JSON.parseObject(responseBean.getData(), OrderInfoBean.class);
-
 //                openBoxByOpencode();
 
                 if (!TextUtils.isEmpty(post_no)) { //post_no不为空即为快递员包裹   为空为其他包裹
@@ -194,6 +251,7 @@ public class SenderPickUpActivity extends BaseUrlView {
                         @Override
                         public void onFinish() {
                             timeDialog.dismiss();
+                            timeDialog = null;
                             tvBackHome.setVisibility(View.VISIBLE);
                             if(mHandler!=null){
                                 mHandler.removeMessages(countDownCode);
@@ -209,7 +267,6 @@ public class SenderPickUpActivity extends BaseUrlView {
                 }
             }
             if (requestCls == BackOrderRequestBean.class) {
-
             }
             if (requestCls == UpdateDeviceBoxStatusRequestBean.class) {
             }
@@ -237,11 +294,34 @@ public class SenderPickUpActivity extends BaseUrlView {
         }
     }
 
+    private void showSaveOverDialog(){
+        if (timeDialog == null) {
+            timeDialog = new SaveOverTimeDialog(getCtx(), etPostPhone.getText().toString(),money);
+        }
+        timeDialog.setCountDownCallback(new SaveOverTimeDialog.IOnCountDownCallback() {
+            @Override
+            public void onFinish() {
+                timeDialog.dismiss();
+                timeDialog = null;
+                tvBackHome.setVisibility(View.VISIBLE);
+                if(mHandler!=null){
+                    mHandler.removeMessages(countDownCode);
+                    countDownTime = 30;
+                    mHandler.sendEmptyMessageDelayed(countDownCode,1000);
+                }
+            }
+        });
+        timeDialog.hidePayView();
+        timeDialog.show();
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         if (timeDialog != null && timeDialog.isShowing()) {
             timeDialog.dismiss();
+            timeDialog.releaseTimer();
+            timeDialog.setCountDownCallback(null);
         }
         if(dialog!=null && dialog.isShowing()){
             dialog.dismiss();

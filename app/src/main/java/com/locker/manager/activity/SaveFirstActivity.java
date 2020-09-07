@@ -104,7 +104,7 @@ public class SaveFirstActivity extends BaseUrlView {
                 if (TextUtils.equals("重置", str)) {
                     if (etPostPhone.isFocused()) {
                         etPostPhone.setText("");
-                    }else if (etFetchPhone.isFocused()) {
+                    } else if (etFetchPhone.isFocused()) {
                         etFetchPhone.setText("");
                     } else if (etPostVerify.isFocused()) {
                         etPostVerify.setText("");
@@ -138,7 +138,6 @@ public class SaveFirstActivity extends BaseUrlView {
             @Override
             public void onItemLongClick(int position, String str) {
                 if (TextUtils.equals("回删", str)) {
-
                 }
             }
         });
@@ -165,23 +164,20 @@ public class SaveFirstActivity extends BaseUrlView {
                     tvPostMsg.setVisibility(View.INVISIBLE);
                     rlPostVerify.setVisibility(View.GONE);
                 }
-//                if (TextUtils.isEmpty(s.toString())) {
-//                    tvPostSend.setVisibility(View.GONE);
-//                    tvPostMsg.setVisibility(View.INVISIBLE);
-//                    rlPostVerify.setVisibility(View.GONE);
-//                }
             }
         });
         etFetchPhone.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
+
             @Override
             public void afterTextChanged(Editable s) {
-                if(PhoneUtils.isPhone(s.toString())){
+                if (PhoneUtils.isPhone(s.toString())) {
                     mPresenter.getUserInfoByMobile(s.toString(), "fetch");
                 } else {
                     tvFetchAgree.setVisibility(View.GONE);
@@ -195,13 +191,15 @@ public class SaveFirstActivity extends BaseUrlView {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
+
             @Override
             public void afterTextChanged(Editable s) {
-                if(s.length() == 4){
-                    mPresenter.checkSmsCode(etPostPhone.getText().toString(),s.toString(),"post");
+                if (s.length() == 4) {
+                    mPresenter.checkSmsCode(etPostPhone.getText().toString(), s.toString(), "post");
                 } else {
                     tvPostVerify.setVisibility(View.GONE);
                 }
@@ -211,13 +209,15 @@ public class SaveFirstActivity extends BaseUrlView {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
+
             @Override
             public void afterTextChanged(Editable s) {
-                if(s.length() == 4){
-                    mPresenter.checkSmsCode(etFetchPhone.getText().toString(),s.toString(),"fetch");
+                if (s.length() == 4) {
+                    mPresenter.checkSmsCode(etFetchPhone.getText().toString(), s.toString(), "fetch");
                 } else {
                     tvFetchVerify.setVisibility(View.GONE);
                 }
@@ -226,7 +226,7 @@ public class SaveFirstActivity extends BaseUrlView {
     }
 
 
-    @OnClick({R.id.iv_left, R.id.tv_fetch_agree, R.id.iv_help, R.id.tv_next, R.id.tv_post_send,R.id.tv_fetch_agree1})
+    @OnClick({R.id.iv_left, R.id.tv_fetch_agree, R.id.iv_help, R.id.tv_next, R.id.tv_post_send, R.id.tv_fetch_agree1})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_left:
@@ -251,22 +251,22 @@ public class SaveFirstActivity extends BaseUrlView {
                     ToastUtil.showShortToast("请输入正确的取件手机号");
                     return;
                 }
-                if(rlPostVerify.getVisibility() == View.VISIBLE){
+                if (rlPostVerify.getVisibility() == View.VISIBLE) {
                     if (TextUtils.isEmpty(etPostVerify.getText().toString())) {
                         ToastUtil.showShortToast("验证码不能为空");
                         return;
                     }
-                    if(!isPostCheck){
+                    if (!isPostCheck) {
                         ToastUtil.showShortToast("验证失败");
                         return;
                     }
                 }
-                if(rlFetchVerify.getVisibility() == View.VISIBLE){
+                if (rlFetchVerify.getVisibility() == View.VISIBLE) {
                     if (TextUtils.isEmpty(etFetchVerify.getText().toString())) {
                         ToastUtil.showShortToast("验证码不能为空");
                         return;
                     }
-                    if(!isFetchCheck){
+                    if (!isFetchCheck) {
                         ToastUtil.showShortToast("验证失败");
                         return;
                     }
@@ -304,6 +304,85 @@ public class SaveFirstActivity extends BaseUrlView {
                 }
                 etFetchPhone.setText(postPhone);
                 break;
+        }
+    }
+
+    @OnClick({R.id.tv_0, R.id.tv_1, R.id.tv_2, R.id.tv_3, R.id.tv_4, R.id.tv_5, R.id.tv_6, R.id.tv_7, R.id.tv_8, R.id.tv_9, R.id.tv_reset, R.id.tv_delete})
+    public void onViewNumClicked(View view) {
+        VibratorManager.getInstance().vibrate(50);
+        switch (view.getId()) {
+            case R.id.tv_0:
+                addString("0");
+                break;
+            case R.id.tv_1:
+                addString("1");
+                break;
+            case R.id.tv_2:
+                addString("2");
+                break;
+            case R.id.tv_3:
+                addString("3");
+                break;
+            case R.id.tv_4:
+                addString("4");
+                break;
+            case R.id.tv_5:
+                addString("5");
+                break;
+            case R.id.tv_6:
+                addString("6");
+                break;
+            case R.id.tv_7:
+                addString("7");
+                break;
+            case R.id.tv_8:
+                addString("8");
+                break;
+            case R.id.tv_9:
+                addString("9");
+                break;
+            case R.id.tv_reset:
+                reSetString();
+                break;
+            case R.id.tv_delete:
+                deleteString();
+                break;
+        }
+    }
+
+    private void addString(String str) {
+        if (etPostPhone.isFocused()) {
+            EditTextInputUtils.addString(etPostPhone, str);
+        } else if (etFetchPhone.isFocused()) {
+            EditTextInputUtils.addString(etFetchPhone, str);
+        } else if (etPostVerify.isFocused()) {
+            EditTextInputUtils.addString(etPostVerify, str);
+        } else if (etFetchVerify.isFocused()) {
+            EditTextInputUtils.addString(etFetchVerify, str);
+        }
+    }
+
+    private void reSetString() {
+        if (etPostPhone.isFocused()) {
+            etPostPhone.setText("");
+        } else if (etFetchPhone.isFocused()) {
+            etFetchPhone.setText("");
+        } else if (etPostVerify.isFocused()) {
+            etPostVerify.setText("");
+        } else if (etFetchVerify.isFocused()) {
+            etFetchVerify.setText("");
+        }
+    }
+
+    private void deleteString() {
+        if (etPostPhone.isFocused()) {
+            EditTextInputUtils.deleteString(etPostPhone);
+        } else if (etFetchPhone.isFocused()) {
+            EditTextInputUtils.deleteString(etFetchPhone);
+        } else if (etPostVerify.isFocused()) {
+            EditTextInputUtils.deleteString(etPostVerify);
+        } else if (etFetchVerify.isFocused()) {
+            EditTextInputUtils.deleteString(etFetchVerify);
         }
     }
 

@@ -39,6 +39,7 @@
                     android:maxLength="11"
                     android:inputType="number"
                     android:singleLine="true"
+                    android:focusable="true"
                     android:textColorHint="@color/color_999999"
                     android:textColor="@color/color_333333"/>
 
@@ -262,9 +263,189 @@
                 android:id="@+id/recyclerView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:overScrollMode="never">
+                android:overScrollMode="never"
+                android:visibility="gone"/>
 
-            </androidx.recyclerview.widget.RecyclerView>
+            <include layout="@layout/item_num_input"/>
+
+            <!--<LinearLayout-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:orientation="horizontal"-->
+                <!--android:layout_marginBottom="6dp">-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/tv_1"-->
+                    <!--android:layout_width="80dp"-->
+                    <!--android:layout_height="80dp"-->
+                    <!--android:text="1"-->
+                    <!--android:gravity="center"-->
+                    <!--android:textSize="50sp"-->
+                    <!--android:textColor="@color/white"-->
+                    <!--android:background="@drawable/text_shape"-->
+                    <!--android:layout_marginLeft="6dp"-->
+                    <!--android:textStyle="bold"/>-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/tv_2"-->
+                    <!--android:layout_width="80dp"-->
+                    <!--android:layout_height="80dp"-->
+                    <!--android:text="2"-->
+                    <!--android:gravity="center"-->
+                    <!--android:textSize="50sp"-->
+                    <!--android:textColor="@color/white"-->
+                    <!--android:background="@drawable/text_shape"-->
+                    <!--android:layout_marginLeft="6dp"-->
+                    <!--android:textStyle="bold"/>-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/tv_3"-->
+                    <!--android:layout_width="80dp"-->
+                    <!--android:layout_height="80dp"-->
+                    <!--android:text="3"-->
+                    <!--android:gravity="center"-->
+                    <!--android:textSize="50sp"-->
+                    <!--android:textColor="@color/white"-->
+                    <!--android:background="@drawable/text_shape"-->
+                    <!--android:layout_marginLeft="6dp"-->
+                    <!--android:textStyle="bold"/>-->
+
+            <!--</LinearLayout>-->
+
+            <!--<LinearLayout-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:orientation="horizontal"-->
+                <!--android:layout_marginBottom="6dp">-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/tv_4"-->
+                    <!--android:layout_width="80dp"-->
+                    <!--android:layout_height="80dp"-->
+                    <!--android:text="4"-->
+                    <!--android:gravity="center"-->
+                    <!--android:textSize="50sp"-->
+                    <!--android:textColor="@color/white"-->
+                    <!--android:background="@drawable/text_shape"-->
+                    <!--android:layout_marginLeft="6dp"-->
+                    <!--android:textStyle="bold"/>-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/tv_5"-->
+                    <!--android:layout_width="80dp"-->
+                    <!--android:layout_height="80dp"-->
+                    <!--android:text="5"-->
+                    <!--android:gravity="center"-->
+                    <!--android:textSize="50sp"-->
+                    <!--android:textColor="@color/white"-->
+                    <!--android:background="@drawable/text_shape"-->
+                    <!--android:layout_marginLeft="6dp"-->
+                    <!--android:textStyle="bold"/>-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/tv_6"-->
+                    <!--android:layout_width="80dp"-->
+                    <!--android:layout_height="80dp"-->
+                    <!--android:text="6"-->
+                    <!--android:gravity="center"-->
+                    <!--android:textSize="50sp"-->
+                    <!--android:textColor="@color/white"-->
+                    <!--android:background="@drawable/text_shape"-->
+                    <!--android:layout_marginLeft="6dp"-->
+                    <!--android:textStyle="bold"/>-->
+
+            <!--</LinearLayout>-->
+
+            <!--<LinearLayout-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:orientation="horizontal"-->
+                <!--android:layout_marginBottom="6dp">-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/tv_7"-->
+                    <!--android:layout_width="80dp"-->
+                    <!--android:layout_height="80dp"-->
+                    <!--android:text="7"-->
+                    <!--android:gravity="center"-->
+                    <!--android:textSize="50sp"-->
+                    <!--android:textColor="@color/white"-->
+                    <!--android:background="@drawable/text_shape"-->
+                    <!--android:layout_marginLeft="6dp"-->
+                    <!--android:textStyle="bold"/>-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/tv_8"-->
+                    <!--android:layout_width="80dp"-->
+                    <!--android:layout_height="80dp"-->
+                    <!--android:text="8"-->
+                    <!--android:gravity="center"-->
+                    <!--android:textSize="50sp"-->
+                    <!--android:textColor="@color/white"-->
+                    <!--android:background="@drawable/text_shape"-->
+                    <!--android:layout_marginLeft="6dp"-->
+                    <!--android:textStyle="bold"/>-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/tv_9"-->
+                    <!--android:layout_width="80dp"-->
+                    <!--android:layout_height="80dp"-->
+                    <!--android:text="9"-->
+                    <!--android:gravity="center"-->
+                    <!--android:textSize="50sp"-->
+                    <!--android:textColor="@color/white"-->
+                    <!--android:background="@drawable/text_shape"-->
+                    <!--android:layout_marginLeft="6dp"-->
+                    <!--android:textStyle="bold"/>-->
+
+            <!--</LinearLayout>-->
+
+            <!--<RelativeLayout-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:orientation="horizontal"-->
+                <!--android:layout_marginBottom="6dp">-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/tv_reset"-->
+                    <!--android:layout_width="80dp"-->
+                    <!--android:layout_height="80dp"-->
+                    <!--android:layout_marginLeft="6dp"-->
+                    <!--android:background="@drawable/text_shape"-->
+                    <!--android:singleLine="true"-->
+                    <!--android:text="重置"-->
+                    <!--android:gravity="center"-->
+                    <!--android:textColor="@color/white"-->
+                    <!--android:textSize="20sp"-->
+                    <!--android:textStyle="bold" />-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/tv_0"-->
+                    <!--android:layout_width="80dp"-->
+                    <!--android:layout_height="80dp"-->
+                    <!--android:text="0"-->
+                    <!--android:gravity="center"-->
+                    <!--android:textSize="50sp"-->
+                    <!--android:textColor="@color/white"-->
+                    <!--android:background="@drawable/text_shape"-->
+                    <!--android:layout_marginLeft="6dp"-->
+                    <!--android:textStyle="bold"-->
+                    <!--android:layout_toRightOf="@+id/tv_reset"/>-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/tv_delete"-->
+                    <!--android:layout_width="80dp"-->
+                    <!--android:layout_height="80dp"-->
+                    <!--android:text="回删"-->
+                    <!--android:gravity="center"-->
+                    <!--android:textSize="20sp"-->
+                    <!--android:textColor="@color/white"-->
+                    <!--android:background="@drawable/text_shape"-->
+                    <!--android:layout_marginLeft="6dp"-->
+                    <!--android:textStyle="bold"-->
+                    <!--android:layout_toRightOf="@+id/tv_0"/>-->
+
+            <!--</RelativeLayout>-->
 
             <ImageView
                 android:id="@+id/iv_help"
@@ -272,7 +453,7 @@
                 android:layout_height="30dp"
                 android:src="@mipmap/help"
                 android:layout_alignRight="@+id/recyclerView"
-                android:layout_marginTop="20dp"/>
+                android:layout_marginTop="20dp" />
 
         </LinearLayout>
     </LinearLayout>

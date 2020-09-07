@@ -40,7 +40,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 
-public class SaveDepositActivity extends BaseUrlView  {
+public class SaveDepositActivity extends BaseUrlView {
 
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
@@ -108,11 +108,11 @@ public class SaveDepositActivity extends BaseUrlView  {
     private int countDownTime = 30;
 
     @SuppressLint("HandlerLeak")
-    private Handler mHandler = new Handler(){
+    private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
-            if(msg.what == countDownCode) {
+            if (msg.what == countDownCode) {
                 countDownTime--;
                 tvCountDown.setText(String.format("%ss后返回首页", countDownTime));
                 if (countDownTime > 0) {
@@ -152,7 +152,7 @@ public class SaveDepositActivity extends BaseUrlView  {
 
         chooseCase(0);
 
-        mHandler.sendEmptyMessageDelayed(countDownCode,1000);
+        mHandler.sendEmptyMessageDelayed(countDownCode, 1000);
     }
 
 //    @Override
@@ -172,8 +172,6 @@ public class SaveDepositActivity extends BaseUrlView  {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_left:
-//                ViewManager.getInstance().finishAllView();
-//                skipActivity(HomeActivity.class);
 
                 ViewManager.getInstance().finishOthersView(HomeActivity.class);
                 break;
@@ -198,7 +196,7 @@ public class SaveDepositActivity extends BaseUrlView  {
                     ToastUtil.showShortToast("暂无相应型号的箱子可用");
                     return;
                 }
-                if(TextUtils.isEmpty(opencode) || mChoosePosition!=mPosition){
+                if (TextUtils.isEmpty(opencode) || mChoosePosition != mPosition) {
                     String boxSize = mPosition == 0 ? "small" : mPosition == 1 ? "medium" : "big";
 
                     mChoosePosition = mPosition;
@@ -210,15 +208,7 @@ public class SaveDepositActivity extends BaseUrlView  {
                     requestBean.boxsize = boxSize;
                     mPresenter.createOrder(requestBean);
                 } else {
-//                    if(timeDialog == null){
-//                        timeDialog = new SaveOverTimeDialog(getCtx(), opencode,money);
-//                    }
-//                    timeDialog.setPrice(money);
-//                    timeDialog.hidePayView();
-//                    timeDialog.setTvTitle("包裹订单创建成功\n请扫描下方二维码支付寄存包裹");
-//                    timeDialog.show();
-
-                    showSaveOverDialog();
+                    showSaveOverDialog(false);
                 }
                 break;
             case R.id.ll_small:
@@ -286,31 +276,22 @@ public class SaveDepositActivity extends BaseUrlView  {
                         smallBoxNum = Integer.parseInt(bean.getCount());
                     }
                 }
-                tvTip.setText(String.format(tvTip.getText().toString(),userName,smallBoxNum,middleBoxNum,largeBoxNum));
+                tvTip.setText(String.format(tvTip.getText().toString(), userName, smallBoxNum, middleBoxNum, largeBoxNum));
             }
-            if(requestCls == CreateOrderRequestBean.class){
+            if (requestCls == CreateOrderRequestBean.class) {
                 OrderInfoBean orderInfoBean = JSON.parseObject(responseBean.getData(), OrderInfoBean.class);
                 opencode = orderInfoBean.getOpencode();
                 money = orderInfoBean.getMoney();
                 orderId = orderInfoBean.getId();
                 LockerApplication.sOrderId = orderId;
 
-                if(TextUtils.isEmpty(money) || Float.parseFloat(money)<=0f){
+                if (TextUtils.isEmpty(money) || Float.parseFloat(money) <= 0f) {
                     openBoxByOpencode(opencode);
                     return;
                 }
+                showSaveOverDialog(true);
 
-//                if(timeDialog == null){
-//                    timeDialog = new SaveOverTimeDialog(getCtx(), opencode, money);
-//                }
-//                timeDialog.setPrice(money);
-//                timeDialog.hidePayView();
-//                timeDialog.setTvTitle("包裹订单创建成功\n请扫描下方二维码支付寄存包裹");
-//                timeDialog.show();
-
-                showSaveOverDialog();
-
-                if(mHandler!=null){
+                if (mHandler != null) {
                     mHandler.removeMessages(countDownCode);
                     tvCountDown.setText(String.format("%ss后返回首页", 30));
                 }
@@ -330,19 +311,30 @@ public class SaveDepositActivity extends BaseUrlView  {
 //        }
 //    }
 
-    private void showSaveOverDialog(){
-        if(timeDialog == null){
-            timeDialog = new SaveOverTimeDialog(getCtx(), opencode, money);
+    private void showSaveOverDialog(boolean isNeedCreate) {
+        if(timeDialog!=null && isNeedCreate){
+            timeDialog.releaseTimer();
+            timeDialog.setCountDownCallback(null);
         }
+
+        if(isNeedCreate){
+            timeDialog = new SaveOverTimeDialog(getCtx(), opencode, money);
+        } else {
+            if (timeDialog == null) {
+                timeDialog = new SaveOverTimeDialog(getCtx(), opencode, money);
+            }
+        }
+
         timeDialog.setCountDownCallback(new SaveOverTimeDialog.IOnCountDownCallback() {
             @Override
             public void onFinish() {
                 timeDialog.dismiss();
+                timeDialog = null;
                 opencode = null;
-                if(mHandler!=null){
+                if (mHandler != null) {
                     mHandler.removeMessages(countDownCode);
                     countDownTime = 30;
-                    mHandler.sendEmptyMessageDelayed(countDownCode,1000);
+                    mHandler.sendEmptyMessageDelayed(countDownCode, 1000);
                 }
             }
         });
@@ -352,12 +344,12 @@ public class SaveDepositActivity extends BaseUrlView  {
         timeDialog.show();
     }
 
-    private void openBoxByOpencode(String opencode){
-        if (TextUtils.isEmpty(opencode)||opencode.length()<=1){
+    private void openBoxByOpencode(String opencode) {
+        if (TextUtils.isEmpty(opencode) || opencode.length() <= 1) {
             ToastUtil.showShortToast("取件码有误");
             return;
         }
-        String boxno = opencode.substring(0,2);
+        String boxno = opencode.substring(0, 2);
         try {
             SerialPortOpenSDK.getInstance().send(
                     new CommandProtocol.Builder()
@@ -373,8 +365,12 @@ public class SaveDepositActivity extends BaseUrlView  {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(mHandler!=null){
+        if (mHandler != null) {
             mHandler.removeMessages(countDownCode);
+        }
+        if(timeDialog!=null){
+            timeDialog.releaseTimer();
+            timeDialog.setCountDownCallback(null);
         }
     }
 }

@@ -64,12 +64,20 @@ public class SaveOverTimeDialog extends BaseUrlDialog {
     public SaveOverTimeDialog(Context context,String opencode,String price) {
         super(context);
         this.mContext = context;
+        setCanceledOnTouchOutside(false);
         tvPrice.setText(String.format("￥%s",price));
         mPresenter.getPayQrCode(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(mContext),opencode);
     }
 
     public void setPrice(String price){
         tvPrice.setText(String.format("￥%s",price));
+    }
+
+
+    public void releaseTimer(){
+        if(timeCount!=null){
+            timeCount.cancel();
+        }
     }
 
     @Override
@@ -167,6 +175,7 @@ public class SaveOverTimeDialog extends BaseUrlDialog {
             ToastUtil.showShortToast(responseBean.getMessage());
         }
     }
+
 
     public interface IOnCountDownCallback{
         void onFinish();

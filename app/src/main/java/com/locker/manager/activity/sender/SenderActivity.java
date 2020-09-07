@@ -266,10 +266,6 @@ public class SenderActivity extends BaseUrlView {
                     }
                 }
                 String postNo = etParcelNum.getText().toString();
-//                if(TextUtils.isEmpty(postNo)){
-//                    ToastUtil.showShortToast("包裹单号不能为空");
-//                    return;
-//                }
 
                 Bundle bundle = new Bundle();
                 bundle.putString(Constant.UserName,userName);
@@ -302,6 +298,92 @@ public class SenderActivity extends BaseUrlView {
                 }
                 mPresenter.sendSms(postPhone);
                 break;
+        }
+    }
+
+
+    @OnClick({R.id.tv_0, R.id.tv_1, R.id.tv_2, R.id.tv_3, R.id.tv_4, R.id.tv_5, R.id.tv_6, R.id.tv_7, R.id.tv_8, R.id.tv_9, R.id.tv_reset, R.id.tv_delete})
+    public void onViewNumClicked(View view) {
+        VibratorManager.getInstance().vibrate(50);
+        switch (view.getId()) {
+            case R.id.tv_0:
+                addString("0");
+                break;
+            case R.id.tv_1:
+                addString("1");
+                break;
+            case R.id.tv_2:
+                addString("2");
+                break;
+            case R.id.tv_3:
+                addString("3");
+                break;
+            case R.id.tv_4:
+                addString("4");
+                break;
+            case R.id.tv_5:
+                addString("5");
+                break;
+            case R.id.tv_6:
+                addString("6");
+                break;
+            case R.id.tv_7:
+                addString("7");
+                break;
+            case R.id.tv_8:
+                addString("8");
+                break;
+            case R.id.tv_9:
+                addString("9");
+                break;
+            case R.id.tv_reset:
+                reSetString();
+                break;
+            case R.id.tv_delete:
+                deleteString();
+                break;
+        }
+    }
+
+    private void addString(String str) {
+        if (etPostPhone.isFocused()) {
+            EditTextInputUtils.addString(etPostPhone, str);
+        } else if (etFetchPhone.isFocused()) {
+            EditTextInputUtils.addString(etFetchPhone, str);
+        } else if (etParcelNum.isFocused()) {
+            EditTextInputUtils.addString(etParcelNum, str);
+        } else if (etPostVerify.isFocused()) {
+            EditTextInputUtils.addString(etPostVerify, str);
+        } else if (etFetchVerify.isFocused()) {
+            EditTextInputUtils.addString(etFetchVerify, str);
+        }
+    }
+
+    private void reSetString() {
+        if (etPostPhone.isFocused()) {
+            etPostPhone.setText("");
+        } else if (etFetchPhone.isFocused()) {
+            etFetchPhone.setText("");
+        } else if(etParcelNum.isFocused()){
+            etParcelNum.setText("");
+        } else if (etPostVerify.isFocused()) {
+            etPostVerify.setText("");
+        } else if (etFetchVerify.isFocused()) {
+            etFetchVerify.setText("");
+        }
+    }
+
+    private void deleteString() {
+        if (etPostPhone.isFocused()) {
+            EditTextInputUtils.deleteString(etPostPhone);
+        } else if (etFetchPhone.isFocused()) {
+            EditTextInputUtils.deleteString(etFetchPhone);
+        } else if (etParcelNum.isFocused()) {
+            EditTextInputUtils.deleteString(etParcelNum);
+        } else if (etPostVerify.isFocused()) {
+            EditTextInputUtils.deleteString(etPostVerify);
+        } else if (etFetchVerify.isFocused()) {
+            EditTextInputUtils.deleteString(etFetchVerify);
         }
     }
 

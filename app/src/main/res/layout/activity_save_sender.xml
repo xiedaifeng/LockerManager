@@ -39,6 +39,7 @@
                     android:maxLength="11"
                     android:inputType="number"
                     android:singleLine="true"
+                    android:focusable="true"
                     android:textColorHint="@color/color_999999"
                     android:textColor="@color/color_333333"/>
 
@@ -247,7 +248,7 @@
 
         </LinearLayout>
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -260,19 +261,18 @@
                 android:id="@+id/recyclerView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:overScrollMode="never">
+                android:overScrollMode="never"
+                android:visibility="gone"/>
 
-            </androidx.recyclerview.widget.RecyclerView>
+            <include layout="@layout/item_num_input"/>
 
             <ImageView
                 android:id="@+id/iv_help"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@mipmap/help"
-                android:layout_below="@+id/recyclerView"
-                android:layout_alignRight="@+id/recyclerView"
                 android:layout_marginTop="20dp"/>
 
-        </RelativeLayout>
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>
