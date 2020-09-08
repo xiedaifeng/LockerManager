@@ -155,19 +155,6 @@ public class SaveDepositActivity extends BaseUrlView {
         mHandler.sendEmptyMessageDelayed(countDownCode, 1000);
     }
 
-//    @Override
-//    protected void onPause() {
-//        super.onPause();
-//        SerialPortOpenSDK.getInstance().unregirster(this);
-//    }
-//
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        SerialPortOpenSDK.getInstance().regirster(this);
-//    }
-
-
     @OnClick({R.id.iv_left, R.id.iv_help, R.id.tv_last, R.id.tv_save, R.id.ll_small, R.id.ll_middle, R.id.ll_large})
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -301,6 +288,8 @@ public class SaveDepositActivity extends BaseUrlView {
                     mHandler.removeMessages(countDownCode);
                     tvCountDown.setText(String.format("%ss后返回首页", 30));
                 }
+
+                mPresenter.getAllBoxDetail(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()));
             }
         } else {
             ToastUtil.showShortToast(responseBean.getMessage());

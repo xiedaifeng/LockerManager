@@ -206,14 +206,6 @@ public class SenderDeliverActivity extends BaseUrlView {
                     mPresenter.createOrder(requestBean);
                 } else {
 
-//                    if(timeDialog == null){
-//                        timeDialog = new SaveOverTimeDialog(getCtx(), opencode,money);
-//                    }
-//                    timeDialog.setPrice(money);
-//                    timeDialog.hidePayView();
-//                    timeDialog.setTvTitle("包裹订单创建成功\n请扫描下方二维码支付寄存包裹");
-//                    timeDialog.show();
-
                     showSaveOverDialog(false);
                 }
 
@@ -307,6 +299,8 @@ public class SenderDeliverActivity extends BaseUrlView {
                     mHandler.removeMessages(countDownCode);
                     tvCountDown.setText(String.format("%ss后返回首页", 30));
                 }
+
+                mPresenter.getAllBoxDetail(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()));
             }
         } else {
             ToastUtil.showShortToast(responseBean.getMessage());
