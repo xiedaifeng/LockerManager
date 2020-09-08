@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -42,9 +43,6 @@ import butterknife.OnClick;
 
 public class SenderPickUpActivity extends BaseUrlView {
 
-    @BindView(R.id.recyclerView)
-    RecyclerView recyclerView;
-
     @BindView(R.id.iv_help)
     ImageView ivHelp;
     @BindView(R.id.iv_left)
@@ -55,6 +53,8 @@ public class SenderPickUpActivity extends BaseUrlView {
     EditText etPostPhone;
     @BindView(R.id.tv_back_home)
     TextView tvBackHome;
+    @BindView(R.id.tv_delete)
+    TextView tvDelete;
 
     private BoxStateDialog dialog = null;
 
@@ -67,6 +67,10 @@ public class SenderPickUpActivity extends BaseUrlView {
     private final int countDownCode = 0x113;
 
     private int countDownTime = 30;
+
+    private boolean isLongClickEnable;
+
+    private final int longClickDeleteCode = 0x114;
 
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler(){
@@ -84,6 +88,8 @@ public class SenderPickUpActivity extends BaseUrlView {
 
                     ViewManager.getInstance().finishOthersView(HomeActivity.class);
                 }
+            } else if(msg.what == longClickDeleteCode){
+                deleteString();
             }
         }
     };
@@ -97,32 +103,41 @@ public class SenderPickUpActivity extends BaseUrlView {
     public void init() {
         setCurrentTime(tvTitle, System.currentTimeMillis());
 
-        recyclerView.setLayoutManager(new GridLayoutManager(getCtx(), 3));
-        NumAdapter adapter = new NumAdapter(getCtx());
-        recyclerView.setAdapter(adapter);
-
-        adapter.setOnItemCallBack(new OnItemClickListener<String>() {
+        tvDelete.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onItemClick(int position, String str) {
-                if (TextUtils.equals("重置", str)) {
-                    if (etPostPhone.isFocused()) {
-                        etPostPhone.setText("");
-                    }
-                } else if (TextUtils.equals("回删", str)) {
-                    if (etPostPhone.isFocused()) {
-                        EditTextInputUtils.deleteString(etPostPhone);
-                    }
-                } else {
-                    if (etPostPhone.isFocused()) {
-                        EditTextInputUtils.addString(etPostPhone, str);
-                    }
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                switch (motionEvent.getAction()){
+                    case MotionEvent.ACTION_UP:
+                        isLongClickEnable = false;
+                        if(mHandler!=null){
+                            mHandler.removeMessages(longClickDeleteCode);
+                        }
+                        break;
                 }
-                VibratorManager.getInstance().vibrate(50);
+                return false;
             }
+        });
 
+        tvDelete.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public void onItemLongClick(int position, String str) {
-
+            public boolean onLongClick(View view) {
+                isLongClickEnable = true;
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        while (isLongClickEnable){
+                            try {
+                                Thread.sleep(100);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            if(mHandler!=null){
+                                mHandler.sendEmptyMessage(longClickDeleteCode);
+                            }
+                        }
+                    }
+                }).start();
+                return false;
             }
         });
 

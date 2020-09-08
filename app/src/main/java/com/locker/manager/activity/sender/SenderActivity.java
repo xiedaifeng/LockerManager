@@ -1,9 +1,12 @@
 package com.locker.manager.activity.sender;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -33,6 +36,7 @@ import com.yidao.module_lib.utils.PhoneUtils;
 import com.yidao.module_lib.utils.SoftKeyboardUtil;
 import com.yidao.module_lib.utils.ToastUtil;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
@@ -40,9 +44,6 @@ import butterknife.OnClick;
 
 
 public class SenderActivity extends BaseUrlView {
-
-    @BindView(R.id.recyclerView)
-    RecyclerView recyclerView;
 
     @BindView(R.id.iv_help)
     ImageView ivHelp;
@@ -78,11 +79,28 @@ public class SenderActivity extends BaseUrlView {
     RelativeLayout rlFetchVerify;
     @BindView(R.id.tv_fetch_verify)
     TextView tvFetchVerify;
+    @BindView(R.id.tv_delete)
+    TextView tvDelete;
 
     private boolean isPostCheck = false;
     private boolean isFetchCheck = false;
 
     private String userName = "";
+
+    private boolean isLongClickEnable;
+
+    private final int longClickDeleteCode = 0x113;
+
+
+    Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            super.handleMessage(msg);
+            if(msg.what == longClickDeleteCode){
+                deleteString();
+            }
+        }
+    };
 
     @Override
     protected int getView() {
@@ -92,59 +110,6 @@ public class SenderActivity extends BaseUrlView {
     @Override
     public void init() {
         setCurrentTime(tvTitle,System.currentTimeMillis());
-
-        recyclerView.setLayoutManager(new GridLayoutManager(getCtx(), 3));
-        NumAdapter adapter = new NumAdapter(getCtx());
-        recyclerView.setAdapter(adapter);
-
-        adapter.setOnItemCallBack(new OnItemClickListener<String>() {
-            @Override
-            public void onItemClick(int position, String str) {
-                if (TextUtils.equals("重置", str)) {
-                    if (etPostPhone.isFocused()) {
-                        etPostPhone.setText("");
-                    } else if (etFetchPhone.isFocused()) {
-                        etFetchPhone.setText("");
-                    } else if(etParcelNum.isFocused()){
-                        etParcelNum.setText("");
-                    } else if (etPostVerify.isFocused()) {
-                        etPostVerify.setText("");
-                    } else if (etFetchVerify.isFocused()) {
-                        etFetchVerify.setText("");
-                    }
-                } else if (TextUtils.equals("回删", str)) {
-                    if (etPostPhone.isFocused()) {
-                        EditTextInputUtils.deleteString(etPostPhone);
-                    } else if (etFetchPhone.isFocused()) {
-                        EditTextInputUtils.deleteString(etFetchPhone);
-                    } else if (etParcelNum.isFocused()) {
-                        EditTextInputUtils.deleteString(etParcelNum);
-                    } else if (etPostVerify.isFocused()) {
-                        EditTextInputUtils.deleteString(etPostVerify);
-                    } else if (etFetchVerify.isFocused()) {
-                        EditTextInputUtils.deleteString(etFetchVerify);
-                    }
-                } else {
-                    if (etPostPhone.isFocused()) {
-                        EditTextInputUtils.addString(etPostPhone, str);
-                    } else if (etFetchPhone.isFocused()) {
-                        EditTextInputUtils.addString(etFetchPhone, str);
-                    } else if (etParcelNum.isFocused()) {
-                        EditTextInputUtils.addString(etParcelNum, str);
-                    } else if (etPostVerify.isFocused()) {
-                        EditTextInputUtils.addString(etPostVerify, str);
-                    } else if (etFetchVerify.isFocused()) {
-                        EditTextInputUtils.addString(etFetchVerify, str);
-                    }
-                }
-                VibratorManager.getInstance().vibrate(50);
-            }
-
-            @Override
-            public void onItemLongClick(int position, String str) {
-
-            }
-        });
 
         SoftKeyboardUtil.disableShowInput(etPostPhone);
         SoftKeyboardUtil.disableShowInput(etFetchPhone);
@@ -219,6 +184,44 @@ public class SenderActivity extends BaseUrlView {
                 } else {
                     tvFetchVerify.setVisibility(View.GONE);
                 }
+            }
+        });
+
+        tvDelete.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                switch (motionEvent.getAction()){
+                    case MotionEvent.ACTION_UP:
+                        isLongClickEnable = false;
+                        if(mHandler!=null){
+                            mHandler.removeMessages(longClickDeleteCode);
+                        }
+                        break;
+                }
+                return false;
+            }
+        });
+
+        tvDelete.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                isLongClickEnable = true;
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        while (isLongClickEnable){
+                            try {
+                                Thread.sleep(100);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            if(mHandler!=null){
+                                mHandler.sendEmptyMessage(longClickDeleteCode);
+                            }
+                        }
+                    }
+                }).start();
+                return false;
             }
         });
     }
@@ -382,18 +385,24 @@ public class SenderActivity extends BaseUrlView {
         }
     }
 
-    private void deleteString() {
+    private boolean deleteString() {
         if (etPostPhone.isFocused()) {
             EditTextInputUtils.deleteString(etPostPhone);
+            return true;
         } else if (etFetchPhone.isFocused()) {
             EditTextInputUtils.deleteString(etFetchPhone);
+            return true;
         } else if (etParcelNum.isFocused()) {
             EditTextInputUtils.deleteString(etParcelNum);
+            return true;
         } else if (etPostVerify.isFocused()) {
             EditTextInputUtils.deleteString(etPostVerify);
+            return true;
         } else if (etFetchVerify.isFocused()) {
             EditTextInputUtils.deleteString(etFetchVerify);
+            return true;
         }
+        return false;
     }
 
 

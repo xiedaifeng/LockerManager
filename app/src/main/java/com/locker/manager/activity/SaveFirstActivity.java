@@ -1,9 +1,12 @@
 package com.locker.manager.activity;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -30,6 +33,7 @@ import com.yidao.module_lib.utils.PhoneUtils;
 import com.yidao.module_lib.utils.SoftKeyboardUtil;
 import com.yidao.module_lib.utils.ToastUtil;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -38,9 +42,6 @@ import butterknife.OnClick;
 
 
 public class SaveFirstActivity extends BaseUrlView {
-
-    @BindView(R.id.recyclerView)
-    RecyclerView recyclerView;
 
     @BindView(R.id.iv_help)
     ImageView ivHelp;
@@ -77,12 +78,28 @@ public class SaveFirstActivity extends BaseUrlView {
 
     @BindView(R.id.tv_fetch_agree1)
     TextView tvFetchAgree1;
+    @BindView(R.id.tv_delete)
+    TextView tvDelete;
 
     private boolean isPostCheck = false;
     private boolean isFetchCheck = false;
 
     private String userName = "";
 
+    private boolean isLongClickEnable;
+
+    private final int longClickDeleteCode = 0x112;
+
+
+    Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            super.handleMessage(msg);
+            if(msg.what == longClickDeleteCode){
+                deleteString();
+            }
+        }
+    };
 
     @Override
     protected int getView() {
@@ -93,60 +110,10 @@ public class SaveFirstActivity extends BaseUrlView {
     public void init() {
         setCurrentTime(tvTitle, System.currentTimeMillis());
 
-        recyclerView.setLayoutManager(new GridLayoutManager(getCtx(), 3));
-        NumAdapter adapter = new NumAdapter(getCtx());
-        recyclerView.setAdapter(adapter);
-
-        adapter.setOnItemCallBack(new OnItemClickListener<String>() {
-
-            @Override
-            public void onItemClick(int position, String str) {
-                if (TextUtils.equals("重置", str)) {
-                    if (etPostPhone.isFocused()) {
-                        etPostPhone.setText("");
-                    } else if (etFetchPhone.isFocused()) {
-                        etFetchPhone.setText("");
-                    } else if (etPostVerify.isFocused()) {
-                        etPostVerify.setText("");
-                    } else if (etFetchVerify.isFocused()) {
-                        etFetchVerify.setText("");
-                    }
-                } else if (TextUtils.equals("回删", str)) {
-                    if (etPostPhone.isFocused()) {
-                        EditTextInputUtils.deleteString(etPostPhone);
-                    } else if (etFetchPhone.isFocused()) {
-                        EditTextInputUtils.deleteString(etFetchPhone);
-                    } else if (etPostVerify.isFocused()) {
-                        EditTextInputUtils.deleteString(etPostVerify);
-                    } else if (etFetchVerify.isFocused()) {
-                        EditTextInputUtils.deleteString(etFetchVerify);
-                    }
-                } else {
-                    if (etPostPhone.isFocused()) {
-                        EditTextInputUtils.addString(etPostPhone, str);
-                    } else if (etFetchPhone.isFocused()) {
-                        EditTextInputUtils.addString(etFetchPhone, str);
-                    } else if (etPostVerify.isFocused()) {
-                        EditTextInputUtils.addString(etPostVerify, str);
-                    } else if (etFetchVerify.isFocused()) {
-                        EditTextInputUtils.addString(etFetchVerify, str);
-                    }
-                }
-                VibratorManager.getInstance().vibrate(50);
-            }
-
-            @Override
-            public void onItemLongClick(int position, String str) {
-                if (TextUtils.equals("回删", str)) {
-                }
-            }
-        });
-
         SoftKeyboardUtil.disableShowInput(etPostPhone);
         SoftKeyboardUtil.disableShowInput(etFetchPhone);
         SoftKeyboardUtil.disableShowInput(etPostVerify);
         SoftKeyboardUtil.disableShowInput(etFetchVerify);
-
 
         etPostPhone.addTextChangedListener(new TextWatcher() {
             @Override
@@ -191,11 +158,9 @@ public class SaveFirstActivity extends BaseUrlView {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
-
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
-
             @Override
             public void afterTextChanged(Editable s) {
                 if (s.length() == 4) {
@@ -209,11 +174,9 @@ public class SaveFirstActivity extends BaseUrlView {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
-
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
-
             @Override
             public void afterTextChanged(Editable s) {
                 if (s.length() == 4) {
@@ -223,6 +186,44 @@ public class SaveFirstActivity extends BaseUrlView {
                 }
             }
         });
+
+        tvDelete.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                switch (motionEvent.getAction()){
+                    case MotionEvent.ACTION_UP:
+                        isLongClickEnable = false;
+                        if(mHandler!=null){
+                            mHandler.removeMessages(longClickDeleteCode);
+                        }
+                        break;
+                }
+                return false;
+            }
+        });
+
+        tvDelete.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                isLongClickEnable = true;
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        while (isLongClickEnable){
+                            try {
+                                Thread.sleep(100);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            if(mHandler!=null){
+                                mHandler.sendEmptyMessage(longClickDeleteCode);
+                            }
+                        }
+                    }
+                }).start();
+                return false;
+            }
+        });
     }
 
 
@@ -230,9 +231,6 @@ public class SaveFirstActivity extends BaseUrlView {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_left:
-//                ViewManager.getInstance().finishAllView();
-//                skipActivity(HomeActivity.class);
-
                 ViewManager.getInstance().finishOthersView(HomeActivity.class);
                 break;
             case R.id.iv_help:
@@ -386,16 +384,21 @@ public class SaveFirstActivity extends BaseUrlView {
         }
     }
 
-    private void deleteString() {
+    private boolean deleteString() {
         if (etPostPhone.isFocused()) {
             EditTextInputUtils.deleteString(etPostPhone);
+            return true;
         } else if (etFetchPhone.isFocused()) {
             EditTextInputUtils.deleteString(etFetchPhone);
+            return true;
         } else if (etPostVerify.isFocused()) {
             EditTextInputUtils.deleteString(etPostVerify);
+            return true;
         } else if (etFetchVerify.isFocused()) {
             EditTextInputUtils.deleteString(etFetchVerify);
+            return true;
         }
+        return false;
     }
 
     @Override
