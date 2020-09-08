@@ -240,6 +240,9 @@ public class SaveFirstActivity extends BaseUrlView {
                 skipActivity(SaveHelpActivity.class);
                 break;
             case R.id.tv_next:
+                if(!isDeviceOnLine()){
+                    return;
+                }
                 VibratorManager.getInstance().vibrate(50);
                 String postPhone = etPostPhone.getText().toString();
                 String fetchPhone = etFetchPhone.getText().toString();
@@ -278,6 +281,9 @@ public class SaveFirstActivity extends BaseUrlView {
                 skipActivity(SaveDepositActivity.class, bundle);
                 break;
             case R.id.tv_fetch_agree:
+                if(!isDeviceOnLine()){
+                    return;
+                }
                 VibratorManager.getInstance().vibrate(50);
                 fetchPhone = etFetchPhone.getText().toString();
                 if (!PhoneUtils.isPhone(fetchPhone)) {
@@ -287,6 +293,9 @@ public class SaveFirstActivity extends BaseUrlView {
                 mPresenter.sendSms(fetchPhone);
                 break;
             case R.id.tv_post_send:
+                if(!isDeviceOnLine()){
+                    return;
+                }
                 VibratorManager.getInstance().vibrate(50);
                 postPhone = etPostPhone.getText().toString();
                 if (!PhoneUtils.isPhone(postPhone)) {
@@ -296,6 +305,9 @@ public class SaveFirstActivity extends BaseUrlView {
                 mPresenter.sendSms(postPhone);
                 break;
             case R.id.tv_fetch_agree1:
+                if(!isDeviceOnLine()){
+                    return;
+                }
                 VibratorManager.getInstance().vibrate(50);
                 postPhone = etPostPhone.getText().toString();
                 if (!PhoneUtils.isPhone(postPhone)) {

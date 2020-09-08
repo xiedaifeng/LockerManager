@@ -136,8 +136,10 @@ public class SenderPickUpActivity extends BaseUrlView {
                 ViewManager.getInstance().finishOthersView(HomeActivity.class);
                 break;
             case R.id.tv_next:
+                if(!isDeviceOnLine()){
+                    return;
+                }
                 VibratorManager.getInstance().vibrate(50);
-
                 String code = etPostPhone.getText().toString();
                 if (TextUtils.isEmpty(code)) {
                     ToastUtil.showShortToast("取件码不能为空");

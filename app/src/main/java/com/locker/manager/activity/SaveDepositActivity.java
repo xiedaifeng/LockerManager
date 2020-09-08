@@ -179,10 +179,16 @@ public class SaveDepositActivity extends BaseUrlView {
                 skipActivity(SaveHelpActivity.class);
                 break;
             case R.id.tv_last:
+                if(!isDeviceOnLine()){
+                    return;
+                }
                 VibratorManager.getInstance().vibrate(50);
                 ViewManager.getInstance().finishView();
                 break;
             case R.id.tv_save:
+                if(!isDeviceOnLine()){
+                    return;
+                }
                 VibratorManager.getInstance().vibrate(50);
                 if (mPosition == 0 && smallBoxNum == 0) {
                     ToastUtil.showShortToast("暂无相应型号的箱子可用");

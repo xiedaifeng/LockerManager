@@ -10,9 +10,11 @@ import android.widget.TextView;
 
 import com.locker.manager.activity.receiver.TimerReceiver;
 import com.locker.manager.mvp.presenter.CommonPresenter;
+import com.locker.manager.service.LockerIntentService;
 import com.yidao.module_lib.base.BaseView;
 import com.yidao.module_lib.utils.DateUtils;
 import com.yidao.module_lib.utils.LogUtils;
+import com.yidao.module_lib.utils.ToastUtil;
 
 public abstract class BaseUrlView extends BaseView {
 
@@ -51,6 +53,13 @@ public abstract class BaseUrlView extends BaseView {
         this.tvTitle = text;
         String timeFirst = DateUtils.stampToDateFormat(time, "MM月dd日    EEEE    HH:mm");
         text.setText(timeFirst);
+    }
+
+    protected boolean isDeviceOnLine(){
+        if(!LockerIntentService.isDeviceOnLine){
+            ToastUtil.showLongToast("设备已离线，请检查网络");
+        }
+        return LockerIntentService.isDeviceOnLine;
     }
 
 

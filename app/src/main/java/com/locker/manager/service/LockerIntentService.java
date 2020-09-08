@@ -37,6 +37,8 @@ public class LockerIntentService extends GTIntentService implements SerialPortMe
 
     private String boxno;
 
+    public static boolean isDeviceOnLine = false;
+
     @Override
     public void onReceiveServicePid(Context context, int i) {
         LogUtils.e("onReceiveServicePid:" + i);
@@ -138,6 +140,11 @@ public class LockerIntentService extends GTIntentService implements SerialPortMe
     @Override
     public void onReceiveOnlineState(Context context, boolean b) {
         LogUtils.e("onReceiveOnlineState:" + b);
+        isDeviceOnLine = b;
+
+        if(!b){
+//            ToastUtil.showLongToast("当前网络已断开，请先检查网络状况");
+        }
     }
 
     // 各种事件处理回执

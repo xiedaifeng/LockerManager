@@ -73,7 +73,7 @@ public class HomeActivity extends BaseUrlView  {
 
         setCurrentTime(tvTitle, System.currentTimeMillis());
 
-        ivLeft.setVisibility(View.VISIBLE);
+        ivLeft.setVisibility(View.GONE);
 
         String mac = PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx());
         tvMac.setText(mac);
@@ -133,6 +133,9 @@ public class HomeActivity extends BaseUrlView  {
 
                 break;
             case R.id.tv_hand_save:
+                if(!isDeviceOnLine()){
+                    return;
+                }
                 skipActivity(SaveHandActivity.class);
                 VibratorManager.getInstance().vibrate(50);
                 break;
