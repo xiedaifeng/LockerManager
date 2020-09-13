@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="false"
+    android:orientation="vertical">
+
+    <include layout="@layout/item_head_title" />
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/et_shape"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp">
+
+        <TextView
+            android:id="@+id/tv_input"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="40dp"
+            android:hint="请选择相应串口号进行连接"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:gravity="center_vertical" />
+
+
+        <TextView
+            android:id="@+id/tv_show"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:paddingLeft="40dp"
+            android:paddingRight="40dp"
+            android:text="展示串口"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:background="@drawable/text_0ed26b_5_shape"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"/>
+
+    </RelativeLayout>
+
+
+
+    <TextView
+        android:id="@+id/tv_connect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="40dp"
+        android:paddingRight="40dp"
+        android:paddingBottom="15dp"
+        android:paddingTop="15dp"
+        android:text="确认连接"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="100dp"
+        android:background="@drawable/text_0ed26b_5_shape"/>
+
+</LinearLayout>

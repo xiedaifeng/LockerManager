@@ -68,6 +68,25 @@ public class SerialPortOpenSDK {
     }
 
 
+    public void reStartInitialize(Context mContex)throws Exception{
+        this.mContext=mContex;
+        MMKV.initialize(mContext);
+        Consts.Utils.packageName=mContext.getPackageName();
+        clearRegirster();
+        closeSerialPort();
+        if(serviceConnection!=null){
+            mContext.unbindService(serviceConnection);
+        }
+
+
+        Intent intent=new Intent();
+        intent.setAction(mContext.getPackageName()+Consts.Utils.ACTION);
+        intent.setPackage(mContext.getPackageName());
+        serviceConnection=new MyServiceConnection();
+        mContext.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+    }
+
+
     public void regirster(SerialPortMessageListener listener){
         if (listenerList!=null&&!listenerList.contains(listener)){
             synchronized (SerialPortOpenSDK.class){
@@ -80,6 +99,14 @@ public class SerialPortOpenSDK {
         if (listenerList!=null&&listenerList.contains(listener)){
             synchronized (SerialPortOpenSDK.class){
                 listenerList.remove(listener);
+            }
+        }
+    }
+
+    public void clearRegirster(){
+        if (listenerList!=null){
+            synchronized (SerialPortOpenSDK.class){
+                listenerList.clear();
             }
         }
     }
@@ -289,6 +316,7 @@ public class SerialPortOpenSDK {
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
+            serviceConnection = null;
             if (listener!=null){
                 listener.initListener(0x02, "远端服务断开连接");
             }

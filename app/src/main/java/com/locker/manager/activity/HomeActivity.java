@@ -2,6 +2,7 @@ package com.locker.manager.activity;
 
 
 import android.annotation.SuppressLint;
+import android.app.ActivityManager;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
@@ -22,14 +23,20 @@ import com.example.http_lib.bean.SystemNoticeRequestBean;
 import com.example.http_lib.response.NoticeBean;
 import com.example.http_lib.utils.UserCacheHelper;
 import com.locker.manager.R;
+import com.locker.manager.app.LockerApplication;
 import com.locker.manager.base.BaseUrlView;
 import com.locker.manager.dialog.SaveOverTimeDialog;
 import com.locker.manager.manager.VibratorManager;
+import com.locker.manager.task.LockerManagerTask;
+import com.qiao.launch.starter.TaskDispatcher;
+import com.qiao.serialport.SerialPortOpenSDK;
+import com.qiao.serialport.listener.SerianPortSDKListener;
 import com.squareup.picasso.Picasso;
 import com.yidao.module_lib.base.http.ResponseBean;
 import com.yidao.module_lib.manager.PermissionManager;
 import com.yidao.module_lib.manager.ViewManager;
 import com.yidao.module_lib.utils.PhoneInfoUtils;
+import com.yidao.module_lib.utils.ToastUtil;
 
 import java.util.List;
 
@@ -89,9 +96,10 @@ public class HomeActivity extends BaseUrlView  {
         switch (view.getId()) {
             case R.id.iv_left:
 
-//                showSaveOverDialog();
 
-                skipActivity(TestActivity.class);
+//                TaskDispatcher.createInstance().addTask(new LockerManagerTask("/dev/ttyS3")).start();
+
+//                skipActivity(SettingActivity.class);
 
 //                try {
 //                    SerialPortOpenSDK.getInstance().send(

@@ -4,6 +4,7 @@
     package="com.locker.manager">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES"/>
     <!-- 个推 SDK 权限配置开始 -->
     <!-- 必选权限 -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -56,6 +57,7 @@
 
         <activity android:name=".activity.SaveFirstActivity" android:screenOrientation="landscape" android:windowSoftInputMode="stateHidden"/>
         <activity android:name=".activity.TestActivity" android:screenOrientation="landscape" android:windowSoftInputMode="stateHidden"/>
+        <activity android:name=".activity.SettingActivity" android:screenOrientation="landscape" android:windowSoftInputMode="stateHidden"/>
 
         <receiver android:name=".activity.receiver.TimerReceiver"/>
 

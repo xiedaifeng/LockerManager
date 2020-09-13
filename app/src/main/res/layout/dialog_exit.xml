@@ -77,7 +77,22 @@
             android:background="@drawable/text_0ed26b_5_shape" />
 
         <View
-            android:id="@+id/view_gap"
+            android:layout_width="30dp"
+            android:layout_height="0dp"/>
+
+
+        <TextView
+            android:id="@+id/tv_setting"
+            android:layout_width="130dp"
+            android:layout_height="50dp"
+            android:layout_below="@+id/tv_role_name"
+            android:text="设置串口号"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:background="@drawable/text_0ed26b_5_shape"/>
+
+        <View
             android:layout_width="30dp"
             android:layout_height="0dp"/>
 

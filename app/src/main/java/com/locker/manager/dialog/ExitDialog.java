@@ -12,6 +12,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.example.http_lib.bean.DeviceInfoRequestBean;
 import com.example.http_lib.bean.PayQrCodeRequestBean;
 import com.locker.manager.R;
+import com.locker.manager.activity.SettingActivity;
 import com.locker.manager.base.BaseUrlDialog;
 import com.squareup.picasso.Picasso;
 import com.yidao.module_lib.base.http.ResponseBean;
@@ -38,6 +39,8 @@ public class ExitDialog extends BaseUrlDialog {
     EditText etPwd;
 
     private Context mContext;
+
+    private int requestType = 0;//  0 代表退出   1 代表设置串口号
 
     public ExitDialog(Context context) {
         super(context);
@@ -71,6 +74,16 @@ public class ExitDialog extends BaseUrlDialog {
                     ToastUtil.showLongToast("密码不能为空");
                     return;
                 }
+                requestType = 0;
+                mPresenter.getDeviceInfo(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(mContext));
+                break;
+            case R.id.tv_setting:
+                pwd = etPwd.getText().toString();
+                if(TextUtils.isEmpty(pwd)){
+                    ToastUtil.showLongToast("密码不能为空");
+                    return;
+                }
+                requestType = 1;
                 mPresenter.getDeviceInfo(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(mContext));
                 break;
         }
@@ -85,8 +98,12 @@ public class ExitDialog extends BaseUrlDialog {
                 String device_password = object.getString("device_password");
                 if(TextUtils.equals(etPwd.getText().toString(),device_password)){
                     dismiss();
-                    ToastUtil.showLongToast("操作成功");
-                    ViewManager.getInstance().AppExit();
+                    if(requestType == 0){
+                        ToastUtil.showLongToast("操作成功");
+                        ViewManager.getInstance().AppExit();
+                    } else if (requestType == 1){
+                        skipActivity(SettingActivity.class);
+                    }
                 } else {
                     ToastUtil.showLongToast("密码错误");
                 }
