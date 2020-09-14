@@ -29,11 +29,18 @@
                 android:background="@drawable/iv_shape">
 
                 <ImageView
+                    android:id="@+id/iv_place_qrcode"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:src="@mipmap/refresh"
+                    android:layout_centerInParent="true" />
+
+
+                <ImageView
                     android:id="@+id/iv_qrcode"
                     android:layout_width="200dp"
                     android:layout_height="200dp"
-                    android:src="@color/color_EEEEEE"
-                    android:layout_centerInParent="true"/>
+                    android:layout_centerInParent="true" />
 
             </RelativeLayout>
 

@@ -9,7 +9,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.example.http_lib.HttpClient;
 import com.example.http_lib.bean.CreateDeviceRequestBean;
 import com.example.http_lib.bean.GetOrderInfoRequestBean;
-import com.example.http_lib.bean.UpdateDeviceBoxStatusRequestBean;
 import com.example.http_lib.response.OrderInfoBean;
 import com.igexin.sdk.GTIntentService;
 import com.igexin.sdk.PushManager;
@@ -17,9 +16,7 @@ import com.igexin.sdk.message.GTCmdMessage;
 import com.igexin.sdk.message.GTNotificationMessage;
 import com.igexin.sdk.message.GTTransmitMessage;
 import com.locker.manager.activity.HomeActivity;
-import com.locker.manager.activity.SenderPickUpActivity;
 import com.locker.manager.activity.sender.SenderDeliverSuccessActivity;
-import com.locker.manager.activity.sender.SenderPickUpSuccessActivity;
 import com.locker.manager.activity.user.UserPickUpSuccessActivity;
 import com.locker.manager.app.Constant;
 import com.locker.manager.app.LockerApplication;
@@ -183,21 +180,21 @@ public class LockerIntentService extends GTIntentService implements SerialPortMe
         CommandProtocol commandProtocol = new CommandProtocol.Builder().setBytes(data).parseMessage();
         if (CommandProtocol.COMMAND_OPEN_RESPONSE == commandProtocol.getCommand()) {
             LogUtils.e("COMMAND_OPEN");
-            if (!TextUtils.isEmpty(boxno)) {
-                UpdateDeviceBoxStatusRequestBean requestBean = new UpdateDeviceBoxStatusRequestBean();
-                requestBean.device_id = PhoneInfoUtils.getLocalMacAddressFromWifiInfo(LockerApplication.getApplication());
-                requestBean.boxno = boxno;
-                requestBean.openstatus = "open";
-                HttpClient.request(requestBean, false, new IHttpCallBack() {
-                    @Override
-                    public void success(ResponseBean responseBean) {
-                    }
-
-                    @Override
-                    public void failed(ResponseBean responseBean) {
-                    }
-                });
-            }
+//            if (!TextUtils.isEmpty(boxno)) {
+//                UpdateDeviceBoxStatusRequestBean requestBean = new UpdateDeviceBoxStatusRequestBean();
+//                requestBean.device_id = PhoneInfoUtils.getLocalMacAddressFromWifiInfo(LockerApplication.getApplication());
+//                requestBean.boxno = boxno;
+//                requestBean.openstatus = "open";
+//                HttpClient.request(requestBean, false, new IHttpCallBack() {
+//                    @Override
+//                    public void success(ResponseBean responseBean) {
+//                    }
+//
+//                    @Override
+//                    public void failed(ResponseBean responseBean) {
+//                    }
+//                });
+//            }
         }
     }
 }

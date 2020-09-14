@@ -60,6 +60,8 @@ public class HomeActivity extends BaseUrlView  {
     TextView tvMac;
     @BindView(R.id.filpper)
     ViewFlipper filpper;
+    @BindView(R.id.iv_place_qrcode)
+    ImageView ivPlaceQrcode;
 
     @Override
     protected int getView() {
@@ -91,7 +93,7 @@ public class HomeActivity extends BaseUrlView  {
     }
 
 
-    @OnClick({R.id.iv_left, R.id.tv_hand_save, R.id.tv_help})
+    @OnClick({R.id.iv_left, R.id.tv_hand_save, R.id.tv_help,R.id.iv_place_qrcode})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_left:
@@ -150,6 +152,9 @@ public class HomeActivity extends BaseUrlView  {
             case R.id.tv_help:
                 skipActivity(SaveHelpActivity.class);
                 VibratorManager.getInstance().vibrate(50);
+                break;
+            case R.id.iv_place_qrcode:
+                mPresenter.createDeviceQrcode(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()));
                 break;
         }
     }

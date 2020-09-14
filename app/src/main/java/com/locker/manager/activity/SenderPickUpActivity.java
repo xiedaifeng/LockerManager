@@ -11,22 +11,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.fastjson.JSON;
 import com.example.http_lib.bean.BackOrderRequestBean;
 import com.example.http_lib.bean.DeviceBoxTimeStatusRequestBean;
 import com.example.http_lib.bean.GetOrderInfoByCodeRequestBean;
 import com.example.http_lib.bean.OpenDeviceBoxRequestBean;
-import com.example.http_lib.bean.UpdateDeviceBoxStatusRequestBean;
 import com.example.http_lib.response.OrderInfoBean;
 import com.locker.manager.R;
-import com.locker.manager.adapter.NumAdapter;
 import com.locker.manager.app.LockerApplication;
 import com.locker.manager.base.BaseUrlView;
-import com.locker.manager.callback.OnItemCallBack;
-import com.locker.manager.callback.OnItemClickListener;
 import com.locker.manager.dialog.BoxStateDialog;
 import com.locker.manager.dialog.SaveOverTimeDialog;
 import com.locker.manager.manager.VibratorManager;
@@ -284,8 +278,6 @@ public class SenderPickUpActivity extends BaseUrlView {
                 }
             }
             if (requestCls == BackOrderRequestBean.class) {
-            }
-            if (requestCls == UpdateDeviceBoxStatusRequestBean.class) {
             }
             if (requestCls == GetOrderInfoByCodeRequestBean.class) {
                 OrderInfoBean orderInfoBean = JSON.parseObject(responseBean.getData(), OrderInfoBean.class);

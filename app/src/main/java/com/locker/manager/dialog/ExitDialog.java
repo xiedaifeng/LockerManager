@@ -62,7 +62,7 @@ public class ExitDialog extends BaseUrlDialog {
     protected void initPress() {
     }
 
-    @OnClick({R.id.tv_cancel, R.id.tv_exit})
+    @OnClick({R.id.tv_cancel, R.id.tv_exit,R.id.tv_setting})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_cancel:
