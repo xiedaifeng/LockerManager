@@ -1,18 +1,12 @@
 package com.locker.manager.activity;
 
 
-import android.annotation.SuppressLint;
-import android.app.ActivityManager;
-import android.os.Handler;
-import android.os.Message;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
-
-import androidx.annotation.NonNull;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -23,20 +17,17 @@ import com.example.http_lib.bean.SystemNoticeRequestBean;
 import com.example.http_lib.response.NoticeBean;
 import com.example.http_lib.utils.UserCacheHelper;
 import com.locker.manager.R;
-import com.locker.manager.app.LockerApplication;
 import com.locker.manager.base.BaseUrlView;
-import com.locker.manager.dialog.SaveOverTimeDialog;
+import com.locker.manager.event.NetworkEvent;
 import com.locker.manager.manager.VibratorManager;
-import com.locker.manager.task.LockerManagerTask;
-import com.qiao.launch.starter.TaskDispatcher;
-import com.qiao.serialport.SerialPortOpenSDK;
-import com.qiao.serialport.listener.SerianPortSDKListener;
 import com.squareup.picasso.Picasso;
 import com.yidao.module_lib.base.http.ResponseBean;
 import com.yidao.module_lib.manager.PermissionManager;
-import com.yidao.module_lib.manager.ViewManager;
 import com.yidao.module_lib.utils.PhoneInfoUtils;
-import com.yidao.module_lib.utils.ToastUtil;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
@@ -44,7 +35,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 
-public class HomeActivity extends BaseUrlView  {
+public class HomeActivity extends BaseUrlView {
 
     @BindView(R.id.iv_left)
     ImageView ivLeft;
@@ -62,6 +53,7 @@ public class HomeActivity extends BaseUrlView  {
     ViewFlipper filpper;
     @BindView(R.id.iv_place_qrcode)
     ImageView ivPlaceQrcode;
+
 
     @Override
     protected int getView() {
@@ -84,6 +76,15 @@ public class HomeActivity extends BaseUrlView  {
 
         ivLeft.setVisibility(View.GONE);
 
+        initNetData();
+
+
+        if(!EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().register(this);
+        }
+    }
+
+    private void initNetData(){
         String mac = PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx());
         tvMac.setText(mac);
         mPresenter.createDeviceQrcode(mac);
@@ -209,4 +210,20 @@ public class HomeActivity extends BaseUrlView  {
             }
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().unregister(this);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onNetworkMessage(NetworkEvent event) {
+        if(event.isOnline){
+            initNetData();
+        }
+    }
+
 }

@@ -5,15 +5,21 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.locker.manager.R;
+import com.locker.manager.adapter.TestAdapter;
 import com.locker.manager.base.BaseUrlView;
+import com.locker.manager.callback.OnItemCallBack;
+import com.locker.manager.command.CommandProtocol;
 import com.locker.manager.dialog.SerialPopwindow;
 import com.locker.manager.task.LockerManagerTask;
 import com.qiao.launch.starter.TaskDispatcher;
 import com.qiao.serialport.SerialPortOpenSDK;
 import com.qiao.serialport.listener.SerialPortMessageListener;
-import com.qiao.serialport.listener.SerianPortSDKListener;
 import com.yidao.module_lib.manager.ViewManager;
+import com.yidao.module_lib.utils.LogUtils;
 import com.yidao.module_lib.utils.ToastUtil;
 
 import butterknife.BindView;
@@ -24,6 +30,10 @@ public class SettingActivity extends BaseUrlView implements SerialPortMessageLis
 
     @BindView(R.id.tv_input)
     TextView tvInput;
+    @BindView(R.id.recyclerView)
+    RecyclerView recyclerView;
+
+    private String mBoxNo;
 
     @Override
     protected int getView() {
@@ -32,6 +42,27 @@ public class SettingActivity extends BaseUrlView implements SerialPortMessageLis
 
     @Override
     public void init() {
+
+        recyclerView.setLayoutManager(new GridLayoutManager(getCtx(), 5));
+        TestAdapter adapter = new TestAdapter(getCtx(),20);
+        recyclerView.setAdapter(adapter);
+
+        adapter.setOnItemCallBack(new OnItemCallBack<String>() {
+            @Override
+            public void onItemClick(int position, String boxno, int... i) {
+                mBoxNo = boxno;
+                try {
+                    SerialPortOpenSDK.getInstance().send(
+                            new CommandProtocol.Builder()
+                                    .setCommand(CommandProtocol.COMMAND_OPEN)
+                                    .setCommandChannel(Integer.toHexString(Integer.parseInt(boxno)))
+                                    .builder()
+                                    .getBytes());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
     }
 
@@ -53,19 +84,7 @@ public class SettingActivity extends BaseUrlView implements SerialPortMessageLis
                     ToastUtil.showLongToast("请先选择相应的串口号");
                     return;
                 }
-
                 TaskDispatcher.createInstance().addTask(new LockerManagerTask(serial)).start();
-                SerialPortOpenSDK.getInstance().setListener(new SerianPortSDKListener() {
-                    @Override
-                    public void initListener(int error, String errorMessage) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                ToastUtil.showLongToast(errorMessage);
-                            }
-                        });
-                    }
-                });
                 break;
         }
     }
@@ -85,6 +104,22 @@ public class SettingActivity extends BaseUrlView implements SerialPortMessageLis
 
     @Override
     public void onMessage(int error, String errorMessage, byte[] data) throws Exception {
-
+        CommandProtocol commandProtocol = new CommandProtocol.Builder().setBytes(data).parseMessage();
+        if (CommandProtocol.COMMAND_OPEN_RESPONSE == commandProtocol.getCommand()) {
+            final String state = commandProtocol.getState();
+            LogUtils.e("COMMAND_OPEN");
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (TextUtils.equals("00", state)) {
+                        ToastUtil.showLongToast("对应的格口" + mBoxNo + "打开成功");
+                    } else if (TextUtils.equals("01", state)) {
+                        ToastUtil.showLongToast("对应的格口" + mBoxNo + "打开失败");
+                    } else {
+                        ToastUtil.showLongToast("未知状态：" + new String(commandProtocol.getBytes()));
+                    }
+                }
+            });
+        }
     }
 }

@@ -38,6 +38,17 @@ public class TestAdapter extends BaseQuickAdapter<String,BaseViewHolder> {
         setNewData(mList);
     }
 
+    public TestAdapter(Context context,int count) {
+        super(R.layout.item_test_gekou);
+        this.mContext = context;
+
+        for(int i =1;i<=count;i++){
+            mList.add(i+"");
+        }
+
+        setNewData(mList);
+    }
+
     @Override
     protected void convert(BaseViewHolder holder, String s) {
         TextView tvNum = holder.findView(R.id.tv_gekou);

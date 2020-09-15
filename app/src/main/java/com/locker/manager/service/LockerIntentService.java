@@ -21,6 +21,7 @@ import com.locker.manager.activity.user.UserPickUpSuccessActivity;
 import com.locker.manager.app.Constant;
 import com.locker.manager.app.LockerApplication;
 import com.locker.manager.command.CommandProtocol;
+import com.locker.manager.event.NetworkEvent;
 import com.qiao.serialport.SerialPortOpenSDK;
 import com.qiao.serialport.listener.SerialPortMessageListener;
 import com.yidao.module_lib.base.http.ResponseBean;
@@ -29,6 +30,8 @@ import com.yidao.module_lib.manager.ViewManager;
 import com.yidao.module_lib.utils.LogUtils;
 import com.yidao.module_lib.utils.PhoneInfoUtils;
 import com.yidao.module_lib.utils.ToastUtil;
+
+import org.greenrobot.eventbus.EventBus;
 
 public class LockerIntentService extends GTIntentService implements SerialPortMessageListener {
 
@@ -138,6 +141,8 @@ public class LockerIntentService extends GTIntentService implements SerialPortMe
     public void onReceiveOnlineState(Context context, boolean b) {
         LogUtils.e("onReceiveOnlineState:" + b);
         isDeviceOnLine = b;
+
+        EventBus.getDefault().post(new NetworkEvent(b));
 
         if(!b){
 //            ToastUtil.showLongToast("当前网络已断开，请先检查网络状况");
