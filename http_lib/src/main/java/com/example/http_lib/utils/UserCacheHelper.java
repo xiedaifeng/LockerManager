@@ -20,6 +20,8 @@ public class UserCacheHelper {
 
     public static String HotPhone = "hotPhone";
 
+    public static String Serial = "serial";
+
     public static UserInfoBean getUserInfo() {
         String userInfo = SharedPreferencesUtils.getString(user_Info, null);
         if (TextUtils.isEmpty(userInfo)) {
@@ -90,5 +92,14 @@ public class UserCacheHelper {
 
     public static String getHotPhone(){
         return SharedPreferencesUtils.getString(HotPhone, "");
+    }
+
+
+    public static void setSerial(String serial){
+        SharedPreferencesUtils.putString(Serial, serial);
+    }
+
+    public static String getSerial(){
+        return SharedPreferencesUtils.getString(Serial, "");
     }
 }
