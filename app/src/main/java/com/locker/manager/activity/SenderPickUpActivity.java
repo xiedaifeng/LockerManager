@@ -327,10 +327,12 @@ public class SenderPickUpActivity extends BaseUrlView {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (timeDialog != null && timeDialog.isShowing()) {
-            timeDialog.dismiss();
+        if (timeDialog != null) {
             timeDialog.releaseTimer();
             timeDialog.setCountDownCallback(null);
+            if(timeDialog.isShowing()){
+                timeDialog.dismiss();
+            }
         }
         if(dialog!=null && dialog.isShowing()){
             dialog.dismiss();

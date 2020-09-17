@@ -366,6 +366,9 @@ public class SaveDepositActivity extends BaseUrlView {
         if(timeDialog!=null){
             timeDialog.releaseTimer();
             timeDialog.setCountDownCallback(null);
+            if(timeDialog.isShowing()){
+                timeDialog.dismiss();
+            }
         }
     }
 }
