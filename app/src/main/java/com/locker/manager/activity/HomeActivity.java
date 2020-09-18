@@ -54,7 +54,6 @@ public class HomeActivity extends BaseUrlView {
     @BindView(R.id.iv_place_qrcode)
     ImageView ivPlaceQrcode;
 
-
     @Override
     protected int getView() {
         return R.layout.activity_save_app_scan;
@@ -63,21 +62,11 @@ public class HomeActivity extends BaseUrlView {
     @Override
     public void init() {
 
-        PermissionManager.getInstance().requestPermissions(this);
-        PermissionManager.getInstance().setIPermissionLiatener(new PermissionManager.IPermissionListener() {
-            @Override
-            public void getPermissionSuccess() {
-
-            }
-        });
-
-
         setCurrentTime(tvTitle, System.currentTimeMillis());
 
         ivLeft.setVisibility(View.GONE);
 
         initNetData();
-
 
         if(!EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().register(this);
