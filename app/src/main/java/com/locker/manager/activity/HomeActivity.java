@@ -1,6 +1,7 @@
 package com.locker.manager.activity;
 
 
+import android.content.DialogInterface;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,12 +18,16 @@ import com.example.http_lib.bean.SystemNoticeRequestBean;
 import com.example.http_lib.response.NoticeBean;
 import com.example.http_lib.utils.UserCacheHelper;
 import com.locker.manager.R;
+import com.locker.manager.app.LockerApplication;
 import com.locker.manager.base.BaseUrlView;
+import com.locker.manager.dialog.BoxStateDialog;
+import com.locker.manager.dialog.SecondaryDialog;
 import com.locker.manager.event.NetworkEvent;
 import com.locker.manager.manager.VibratorManager;
 import com.squareup.picasso.Picasso;
 import com.yidao.module_lib.base.http.ResponseBean;
 import com.yidao.module_lib.manager.PermissionManager;
+import com.yidao.module_lib.utils.LogUtils;
 import com.yidao.module_lib.utils.PhoneInfoUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -61,12 +66,16 @@ public class HomeActivity extends BaseUrlView {
 
     @Override
     public void init() {
+        PermissionManager.getInstance().setIPermissionLiatener(new PermissionManager.IPermissionListener() {
+            @Override
+            public void getPermissionSuccess() {
+                initNetData();
+            }
+        });
+        PermissionManager.getInstance().requestPermissions(this);
 
         setCurrentTime(tvTitle, System.currentTimeMillis());
-
         ivLeft.setVisibility(View.GONE);
-
-        initNetData();
 
         if(!EventBus.getDefault().isRegistered(this)){
             EventBus.getDefault().register(this);
@@ -83,11 +92,36 @@ public class HomeActivity extends BaseUrlView {
     }
 
 
+    private BoxStateDialog dialog = null;
+
     @OnClick({R.id.iv_left, R.id.tv_hand_save, R.id.tv_help,R.id.iv_place_qrcode})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_left:
 
+                if (dialog == null) {
+                    dialog = new BoxStateDialog(this);
+                }
+                dialog.setOpenBoxId("064512");
+                dialog.setClickListener(new BoxStateDialog.IClickListener() {
+                    @Override
+                    public void openBox(String openBoxId) {
+                    }
+                    @Override
+                    public void getBack(String openBoxId) {
+                        SecondaryDialog dialog1 = new SecondaryDialog(getCtx(),"064512","123456");
+                        dialog1.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                            @Override
+                            public void onDismiss(DialogInterface dia) {
+                                if(dialog!=null && !dialog.isCountDownEnd){
+                                    dialog.show();
+                                }
+                            }
+                        });
+                        dialog1.show();
+                    }
+                });
+                dialog.show();
 
 //                TaskDispatcher.createInstance().addTask(new LockerManagerTask("/dev/ttyS3")).start();
 

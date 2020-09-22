@@ -19,6 +19,7 @@ import com.qiao.serialport.SerialPortOpenSDK;
 import com.yidao.module_lib.manager.ViewManager;
 import com.yidao.module_lib.utils.LogUtils;
 import com.yidao.module_lib.utils.SoftKeyboardUtil;
+import com.yidao.module_lib.utils.ToastUtil;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -51,6 +52,8 @@ public class BoxStateDialog extends BaseUrlDialog {
 
     private IClickListener clickListener;
 
+    public boolean isCountDownEnd = false;
+
     public void setClickListener(IClickListener clickListener) {
         this.clickListener = clickListener;
     }
@@ -66,15 +69,6 @@ public class BoxStateDialog extends BaseUrlDialog {
         }
     }
 
-    @Override
-    public void setOnDismissListener(OnDismissListener listener) {
-        super.setOnDismissListener(listener);
-        LogUtils.e("setOnDismissListener");
-        if (timeCount != null) {
-            timeCount.cancel();
-        }
-    }
-
     private String openBoxId="";
 
     public void setOpenBoxId(String openBoxId) {
@@ -85,13 +79,14 @@ public class BoxStateDialog extends BaseUrlDialog {
         dialogBoxStateTv.setText(String.format("格口号：%s（已开）",openBoxId.substring(0,2)));
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        if (timeCount != null) {
-            timeCount.onFinish();
-        }
-    }
+//    @Override
+//    protected void onStop() {
+//        super.onStop();
+//        LogUtils.e("onStop");
+//        if (timeCount != null) {
+//            timeCount.onFinish();
+//        }
+//    }
 
     @Override
     protected int getLayoutId() {
@@ -127,7 +122,7 @@ public class BoxStateDialog extends BaseUrlDialog {
 //                Intent intent1 = new Intent(mContext, HomeActivity.class);
 //                mContext.startActivity(intent1);
 
-                SoftKeyboardUtil.hideSoftKeyboard((Activity) mContext);
+//                SoftKeyboardUtil.hideSoftKeyboard((Activity) mContext);
                 ViewManager.getInstance().finishOthersView(HomeActivity.class);
                 break;
         }
@@ -151,13 +146,14 @@ public class BoxStateDialog extends BaseUrlDialog {
 
         @Override
         public void onFinish() {
+            isCountDownEnd = true;
             dismiss();
 //            ViewManager.getInstance().finishAllView();
 //            Intent intent1 = new Intent(mContext, HomeActivity.class);
 //            mContext.startActivity(intent1);
 
             ViewManager.getInstance().finishOthersView(HomeActivity.class);
-            SoftKeyboardUtil.hideSoftKeyboard((Activity) mContext);
+//            SoftKeyboardUtil.hideSoftKeyboard((Activity) mContext);
         }
     }
 

@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.locker.manager.R;
 import com.locker.manager.base.BaseUrlView;
 import com.yidao.module_lib.manager.PermissionManager;
+import com.yidao.module_lib.utils.LogUtils;
 
 import butterknife.BindView;
 
@@ -26,13 +27,14 @@ public class WelcomeActivity extends BaseUrlView {
 
     @Override
     public void init() {
-        PermissionManager.getInstance().requestPermissions(this);
         PermissionManager.getInstance().setIPermissionLiatener(new PermissionManager.IPermissionListener() {
             @Override
             public void getPermissionSuccess() {
+                LogUtils.e("getPermissionSuccess");
                 skipActivityByFinish(HomeActivity.class);
             }
         });
+        PermissionManager.getInstance().requestPermissions(this);
 
         setCurrentTime(tvTitle, System.currentTimeMillis());
         ivLeft.setVisibility(View.GONE);

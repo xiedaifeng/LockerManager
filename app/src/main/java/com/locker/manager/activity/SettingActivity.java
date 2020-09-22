@@ -1,10 +1,13 @@
 package com.locker.manager.activity;
 
 
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -35,6 +38,19 @@ public class SettingActivity extends BaseUrlView implements SerialPortMessageLis
 
     private String mBoxNo;
 
+    public static final int sToastCode = 0x119;
+
+    Handler mHandler = new Handler(getMainLooper()) {
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            super.handleMessage(msg);
+            if(msg.what == sToastCode){
+                String state = msg.obj.toString();
+                ToastUtil.showLongToast(state);
+            }
+        }
+    };
+
     @Override
     protected int getView() {
         return R.layout.activity_setting;
@@ -44,7 +60,7 @@ public class SettingActivity extends BaseUrlView implements SerialPortMessageLis
     public void init() {
 
         recyclerView.setLayoutManager(new GridLayoutManager(getCtx(), 5));
-        TestAdapter adapter = new TestAdapter(getCtx(),20);
+        TestAdapter adapter = new TestAdapter(getCtx(), 20);
         recyclerView.setAdapter(adapter);
 
         adapter.setOnItemCallBack(new OnItemCallBack<String>() {
@@ -66,21 +82,21 @@ public class SettingActivity extends BaseUrlView implements SerialPortMessageLis
 
     }
 
-    @OnClick({R.id.iv_left,R.id.tv_show,R.id.tv_connect})
+    @OnClick({R.id.iv_left, R.id.tv_show, R.id.tv_connect})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_left:
                 ViewManager.getInstance().finishOthersView(HomeActivity.class);
                 break;
             case R.id.tv_show:
-                new SerialPopwindow().show(getCtx(),tvInput);
+                new SerialPopwindow().show(getCtx(), tvInput);
                 break;
             case R.id.tv_connect:
-                if(isFastClick()){
+                if (isFastClick()) {
                     return;
                 }
                 String serial = tvInput.getText().toString();
-                if(TextUtils.isEmpty(serial)){
+                if (TextUtils.isEmpty(serial)) {
                     ToastUtil.showLongToast("请先选择相应的串口号");
                     return;
                 }
@@ -108,18 +124,26 @@ public class SettingActivity extends BaseUrlView implements SerialPortMessageLis
         if (CommandProtocol.COMMAND_OPEN_RESPONSE == commandProtocol.getCommand()) {
             final String state = commandProtocol.getState();
             LogUtils.e("COMMAND_OPEN");
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    if (TextUtils.equals("00", state)) {
-                        ToastUtil.showLongToast("对应的格口" + mBoxNo + "打开成功");
-                    } else if (TextUtils.equals("01", state)) {
-                        ToastUtil.showLongToast("对应的格口" + mBoxNo + "打开失败");
-                    } else {
-                        ToastUtil.showLongToast("未知状态：" + new String(commandProtocol.getBytes()));
-                    }
-                }
-            });
+            Message message = Message.obtain();
+            message.what = sToastCode;
+            if (TextUtils.equals("00", state)) {
+                message.obj = "对应的格口:" + mBoxNo + "打开成功";
+            } else if (TextUtils.equals("01", state)) {
+                message.obj = "对应的格口:" + mBoxNo + "打开失败";
+            } else {
+                message.obj = "未知状态:" + mBoxNo + "打开失败";
+            }
+            if(mHandler!=null){
+                mHandler.sendMessage(message);
+            }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(mHandler!=null){
+            mHandler.removeMessages(sToastCode);
         }
     }
 }

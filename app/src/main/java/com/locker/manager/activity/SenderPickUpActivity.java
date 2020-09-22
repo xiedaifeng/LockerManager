@@ -1,6 +1,7 @@
 package com.locker.manager.activity;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
@@ -23,6 +24,7 @@ import com.locker.manager.app.LockerApplication;
 import com.locker.manager.base.BaseUrlView;
 import com.locker.manager.dialog.BoxStateDialog;
 import com.locker.manager.dialog.SaveOverTimeDialog;
+import com.locker.manager.dialog.SecondaryDialog;
 import com.locker.manager.manager.VibratorManager;
 import com.yidao.module_lib.base.http.ResponseBean;
 import com.yidao.module_lib.manager.ViewManager;
@@ -230,7 +232,6 @@ public class SenderPickUpActivity extends BaseUrlView {
         super.onResponse(success, requestCls, responseBean);
         if (success) {
             if (requestCls == OpenDeviceBoxRequestBean.class) {
-//                openBoxByOpencode();
 
                 if (!TextUtils.isEmpty(post_no)) { //post_no不为空即为快递员包裹   为空为其他包裹
 
@@ -244,8 +245,18 @@ public class SenderPickUpActivity extends BaseUrlView {
                         }
                         @Override
                         public void getBack(String openBoxId) {
-                            mPresenter.backOrder(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()), etPostPhone.getText().toString(),orderId);
-                            LockerApplication.sTuiOrderId = orderId;
+                            SecondaryDialog secondaryDialog = new SecondaryDialog(getCtx(),etPostPhone.getText().toString(),orderId);
+                            secondaryDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                                @Override
+                                public void onDismiss(DialogInterface dia) {
+                                    if(dialog!=null && !dialog.isShowing() && !dialog.isCountDownEnd){
+                                        dialog.show();
+                                    }
+                                }
+                            });
+                            secondaryDialog.show();
+//                            mPresenter.backOrder(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()), etPostPhone.getText().toString(),orderId);
+//                            LockerApplication.sTuiOrderId = orderId;
                         }
                     });
                     dialog.show();

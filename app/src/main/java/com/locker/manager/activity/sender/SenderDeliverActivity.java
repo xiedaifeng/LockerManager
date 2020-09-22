@@ -288,19 +288,17 @@ public class SenderDeliverActivity extends BaseUrlView {
                 money = orderInfoBean.getMoney();
                 LockerApplication.sOrderId = orderId;
 
-                if(TextUtils.isEmpty(money) || Float.parseFloat(money)<=0f){
-                    openBoxByOpencode(opencode);
-                    return;
-                }
-
-                showSaveOverDialog(true);
-
                 if(mHandler!=null){
                     mHandler.removeMessages(countDownCode);
                     tvCountDown.setText(String.format("%ss后返回首页", 30));
                 }
-
                 mPresenter.getAllBoxDetail(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()));
+
+                if(TextUtils.isEmpty(money) || Float.parseFloat(money)<=0f){
+//                    openBoxByOpencode(opencode);
+                    return;
+                }
+                showSaveOverDialog(true);
             }
         } else {
             ToastUtil.showShortToast(responseBean.getMessage());
@@ -318,6 +316,10 @@ public class SenderDeliverActivity extends BaseUrlView {
 //    }
 
     private void showSaveOverDialog(boolean isNeedCreate){
+        if(TextUtils.isEmpty(money) || Float.parseFloat(money)<=0f){
+            return;
+        }
+
         if(timeDialog!=null && isNeedCreate){
             timeDialog.releaseTimer();
             timeDialog.setCountDownCallback(null);

@@ -43,14 +43,14 @@
         <activity android:name=".activity.SaveHandActivity" android:screenOrientation="landscape" android:windowSoftInputMode="stateHidden"/>
         <activity android:name=".activity.user.UserPickUpSuccessActivity" android:screenOrientation="landscape" android:windowSoftInputMode="stateHidden"/>
         <activity android:name=".activity.WelcomeActivity" android:screenOrientation="landscape" android:windowSoftInputMode="stateHidden">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <activity android:name=".activity.HomeActivity"
             android:screenOrientation="landscape">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <activity android:name=".activity.SenderPickUpActivity" android:screenOrientation="landscape" android:windowSoftInputMode="stateHidden"/>

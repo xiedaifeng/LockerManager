@@ -173,6 +173,9 @@ public class SaveDepositActivity extends BaseUrlView {
                 ViewManager.getInstance().finishView();
                 break;
             case R.id.tv_save:
+                if(isFastClick()){
+                    return;
+                }
                 if(!isDeviceOnLine()){
                     return;
                 }
@@ -278,18 +281,18 @@ public class SaveDepositActivity extends BaseUrlView {
                 orderId = orderInfoBean.getId();
                 LockerApplication.sOrderId = orderId;
 
-                if (TextUtils.isEmpty(money) || Float.parseFloat(money) <= 0f) {
-                    openBoxByOpencode(opencode);
-                    return;
-                }
-                showSaveOverDialog(true);
-
                 if (mHandler != null) {
                     mHandler.removeMessages(countDownCode);
                     tvCountDown.setText(String.format("%ss后返回首页", 30));
                 }
-
                 mPresenter.getAllBoxDetail(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()));
+
+                if (TextUtils.isEmpty(money) || Float.parseFloat(money) <= 0f) {
+//                    openBoxByOpencode(opencode);
+                    return;
+                }
+
+                showSaveOverDialog(true);
             }
         } else {
             ToastUtil.showShortToast(responseBean.getMessage());
@@ -307,6 +310,9 @@ public class SaveDepositActivity extends BaseUrlView {
 //    }
 
     private void showSaveOverDialog(boolean isNeedCreate) {
+        if(TextUtils.isEmpty(money) || Float.parseFloat(money)<=0f){
+            return;
+        }
         if(timeDialog!=null && isNeedCreate){
             timeDialog.releaseTimer();
             timeDialog.setCountDownCallback(null);
