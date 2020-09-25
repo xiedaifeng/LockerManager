@@ -80,6 +80,8 @@ public class SaveFirstActivity extends BaseUrlView {
     TextView tvFetchAgree1;
     @BindView(R.id.tv_delete)
     TextView tvDelete;
+    @BindView(R.id.tv_title_count_down)
+    TextView mTvCountDown;
 
     private boolean isPostCheck = false;
     private boolean isFetchCheck = false;
@@ -107,7 +109,23 @@ public class SaveFirstActivity extends BaseUrlView {
     }
 
     @Override
+    protected boolean isNeedCountDown() {
+        return true;
+    }
+
+    @Override
+    protected int getCountDownTime() {
+        return 60;
+    }
+
+    @Override
+    protected boolean isFinishToHome() {
+        return false;
+    }
+
+    @Override
     public void init() {
+        setCountDownTextView(mTvCountDown);
         setCurrentTime(tvTitle, System.currentTimeMillis());
 
         SoftKeyboardUtil.disableShowInput(etPostPhone);

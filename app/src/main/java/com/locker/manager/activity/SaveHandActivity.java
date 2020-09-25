@@ -17,15 +17,22 @@ public class SaveHandActivity extends BaseUrlView {
 
     @BindView(R.id.tv_title)
     TextView tvTitle;
+    @BindView(R.id.tv_title_count_down)
+    TextView mTvCountDown;
 
     @Override
     protected int getView() {
         return R.layout.activity_save_hand;
     }
 
+    @Override
+    protected boolean isNeedCountDown() {
+        return true;
+    }
 
     @Override
     public void init() {
+        setCountDownTextView(mTvCountDown);
         setCurrentTime(tvTitle,System.currentTimeMillis());
     }
 
@@ -43,14 +50,14 @@ public class SaveHandActivity extends BaseUrlView {
                 if(isFastClick()){
                     return;
                 }
-                skipActivity(SaveSecondActivity.class);
+                skipActivityByFinish(SaveSecondActivity.class);
                 VibratorManager.getInstance().vibrate(50);
                 break;
             case R.id.rl_sender:
                 if(isFastClick()){
                     return;
                 }
-                skipActivity(SenderPickUpActivity.class);
+                skipActivityByFinish(SenderPickUpActivity.class);
                 VibratorManager.getInstance().vibrate(50);
                 break;
         }

@@ -1,15 +1,12 @@
 package com.locker.manager.activity;
 
 
-import android.os.Handler;
-import android.os.Message;
+import android.os.Looper;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import android.widget.Toast;
 
 import com.locker.manager.R;
 import com.locker.manager.adapter.TestAdapter;
@@ -25,6 +22,8 @@ import com.yidao.module_lib.manager.ViewManager;
 import com.yidao.module_lib.utils.LogUtils;
 import com.yidao.module_lib.utils.ToastUtil;
 
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.OnClick;
 
@@ -37,19 +36,6 @@ public class SettingActivity extends BaseUrlView implements SerialPortMessageLis
     RecyclerView recyclerView;
 
     private String mBoxNo;
-
-    public static final int sToastCode = 0x119;
-
-    Handler mHandler = new Handler(getMainLooper()) {
-        @Override
-        public void handleMessage(@NonNull Message msg) {
-            super.handleMessage(msg);
-            if(msg.what == sToastCode){
-                String state = msg.obj.toString();
-                ToastUtil.showLongToast(state);
-            }
-        }
-    };
 
     @Override
     protected int getView() {
@@ -124,26 +110,26 @@ public class SettingActivity extends BaseUrlView implements SerialPortMessageLis
         if (CommandProtocol.COMMAND_OPEN_RESPONSE == commandProtocol.getCommand()) {
             final String state = commandProtocol.getState();
             LogUtils.e("COMMAND_OPEN");
-            Message message = Message.obtain();
-            message.what = sToastCode;
+            String msg = "";
             if (TextUtils.equals("00", state)) {
-                message.obj = "对应的格口:" + mBoxNo + "打开成功";
+                msg = "对应的格口:" + mBoxNo + "打开成功";
             } else if (TextUtils.equals("01", state)) {
-                message.obj = "对应的格口:" + mBoxNo + "打开失败";
+                msg = "对应的格口:" + mBoxNo + "打开失败";
             } else {
-                message.obj = "未知状态:" + mBoxNo + "打开失败";
+                msg = "未知状态:" + mBoxNo + "打开失败";
             }
-            if(mHandler!=null){
-                mHandler.sendMessage(message);
-            }
-        }
-    }
+            String finalMsg = msg;
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if(mHandler!=null){
-            mHandler.removeMessages(sToastCode);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Looper.prepare();
+                    Toast toast = Toast.makeText(getCtx(), finalMsg, Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.CENTER,0,0);
+                    toast.show();
+                    Looper.loop();
+                }
+            }).start();
         }
     }
 }

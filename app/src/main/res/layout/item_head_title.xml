@@ -23,4 +23,16 @@
         android:textColor="@color/white"
         android:layout_centerInParent="true"/>
 
+
+    <TextView
+        android:id="@+id/tv_title_count_down"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="18dp"
+        android:textColor="@color/white"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="30dp"/>
+
 </RelativeLayout>

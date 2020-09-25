@@ -1,8 +1,6 @@
 package com.locker.manager.activity;
 
-import android.content.Intent;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,7 +11,6 @@ import com.yidao.module_lib.manager.ViewManager;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import butterknife.OnItemLongClick;
 
 
 public class SaveHelpActivity extends BaseUrlView {
@@ -25,13 +22,22 @@ public class SaveHelpActivity extends BaseUrlView {
     @BindView(R.id.tv_title)
     TextView tvTitle;
 
+    @BindView(R.id.tv_title_count_down)
+    TextView mTvCountDown;
+
     @Override
     protected int getView() {
         return R.layout.activity_save_help;
     }
 
     @Override
+    protected boolean isNeedCountDown() {
+        return true;
+    }
+
+    @Override
     public void init() {
+        setCountDownTextView(mTvCountDown);
         setCurrentTime(tvTitle,System.currentTimeMillis());
 
         tvTitle.setOnLongClickListener(new View.OnLongClickListener() {

@@ -83,6 +83,7 @@ public class SaveDepositActivity extends BaseUrlView {
     @BindView(R.id.tv_count_down)
     TextView tvCountDown;
 
+
     private SaveOverTimeDialog timeDialog = null;
 
     private List<View> mViews = new ArrayList<>();

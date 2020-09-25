@@ -3,6 +3,8 @@ package com.locker.manager.task;
 
 import android.os.Looper;
 import android.text.TextUtils;
+import android.view.Gravity;
+import android.widget.Toast;
 
 import com.example.http_lib.utils.UserCacheHelper;
 import com.qiao.launch.starter.task.Task;
@@ -53,7 +55,9 @@ public class LockerManagerTask extends Task {
                             @Override
                             public void run() {
                                 Looper.prepare();
-                                ToastUtil.showLongToast(errorMessage);
+                                Toast toast = Toast.makeText(mContext, errorMessage, Toast.LENGTH_SHORT);
+                                toast.setGravity(Gravity.CENTER,0,0);
+                                toast.show();
                                 Looper.loop();
                             }
                         }).start();

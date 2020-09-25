@@ -51,6 +51,8 @@ public class SenderPickUpActivity extends BaseUrlView {
     TextView tvBackHome;
     @BindView(R.id.tv_delete)
     TextView tvDelete;
+    @BindView(R.id.tv_title_count_down)
+    TextView mTvCountDown;
 
     private BoxStateDialog dialog = null;
 
@@ -75,16 +77,14 @@ public class SenderPickUpActivity extends BaseUrlView {
             super.handleMessage(msg);
             if(msg.what == countDownCode) {
                 countDownTime--;
-                tvBackHome.setText(String.format("%ss后返回首页", countDownTime));
+                mTvCountDown.setText(String.format("%ss后返回首页", countDownTime));
                 if (countDownTime > 0) {
                     mHandler.sendEmptyMessageDelayed(countDownCode, 1000);
                 } else {
-//                    ViewManager.getInstance().finishAllView();
-//                    skipActivity(HomeActivity.class);
-
                     ViewManager.getInstance().finishOthersView(HomeActivity.class);
                 }
-            } else if(msg.what == longClickDeleteCode){
+            } else
+                if(msg.what == longClickDeleteCode){
                 deleteString();
             }
         }
@@ -95,8 +95,21 @@ public class SenderPickUpActivity extends BaseUrlView {
         return R.layout.activity_sender_pick_up;
     }
 
+
+    @Override
+    protected boolean isNeedCountDown() {
+        return true;
+    }
+
+    @Override
+    public int getCountDownTime() {
+        return 60;
+    }
+
     @Override
     public void init() {
+        setCountDownTextView(mTvCountDown);
+
         setCurrentTime(tvTitle, System.currentTimeMillis());
 
         tvDelete.setOnTouchListener(new View.OnTouchListener() {
@@ -274,7 +287,7 @@ public class SenderPickUpActivity extends BaseUrlView {
                         public void onFinish() {
                             timeDialog.dismiss();
                             timeDialog = null;
-                            tvBackHome.setVisibility(View.VISIBLE);
+                            mTvCountDown.setVisibility(View.VISIBLE);
                             if(mHandler!=null){
                                 mHandler.removeMessages(countDownCode);
                                 countDownTime = 30;
@@ -305,34 +318,15 @@ public class SenderPickUpActivity extends BaseUrlView {
 
                 if(mHandler!=null){
                     mHandler.removeMessages(countDownCode);
-                    tvBackHome.setVisibility(View.GONE);
+                    mTvCountDown.setVisibility(View.GONE);
                 }
+
+                releaseCountDown();
 
             }
         } else {
             ToastUtil.showShortToast(responseBean.getMessage());
         }
-    }
-
-    private void showSaveOverDialog(){
-        if (timeDialog == null) {
-            timeDialog = new SaveOverTimeDialog(getCtx(), etPostPhone.getText().toString(),money);
-        }
-        timeDialog.setCountDownCallback(new SaveOverTimeDialog.IOnCountDownCallback() {
-            @Override
-            public void onFinish() {
-                timeDialog.dismiss();
-                timeDialog = null;
-                tvBackHome.setVisibility(View.VISIBLE);
-                if(mHandler!=null){
-                    mHandler.removeMessages(countDownCode);
-                    countDownTime = 30;
-                    mHandler.sendEmptyMessageDelayed(countDownCode,1000);
-                }
-            }
-        });
-        timeDialog.hidePayView();
-        timeDialog.show();
     }
 
     @Override

@@ -2,11 +2,14 @@ package com.locker.manager.activity;
 
 
 import android.content.DialogInterface;
+import android.os.Looper;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.alibaba.fastjson.JSON;
@@ -91,37 +94,34 @@ public class HomeActivity extends BaseUrlView {
         mPresenter.getDeviceInfo(mac);
     }
 
-
-    private BoxStateDialog dialog = null;
-
     @OnClick({R.id.iv_left, R.id.tv_hand_save, R.id.tv_help,R.id.iv_place_qrcode})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_left:
 
-                if (dialog == null) {
-                    dialog = new BoxStateDialog(this);
-                }
-                dialog.setOpenBoxId("064512");
-                dialog.setClickListener(new BoxStateDialog.IClickListener() {
-                    @Override
-                    public void openBox(String openBoxId) {
-                    }
-                    @Override
-                    public void getBack(String openBoxId) {
-                        SecondaryDialog dialog1 = new SecondaryDialog(getCtx(),"064512","123456");
-                        dialog1.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                            @Override
-                            public void onDismiss(DialogInterface dia) {
-                                if(dialog!=null && !dialog.isCountDownEnd){
-                                    dialog.show();
-                                }
-                            }
-                        });
-                        dialog1.show();
-                    }
-                });
-                dialog.show();
+//                if (dialog == null) {
+//                    dialog = new BoxStateDialog(this);
+//                }
+//                dialog.setOpenBoxId("064512");
+//                dialog.setClickListener(new BoxStateDialog.IClickListener() {
+//                    @Override
+//                    public void openBox(String openBoxId) {
+//                    }
+//                    @Override
+//                    public void getBack(String openBoxId) {
+//                        SecondaryDialog dialog1 = new SecondaryDialog(getCtx(),"064512","123456");
+//                        dialog1.setOnDismissListener(new DialogInterface.OnDismissListener() {
+//                            @Override
+//                            public void onDismiss(DialogInterface dia) {
+//                                if(dialog!=null && !dialog.isCountDownEnd){
+//                                    dialog.show();
+//                                }
+//                            }
+//                        });
+//                        dialog1.show();
+//                    }
+//                });
+//                dialog.show();
 
 //                TaskDispatcher.createInstance().addTask(new LockerManagerTask("/dev/ttyS3")).start();
 

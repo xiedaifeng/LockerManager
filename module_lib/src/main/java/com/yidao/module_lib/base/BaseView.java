@@ -57,7 +57,18 @@ public abstract class BaseView extends AppCompatActivity implements IBaseView , 
             mImmersionBar.statusBarDarkFont(true);
         }
         fullScrren(); //为了适配平板4.4而加
+        if(isNeedCountDown()){
+            setNeedCountDown();
+        }
         init();
+    }
+
+    protected boolean isNeedCountDown(){
+        return false;
+    }
+
+    protected void setNeedCountDown(){
+
     }
 
     protected boolean changeStatusColor() {
