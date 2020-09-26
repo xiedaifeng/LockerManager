@@ -9,6 +9,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.example.http_lib.HttpClient;
 import com.example.http_lib.bean.CreateDeviceRequestBean;
 import com.example.http_lib.bean.GetOrderInfoRequestBean;
+import com.example.http_lib.bean.UpdatePushRequestBean;
 import com.example.http_lib.response.OrderInfoBean;
 import com.igexin.sdk.GTIntentService;
 import com.igexin.sdk.PushManager;
@@ -80,6 +81,18 @@ public class LockerIntentService extends GTIntentService implements SerialPortMe
         if(!TextUtils.equals(device_id,PhoneInfoUtils.getLocalMacAddressFromWifiInfo(context))){
             return;
         }
+
+
+        UpdatePushRequestBean updatePushRequestBean = new UpdatePushRequestBean();
+        updatePushRequestBean.order_id = order_id;
+        HttpClient.request(updatePushRequestBean, false, new IHttpCallBack() {
+            @Override
+            public void success(ResponseBean responseBean) {
+            }
+            @Override
+            public void failed(ResponseBean responseBean) {
+            }
+        });
 
         GetOrderInfoRequestBean requestBean = new GetOrderInfoRequestBean();
         requestBean.order_id = order_id;

@@ -21,6 +21,7 @@ import com.example.http_lib.bean.PayQrCodeRequestBean;
 import com.example.http_lib.bean.SendSmsRequestBean;
 import com.example.http_lib.bean.SystemNoticeRequestBean;
 import com.example.http_lib.bean.UpdateDeviceBoxStatusRequestBean;
+import com.example.http_lib.bean.UpdatePushRequestBean;
 import com.locker.manager.mvp.model.CommomModel;
 import com.yidao.module_lib.base.BasePressPlus;
 import com.yidao.module_lib.base.ibase.IBaseView;
@@ -262,6 +263,18 @@ public class CommonPresenter extends BasePressPlus {
         GetOrderInfoByCodeRequestBean requestBean = new GetOrderInfoByCodeRequestBean();
         requestBean.device_id = device_id;
         requestBean.opencode = opencode;
+        mCommomModel.setBean(requestBean);
+        mCommomModel.request(false);
+    }
+
+
+    /**
+     * 上报推送状态
+     *
+     */
+    public void updatePush(String order_id){
+        UpdatePushRequestBean requestBean = new UpdatePushRequestBean();
+        requestBean.order_id = order_id;
         mCommomModel.setBean(requestBean);
         mCommomModel.request(false);
     }

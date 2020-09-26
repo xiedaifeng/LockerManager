@@ -53,6 +53,8 @@ public interface ILocalHost {
 
     String getOrderInfoByCode = "/Apiorder/get_order_info_by_code";  //根据取件码获取订单详情
 
+    String updatePush = "/Apiindex/update_pushing";  //上报推送状态
+
 
 
 
