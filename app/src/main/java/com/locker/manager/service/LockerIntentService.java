@@ -2,7 +2,10 @@ package com.locker.manager.service;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Looper;
 import android.text.TextUtils;
+import android.view.Gravity;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -17,6 +20,7 @@ import com.igexin.sdk.message.GTCmdMessage;
 import com.igexin.sdk.message.GTNotificationMessage;
 import com.igexin.sdk.message.GTTransmitMessage;
 import com.locker.manager.activity.HomeActivity;
+import com.locker.manager.activity.PushStateDialogActivity;
 import com.locker.manager.activity.sender.SenderDeliverSuccessActivity;
 import com.locker.manager.activity.user.UserPickUpSuccessActivity;
 import com.locker.manager.app.Constant;
@@ -39,6 +43,10 @@ public class LockerIntentService extends GTIntentService implements SerialPortMe
     private String boxno;
 
     public static boolean isDeviceOnLine = false;
+    private String mOrder_id;
+    private String mType;
+
+    private String mPost_no;
 
     @Override
     public void onReceiveServicePid(Context context, int i) {
@@ -72,36 +80,27 @@ public class LockerIntentService extends GTIntentService implements SerialPortMe
     @Override
     public void onReceiveMessageData(Context context, GTTransmitMessage gtTransmitMessage) {
         String payload = new String(gtTransmitMessage.getPayload());
-        LogUtils.e("onReceiveMessageData:"+ payload);
+        LogUtils.e("onReceiveMessageData:" + payload);
         JSONObject object = JSON.parseObject(payload);
-        String order_id = object.getString("order_id");
-        String type = object.getString("type");
+        mOrder_id = object.getString("order_id");
+        mType = object.getString("type");
         String device_id = object.getString("device_id");
 
-        if(!TextUtils.equals(device_id,PhoneInfoUtils.getLocalMacAddressFromWifiInfo(context))){
+        if (!TextUtils.equals(device_id, PhoneInfoUtils.getLocalMacAddressFromWifiInfo(context))) {
             return;
         }
 
-
-        UpdatePushRequestBean updatePushRequestBean = new UpdatePushRequestBean();
-        updatePushRequestBean.order_id = order_id;
-        HttpClient.request(updatePushRequestBean, false, new IHttpCallBack() {
-            @Override
-            public void success(ResponseBean responseBean) {
-            }
-            @Override
-            public void failed(ResponseBean responseBean) {
-            }
-        });
+        updatePushState(mOrder_id);
 
         GetOrderInfoRequestBean requestBean = new GetOrderInfoRequestBean();
-        requestBean.order_id = order_id;
+        requestBean.order_id = mOrder_id;
         HttpClient.request(requestBean, false, new IHttpCallBack() {
 
             @Override
             public void success(ResponseBean responseBean) {
                 OrderInfoBean orderInfoBean = JSON.parseObject(responseBean.getData(), OrderInfoBean.class);
                 boxno = orderInfoBean.getBoxno();
+                mPost_no = orderInfoBean.getPost_no();
                 try {
                     SerialPortOpenSDK.getInstance().send(
                             new CommandProtocol.Builder()
@@ -113,33 +112,32 @@ public class LockerIntentService extends GTIntentService implements SerialPortMe
                     e.printStackTrace();
                 }
 
-                String post_no = orderInfoBean.getPost_no();
-                if (TextUtils.equals("qu", type)) { //取件推送
-                    if(TextUtils.isEmpty(post_no) && TextUtils.equals(order_id,LockerApplication.sQuOrderId)){
-                        ViewManager.getInstance().finishOthersView(HomeActivity.class);
-                        Intent intent = new Intent(LockerApplication.getApplication(), UserPickUpSuccessActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        intent.putExtra(Constant.OrderInfoKey, order_id);
-                        LockerApplication.getApplication().startActivity(intent);
-                        LockerApplication.sQuOrderId = null;
-                    } else {
-
-                    }
-                } else if(TextUtils.equals("cun",type) && TextUtils.equals(order_id,LockerApplication.sOrderId)){                                                                    //存件推送
-                    ViewManager.getInstance().finishOthersView(HomeActivity.class);
-                    Intent intent = new Intent(LockerApplication.getApplication(), SenderDeliverSuccessActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.putExtra(Constant.OrderInfoKey, order_id);
-                    LockerApplication.getApplication().startActivity(intent);
-                    LockerApplication.sOrderId = null;
-                } else if(TextUtils.equals("tui",type) && TextUtils.equals(order_id,LockerApplication.sTuiOrderId)){
-                    Intent intent = new Intent(LockerApplication.getApplication(), UserPickUpSuccessActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.putExtra(Constant.OrderInfoKey, order_id);
-                    LockerApplication.getApplication().startActivity(intent);
-                    LockerApplication.sTuiOrderId = null;
-                }
-                ToastUtil.showLongToast("格口号" + boxno + "已打开");
+//                if (TextUtils.equals("qu", mType)) { //取件推送
+//                    if (TextUtils.isEmpty(mPost_no) && TextUtils.equals(mOrder_id, LockerApplication.sQuOrderId)) {
+//                        ViewManager.getInstance().finishOthersView(HomeActivity.class);
+//                        Intent intent = new Intent(LockerApplication.getApplication(), UserPickUpSuccessActivity.class);
+//                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                        intent.putExtra(Constant.OrderInfoKey, mOrder_id);
+//                        LockerApplication.getApplication().startActivity(intent);
+//                        LockerApplication.sQuOrderId = null;
+//                    } else {
+//
+//                    }
+//                } else if (TextUtils.equals("cun", mType) && TextUtils.equals(mOrder_id, LockerApplication.sOrderId)) {                                                                    //存件推送
+//                    ViewManager.getInstance().finishOthersView(HomeActivity.class);
+//                    Intent intent = new Intent(LockerApplication.getApplication(), SenderDeliverSuccessActivity.class);
+//                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                    intent.putExtra(Constant.OrderInfoKey, mOrder_id);
+//                    LockerApplication.getApplication().startActivity(intent);
+//                    LockerApplication.sOrderId = null;
+//                } else if (TextUtils.equals("tui", mType) && TextUtils.equals(mOrder_id, LockerApplication.sTuiOrderId)) {
+//                    Intent intent = new Intent(LockerApplication.getApplication(), UserPickUpSuccessActivity.class);
+//                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                    intent.putExtra(Constant.OrderInfoKey, mOrder_id);
+//                    LockerApplication.getApplication().startActivity(intent);
+//                    LockerApplication.sTuiOrderId = null;
+//                }
+//                ToastUtil.showLongToast("格口号" + boxno + "已打开");
             }
 
             @Override
@@ -154,12 +152,7 @@ public class LockerIntentService extends GTIntentService implements SerialPortMe
     public void onReceiveOnlineState(Context context, boolean b) {
         LogUtils.e("onReceiveOnlineState:" + b);
         isDeviceOnLine = b;
-
         EventBus.getDefault().post(new NetworkEvent(b));
-
-        if(!b){
-//            ToastUtil.showLongToast("当前网络已断开，请先检查网络状况");
-        }
     }
 
     // 各种事件处理回执
@@ -183,6 +176,7 @@ public class LockerIntentService extends GTIntentService implements SerialPortMe
     @Override
     public void onCreate() {
         super.onCreate();
+        LogUtils.e("onCreate");
         SerialPortOpenSDK.getInstance().regirster(this);
     }
 
@@ -198,21 +192,79 @@ public class LockerIntentService extends GTIntentService implements SerialPortMe
         CommandProtocol commandProtocol = new CommandProtocol.Builder().setBytes(data).parseMessage();
         if (CommandProtocol.COMMAND_OPEN_RESPONSE == commandProtocol.getCommand()) {
             LogUtils.e("COMMAND_OPEN");
-//            if (!TextUtils.isEmpty(boxno)) {
-//                UpdateDeviceBoxStatusRequestBean requestBean = new UpdateDeviceBoxStatusRequestBean();
-//                requestBean.device_id = PhoneInfoUtils.getLocalMacAddressFromWifiInfo(LockerApplication.getApplication());
-//                requestBean.boxno = boxno;
-//                requestBean.openstatus = "open";
-//                HttpClient.request(requestBean, false, new IHttpCallBack() {
-//                    @Override
-//                    public void success(ResponseBean responseBean) {
-//                    }
-//
-//                    @Override
-//                    public void failed(ResponseBean responseBean) {
-//                    }
-//                });
-//            }
+            String state = commandProtocol.getState();
+            LogUtils.e("COMMAND_OPEN");
+            String msg = "";
+            if (TextUtils.equals("00", state)) {
+                msg = "对应的格口:" + boxno + "打开成功";
+                onOpenBoxSuccessToActivity();
+            } else if (TextUtils.equals("01", state)) {
+                msg = "对应的格口:" + boxno + "打开失败";
+                onOpenBoxFailToActivity(1,boxno);
+            } else {
+                msg = "未知状态:" + boxno + "打开失败";
+                onOpenBoxFailToActivity(2,boxno);
+            }
         }
     }
+
+    private void updatePushState(String order_id){
+        UpdatePushRequestBean updatePushRequestBean = new UpdatePushRequestBean();
+        updatePushRequestBean.order_id = order_id;
+        HttpClient.request(updatePushRequestBean, false, new IHttpCallBack() {
+            @Override
+            public void success(ResponseBean responseBean) {
+            }
+            @Override
+            public void failed(ResponseBean responseBean) {
+            }
+        });
+    }
+
+    private void onOpenBoxSuccessToActivity(){
+        if(TextUtils.isEmpty(mOrder_id)){
+            return;
+        }
+        if (TextUtils.equals("qu", mType)) { //取件推送
+            if (TextUtils.isEmpty(mPost_no) && TextUtils.equals(mOrder_id, LockerApplication.sQuOrderId)) {
+                ViewManager.getInstance().finishOthersView(HomeActivity.class);
+                Intent intent = new Intent(LockerApplication.getApplication(), UserPickUpSuccessActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra(Constant.OrderInfoKey, mOrder_id);
+                LockerApplication.getApplication().startActivity(intent);
+                LockerApplication.sQuOrderId = null;
+            } else {
+
+            }
+        } else if (TextUtils.equals("cun", mType) && TextUtils.equals(mOrder_id, LockerApplication.sOrderId)) {                                                                    //存件推送
+            ViewManager.getInstance().finishOthersView(HomeActivity.class);
+            Intent intent = new Intent(LockerApplication.getApplication(), SenderDeliverSuccessActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra(Constant.OrderInfoKey, mOrder_id);
+            LockerApplication.getApplication().startActivity(intent);
+            LockerApplication.sOrderId = null;
+        } else if (TextUtils.equals("tui", mType) && TextUtils.equals(mOrder_id, LockerApplication.sTuiOrderId)) {
+            Intent intent = new Intent(LockerApplication.getApplication(), UserPickUpSuccessActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra(Constant.OrderInfoKey, mOrder_id);
+            LockerApplication.getApplication().startActivity(intent);
+            LockerApplication.sTuiOrderId = null;
+        }
+        LockerApplication.mMainThreadHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                ToastUtil.showLongToast("格口号" + boxno + "已打开");
+            }
+        });
+    }
+
+
+    private void onOpenBoxFailToActivity(int state,String boxNo){
+        Intent intent = new Intent(LockerApplication.getApplication(), PushStateDialogActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(Constant.OpenBoxStateKey, state);
+        intent.putExtra(Constant.OpenBoxContentKey, boxNo);
+        LockerApplication.getApplication().startActivity(intent);
+    }
+
 }

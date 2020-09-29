@@ -43,75 +43,60 @@
                     android:textColorHint="@color/color_999999"
                     android:textColor="@color/color_333333"/>
 
-                <TextView
-                    android:id="@+id/tv_post_send"
-                    android:layout_width="130dp"
-                    android:layout_height="50dp"
-                    android:text="发送验证码"
-                    android:textSize="18sp"
-                    android:textColor="@color/white"
-                    android:gravity="center"
-                    android:background="@drawable/text_shape"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="8dp"
-                    android:layout_centerVertical="true"
-                    android:visibility="gone"/>
+                <!--<TextView-->
+                    <!--android:id="@+id/tv_post_send"-->
+                    <!--android:layout_width="130dp"-->
+                    <!--android:layout_height="50dp"-->
+                    <!--android:text="发送验证码"-->
+                    <!--android:textSize="18sp"-->
+                    <!--android:textColor="@color/white"-->
+                    <!--android:gravity="center"-->
+                    <!--android:background="@drawable/text_shape"-->
+                    <!--android:layout_alignParentRight="true"-->
+                    <!--android:layout_marginRight="8dp"-->
+                    <!--android:layout_centerVertical="true"-->
+                    <!--android:visibility="gone"/>-->
 
             </RelativeLayout>
 
-            <RelativeLayout
-                android:id="@+id/rl_post_verify"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:visibility="gone">
-
-                <EditText
-                    android:id="@+id/et_post_verify"
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:background="@drawable/et_shape"
-                    android:hint="输入验证码"
-                    android:textSize="18sp"
-                    android:paddingLeft="20dp"
-                    android:maxLength="11"
-                    android:inputType="number"
-                    android:singleLine="true"
-                    android:textColorHint="@color/color_999999"
-                    android:textColor="@color/color_333333"
-                    android:visibility="visible"/>
-
-                <TextView
-                    android:id="@+id/tv_post_verify"
-                    android:layout_width="130dp"
-                    android:layout_height="50dp"
-                    android:text="验证成功"
-                    android:textSize="18sp"
-                    android:textColor="@color/white"
-                    android:gravity="center"
-                    android:background="@drawable/text_shape"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="8dp"
-                    android:layout_centerVertical="true"
-                    android:visibility="gone"/>
-
-            </RelativeLayout>
-
-            <!--<EditText-->
-                <!--android:id="@+id/et_post_verify"-->
+            <!--<RelativeLayout-->
+                <!--android:id="@+id/rl_post_verify"-->
                 <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="70dp"-->
-                <!--android:background="@drawable/et_shape"-->
-                <!--android:hint="输入验证码"-->
-                <!--android:textSize="18sp"-->
-                <!--android:paddingLeft="20dp"-->
-                <!--android:maxLength="11"-->
-                <!--android:inputType="number"-->
-                <!--android:singleLine="true"-->
+                <!--android:layout_height="wrap_content"-->
                 <!--android:layout_marginTop="10dp"-->
-                <!--android:textColorHint="@color/color_999999"-->
-                <!--android:textColor="@color/color_333333"-->
-                <!--android:visibility="gone"/>-->
+                <!--android:visibility="gone">-->
+
+                <!--<EditText-->
+                    <!--android:id="@+id/et_post_verify"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="60dp"-->
+                    <!--android:background="@drawable/et_shape"-->
+                    <!--android:hint="输入验证码"-->
+                    <!--android:textSize="18sp"-->
+                    <!--android:paddingLeft="20dp"-->
+                    <!--android:maxLength="11"-->
+                    <!--android:inputType="number"-->
+                    <!--android:singleLine="true"-->
+                    <!--android:textColorHint="@color/color_999999"-->
+                    <!--android:textColor="@color/color_333333"-->
+                    <!--android:visibility="visible"/>-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/tv_post_verify"-->
+                    <!--android:layout_width="130dp"-->
+                    <!--android:layout_height="50dp"-->
+                    <!--android:text="验证成功"-->
+                    <!--android:textSize="18sp"-->
+                    <!--android:textColor="@color/white"-->
+                    <!--android:gravity="center"-->
+                    <!--android:background="@drawable/text_shape"-->
+                    <!--android:layout_alignParentRight="true"-->
+                    <!--android:layout_marginRight="8dp"-->
+                    <!--android:layout_centerVertical="true"-->
+                    <!--android:visibility="gone"/>-->
+
+            <!--</RelativeLayout>-->
+
 
             <TextView
                 android:id="@+id/tv_post_msg"
@@ -142,74 +127,59 @@
                     android:textColorHint="@color/color_999999"
                     android:textColor="@color/color_333333"/>
 
-                <TextView
-                    android:id="@+id/tv_fetch_agree"
-                    android:layout_width="130dp"
-                    android:layout_height="50dp"
-                    android:text="发送验证码"
-                    android:textSize="18sp"
-                    android:textColor="@color/white"
-                    android:gravity="center"
-                    android:background="@drawable/text_shape"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="8dp"
-                    android:layout_centerVertical="true"
-                    android:visibility="gone"/>
+                <!--<TextView-->
+                    <!--android:id="@+id/tv_fetch_agree"-->
+                    <!--android:layout_width="130dp"-->
+                    <!--android:layout_height="50dp"-->
+                    <!--android:text="发送验证码"-->
+                    <!--android:textSize="18sp"-->
+                    <!--android:textColor="@color/white"-->
+                    <!--android:gravity="center"-->
+                    <!--android:background="@drawable/text_shape"-->
+                    <!--android:layout_alignParentRight="true"-->
+                    <!--android:layout_marginRight="8dp"-->
+                    <!--android:layout_centerVertical="true"-->
+                    <!--android:visibility="gone"/>-->
 
             </RelativeLayout>
 
-            <RelativeLayout
-                android:id="@+id/rl_fetch_verify"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:visibility="gone">
-
-                <EditText
-                    android:id="@+id/et_fetch_verify"
-                    android:layout_width="match_parent"
-                    android:layout_height="60dp"
-                    android:background="@drawable/et_shape"
-                    android:hint="输入验证码"
-                    android:textSize="18sp"
-                    android:paddingLeft="20dp"
-                    android:maxLength="11"
-                    android:inputType="number"
-                    android:singleLine="true"
-                    android:textColorHint="@color/color_999999"
-                    android:textColor="@color/color_333333"
-                    android:visibility="visible"/>
-
-                <TextView
-                    android:id="@+id/tv_fetch_verify"
-                    android:layout_width="130dp"
-                    android:layout_height="50dp"
-                    android:text="验证成功"
-                    android:textSize="18sp"
-                    android:textColor="@color/white"
-                    android:gravity="center"
-                    android:background="@drawable/text_shape"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="8dp"
-                    android:layout_centerVertical="true"
-                    android:visibility="gone"/>
-            </RelativeLayout>
-
-            <!--<EditText-->
-                <!--android:id="@+id/et_fetch_verify"-->
+            <!--<RelativeLayout-->
+                <!--android:id="@+id/rl_fetch_verify"-->
                 <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="70dp"-->
-                <!--android:background="@drawable/et_shape"-->
-                <!--android:hint="输入验证码"-->
-                <!--android:textSize="18sp"-->
-                <!--android:paddingLeft="20dp"-->
-                <!--android:maxLength="11"-->
-                <!--android:inputType="number"-->
-                <!--android:singleLine="true"-->
+                <!--android:layout_height="wrap_content"-->
                 <!--android:layout_marginTop="10dp"-->
-                <!--android:textColorHint="@color/color_999999"-->
-                <!--android:textColor="@color/color_333333"-->
-                <!--android:visibility="gone"/>-->
+                <!--android:visibility="gone">-->
+
+                <!--<EditText-->
+                    <!--android:id="@+id/et_fetch_verify"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="60dp"-->
+                    <!--android:background="@drawable/et_shape"-->
+                    <!--android:hint="输入验证码"-->
+                    <!--android:textSize="18sp"-->
+                    <!--android:paddingLeft="20dp"-->
+                    <!--android:maxLength="11"-->
+                    <!--android:inputType="number"-->
+                    <!--android:singleLine="true"-->
+                    <!--android:textColorHint="@color/color_999999"-->
+                    <!--android:textColor="@color/color_333333"-->
+                    <!--android:visibility="visible"/>-->
+
+                <!--<TextView-->
+                    <!--android:id="@+id/tv_fetch_verify"-->
+                    <!--android:layout_width="130dp"-->
+                    <!--android:layout_height="50dp"-->
+                    <!--android:text="验证成功"-->
+                    <!--android:textSize="18sp"-->
+                    <!--android:textColor="@color/white"-->
+                    <!--android:gravity="center"-->
+                    <!--android:background="@drawable/text_shape"-->
+                    <!--android:layout_alignParentRight="true"-->
+                    <!--android:layout_marginRight="8dp"-->
+                    <!--android:layout_centerVertical="true"-->
+                    <!--android:visibility="gone"/>-->
+            <!--</RelativeLayout>-->
+
 
             <TextView
                 android:id="@+id/tv_fetch_msg"

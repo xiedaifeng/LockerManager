@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="500dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/all_corner_shape"
+    android:gravity="center"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    android:paddingTop="40dp"
+    android:paddingBottom="40dp">
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="提示"
+        android:textColor="@color/color_333333"
+        android:textSize="20sp"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/tv_tip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textColor="@color/color_333333"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"/>
+
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_exit"
+            android:layout_width="130dp"
+            android:layout_height="50dp"
+            android:layout_below="@+id/tv_role_name"
+            android:text="确定"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:background="@drawable/text_0ed26b_5_shape" />
+
+        <View
+            android:layout_width="30dp"
+            android:layout_height="0dp"/>
+
+        <TextView
+            android:id="@+id/tv_cancel"
+            android:layout_width="130dp"
+            android:layout_height="50dp"
+            android:layout_below="@+id/tv_role_name"
+            android:text="取消"
+            android:textColor="@color/color_0ED26B"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:background="@drawable/text_eeeeee_5_shape"/>
+
+    </LinearLayout>
+
+</LinearLayout>

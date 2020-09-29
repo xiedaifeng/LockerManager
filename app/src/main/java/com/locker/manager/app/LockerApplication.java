@@ -2,6 +2,8 @@ package com.locker.manager.app;
 
 import android.app.ActivityManager;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -29,6 +31,8 @@ public class LockerApplication extends BaseApplication {
     public static String sOrderId = null;
     public static String sQuOrderId = null;
     public static String sTuiOrderId = null;
+
+    public static Handler mMainThreadHandler;
 
 
     @Override
@@ -66,6 +70,8 @@ public class LockerApplication extends BaseApplication {
 // 初始化Bugly
             CrashReport.initCrashReport(context, "f92e8e8e4f", false, strategy);
 //            CrashReport.initCrashReport(getApplicationContext(), "f92e8e8e4f", false);
+
+            mMainThreadHandler = new Handler(Looper.getMainLooper());
         }
     }
 

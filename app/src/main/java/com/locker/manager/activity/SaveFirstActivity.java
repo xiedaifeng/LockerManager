@@ -10,33 +10,25 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
-import com.example.http_lib.bean.CheckSmsRequestBean;
 import com.example.http_lib.bean.GetUserInfoByMobileRequestBean;
 import com.example.http_lib.bean.SendSmsRequestBean;
 import com.example.http_lib.response.MobileUserInfoBean;
 import com.locker.manager.R;
-import com.locker.manager.adapter.NumAdapter;
 import com.locker.manager.app.Constant;
 import com.locker.manager.base.BaseUrlView;
-import com.locker.manager.callback.OnItemCallBack;
-import com.locker.manager.callback.OnItemClickListener;
+import com.locker.manager.dialog.CheckPhoneDialog;
 import com.locker.manager.manager.VibratorManager;
 import com.yidao.module_lib.base.http.ResponseBean;
 import com.yidao.module_lib.manager.ViewManager;
 import com.yidao.module_lib.utils.EditTextInputUtils;
-import com.yidao.module_lib.utils.LogUtils;
 import com.yidao.module_lib.utils.PhoneUtils;
 import com.yidao.module_lib.utils.SoftKeyboardUtil;
 import com.yidao.module_lib.utils.ToastUtil;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import butterknife.BindView;
 import butterknife.OnClick;
 
@@ -53,38 +45,18 @@ public class SaveFirstActivity extends BaseUrlView {
     EditText etPostPhone;
     @BindView(R.id.tv_post_msg)
     TextView tvPostMsg;
+
     @BindView(R.id.et_fetch_phone)
     EditText etFetchPhone;
-    @BindView(R.id.tv_fetch_agree)
-    TextView tvFetchAgree;
     @BindView(R.id.tv_fetch_msg)
     TextView tvFetchMsg;
-
-    @BindView(R.id.et_post_verify)
-    EditText etPostVerify;
-    @BindView(R.id.et_fetch_verify)
-    EditText etFetchVerify;
-    @BindView(R.id.tv_post_send)
-    TextView tvPostSend;
-
-    @BindView(R.id.rl_post_verify)
-    RelativeLayout rlPostVerify;
-    @BindView(R.id.tv_post_verify)
-    TextView tvPostVerify;
-    @BindView(R.id.rl_fetch_verify)
-    RelativeLayout rlFetchVerify;
-    @BindView(R.id.tv_fetch_verify)
-    TextView tvFetchVerify;
-
     @BindView(R.id.tv_fetch_agree1)
     TextView tvFetchAgree1;
+
     @BindView(R.id.tv_delete)
     TextView tvDelete;
     @BindView(R.id.tv_title_count_down)
     TextView mTvCountDown;
-
-    private boolean isPostCheck = false;
-    private boolean isFetchCheck = false;
 
     private String userName = "";
 
@@ -130,8 +102,6 @@ public class SaveFirstActivity extends BaseUrlView {
 
         SoftKeyboardUtil.disableShowInput(etPostPhone);
         SoftKeyboardUtil.disableShowInput(etFetchPhone);
-        SoftKeyboardUtil.disableShowInput(etPostVerify);
-        SoftKeyboardUtil.disableShowInput(etFetchVerify);
 
         etPostPhone.addTextChangedListener(new TextWatcher() {
             @Override
@@ -142,12 +112,16 @@ public class SaveFirstActivity extends BaseUrlView {
             }
             @Override
             public void afterTextChanged(Editable s) {
+//                if(PhoneUtils.isPhone(etFetchPhone.getText().toString()) && PhoneUtils.isPhone(s.toString()) && !TextUtils.equals(etFetchPhone.getText().toString(),s.toString())) {
+//                    tvFetchAgree1.setText("拨打该号码");
+//                } else {
+//                    tvFetchAgree1.setText("与存件人一致");
+//                }
+
                 if (PhoneUtils.isPhone(s.toString())) {
                     mPresenter.getUserInfoByMobile(s.toString(), "post");
                 } else {
-                    tvPostSend.setVisibility(View.GONE);
                     tvPostMsg.setVisibility(View.INVISIBLE);
-                    rlPostVerify.setVisibility(View.GONE);
                 }
             }
         });
@@ -162,45 +136,16 @@ public class SaveFirstActivity extends BaseUrlView {
 
             @Override
             public void afterTextChanged(Editable s) {
+//                if(PhoneUtils.isPhone(etPostPhone.getText().toString()) && PhoneUtils.isPhone(s.toString()) && !TextUtils.equals(etPostPhone.getText().toString(),s.toString())) {
+//                    tvFetchAgree1.setText("拨打该号码");
+//                } else {
+//                    tvFetchAgree1.setText("与存件人一致");
+//                }
+
                 if (PhoneUtils.isPhone(s.toString())) {
                     mPresenter.getUserInfoByMobile(s.toString(), "fetch");
                 } else {
-                    tvFetchAgree.setVisibility(View.GONE);
-                    tvFetchAgree1.setVisibility(View.VISIBLE);
                     tvFetchMsg.setVisibility(View.INVISIBLE);
-                    rlFetchVerify.setVisibility(View.GONE);
-                }
-            }
-        });
-        etPostVerify.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() == 4) {
-                    mPresenter.checkSmsCode(etPostPhone.getText().toString(), s.toString(), "post");
-                } else {
-                    tvPostVerify.setVisibility(View.GONE);
-                }
-            }
-        });
-        etFetchVerify.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() == 4) {
-                    mPresenter.checkSmsCode(etFetchPhone.getText().toString(), s.toString(), "fetch");
-                } else {
-                    tvFetchVerify.setVisibility(View.GONE);
                 }
             }
         });
@@ -245,7 +190,7 @@ public class SaveFirstActivity extends BaseUrlView {
     }
 
 
-    @OnClick({R.id.iv_left, R.id.tv_fetch_agree, R.id.iv_help, R.id.tv_next, R.id.tv_post_send, R.id.tv_fetch_agree1})
+    @OnClick({R.id.iv_left, R.id.iv_help, R.id.tv_next , R.id.tv_fetch_agree1})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_left:
@@ -270,67 +215,26 @@ public class SaveFirstActivity extends BaseUrlView {
                     ToastUtil.showShortToast("请输入正确的取件手机号");
                     return;
                 }
-                if (rlPostVerify.getVisibility() == View.VISIBLE) {
-                    if (TextUtils.isEmpty(etPostVerify.getText().toString())) {
-                        ToastUtil.showShortToast("验证码不能为空");
-                        return;
-                    }
-                    if (!isPostCheck) {
-                        ToastUtil.showShortToast("验证失败");
-                        return;
-                    }
-                }
-                if (rlFetchVerify.getVisibility() == View.VISIBLE) {
-                    if (TextUtils.isEmpty(etFetchVerify.getText().toString())) {
-                        ToastUtil.showShortToast("验证码不能为空");
-                        return;
-                    }
-                    if (!isFetchCheck) {
-                        ToastUtil.showShortToast("验证失败");
-                        return;
-                    }
-                }
                 Bundle bundle = new Bundle();
                 bundle.putString(Constant.UserName, userName);
                 bundle.putString(Constant.PostPhone, postPhone);
                 bundle.putString(Constant.FetchPhone, fetchPhone);
                 skipActivity(SaveDepositActivity.class, bundle);
                 break;
-            case R.id.tv_fetch_agree:
-                if(!isDeviceOnLine()){
-                    return;
-                }
-                VibratorManager.getInstance().vibrate(50);
-                fetchPhone = etFetchPhone.getText().toString();
-                if (!PhoneUtils.isPhone(fetchPhone)) {
-                    ToastUtil.showShortToast("请输入正确的手机号");
-                    return;
-                }
-                mPresenter.sendSms(fetchPhone);
-                break;
-            case R.id.tv_post_send:
-                if(!isDeviceOnLine()){
-                    return;
-                }
-                VibratorManager.getInstance().vibrate(50);
-                postPhone = etPostPhone.getText().toString();
-                if (!PhoneUtils.isPhone(postPhone)) {
-                    ToastUtil.showShortToast("请输入正确的手机号");
-                    return;
-                }
-                mPresenter.sendSms(postPhone);
-                break;
             case R.id.tv_fetch_agree1:
                 if(!isDeviceOnLine()){
                     return;
                 }
                 VibratorManager.getInstance().vibrate(50);
-                postPhone = etPostPhone.getText().toString();
-                if (!PhoneUtils.isPhone(postPhone)) {
-                    ToastUtil.showShortToast("请输入正确的手机号");
-                    return;
+                String fetchAgree = tvFetchAgree1.getText().toString();
+                if(TextUtils.equals("与存件人一致",fetchAgree)){
+                    postPhone = etPostPhone.getText().toString();
+                    if (!PhoneUtils.isPhone(postPhone)) {
+                        ToastUtil.showShortToast("请输入正确的手机号");
+                        return;
+                    }
+                    etFetchPhone.setText(postPhone);
                 }
-                etFetchPhone.setText(postPhone);
                 break;
         }
     }
@@ -383,10 +287,6 @@ public class SaveFirstActivity extends BaseUrlView {
             EditTextInputUtils.addString(etPostPhone, str);
         } else if (etFetchPhone.isFocused()) {
             EditTextInputUtils.addString(etFetchPhone, str);
-        } else if (etPostVerify.isFocused()) {
-            EditTextInputUtils.addString(etPostVerify, str);
-        } else if (etFetchVerify.isFocused()) {
-            EditTextInputUtils.addString(etFetchVerify, str);
         }
     }
 
@@ -395,10 +295,6 @@ public class SaveFirstActivity extends BaseUrlView {
             etPostPhone.setText("");
         } else if (etFetchPhone.isFocused()) {
             etFetchPhone.setText("");
-        } else if (etPostVerify.isFocused()) {
-            etPostVerify.setText("");
-        } else if (etFetchVerify.isFocused()) {
-            etFetchVerify.setText("");
         }
     }
 
@@ -408,12 +304,6 @@ public class SaveFirstActivity extends BaseUrlView {
             return true;
         } else if (etFetchPhone.isFocused()) {
             EditTextInputUtils.deleteString(etFetchPhone);
-            return true;
-        } else if (etPostVerify.isFocused()) {
-            EditTextInputUtils.deleteString(etPostVerify);
-            return true;
-        } else if (etFetchVerify.isFocused()) {
-            EditTextInputUtils.deleteString(etFetchVerify);
             return true;
         }
         return false;
@@ -426,16 +316,12 @@ public class SaveFirstActivity extends BaseUrlView {
             if (requestCls == GetUserInfoByMobileRequestBean.class) {
                 if (TextUtils.equals("post", responseBean.getCarry().toString())) {
                     tvPostMsg.setVisibility(View.VISIBLE);
-                    rlPostVerify.setVisibility(View.GONE);
-                    tvPostSend.setVisibility(View.GONE);
                     MobileUserInfoBean userInfoBean = JSON.parseObject(responseBean.getData(), MobileUserInfoBean.class);
                     tvPostMsg.setText("验证信息：" + userInfoBean.getRealname());
                     userName = userInfoBean.getRealname();
                 }
                 if (TextUtils.equals("fetch", responseBean.getCarry().toString())) {
                     tvFetchMsg.setVisibility(View.VISIBLE);
-                    rlFetchVerify.setVisibility(View.GONE);
-                    tvFetchAgree.setVisibility(View.GONE);
                     MobileUserInfoBean userInfoBean = JSON.parseObject(responseBean.getData(), MobileUserInfoBean.class);
                     tvFetchMsg.setText("验证信息：" + userInfoBean.getRealname());
                 }
@@ -443,46 +329,19 @@ public class SaveFirstActivity extends BaseUrlView {
             if (requestCls == SendSmsRequestBean.class) {
                 ToastUtil.showShortToast("验证码发送成功");
             }
-            if (requestCls == CheckSmsRequestBean.class) {
-                if (TextUtils.equals("post", responseBean.getCarry().toString())) {
-                    tvPostVerify.setVisibility(View.VISIBLE);
-                    tvPostVerify.setText("验证成功");
-                    isPostCheck = true;
-                }
-                if (TextUtils.equals("fetch", responseBean.getCarry().toString())) {
-                    tvFetchVerify.setVisibility(View.VISIBLE);
-                    tvFetchVerify.setText("验证成功");
-                    isFetchCheck = true;
-                }
-            }
         } else {
             if (requestCls == GetUserInfoByMobileRequestBean.class) {
                 if (TextUtils.equals("post", responseBean.getCarry().toString())) {
-                    tvPostMsg.setVisibility(View.GONE);
-                    rlPostVerify.setVisibility(View.VISIBLE);
-                    tvPostSend.setVisibility(View.VISIBLE);
+                    tvPostMsg.setVisibility(View.INVISIBLE);
+                    CheckPhoneDialog dialog = new CheckPhoneDialog(getCtx(),etPostPhone.getText().toString());
+                    dialog.show();
                 }
                 if (TextUtils.equals("fetch", responseBean.getCarry().toString())) {
-                    tvFetchMsg.setVisibility(View.GONE);
-                    rlFetchVerify.setVisibility(View.VISIBLE);
-                    tvFetchAgree.setVisibility(View.VISIBLE);
-                    tvFetchAgree1.setVisibility(View.GONE);
+                    tvFetchMsg.setVisibility(View.INVISIBLE);
+                    CheckPhoneDialog dialog = new CheckPhoneDialog(getCtx(),etFetchPhone.getText().toString());
+                    dialog.show();
                 }
-                ToastUtil.showLongToast("非平台用户，需向对方手机发送验证码");
-            }
-            if (requestCls == CheckSmsRequestBean.class) {
-                if (TextUtils.equals("post", responseBean.getCarry().toString())) {
-                    tvPostVerify.setVisibility(View.VISIBLE);
-                    tvPostVerify.setText("验证失败");
-                    isPostCheck = false;
-                    tvPostSend.setText("重新发送");
-                }
-                if (TextUtils.equals("fetch", responseBean.getCarry().toString())) {
-                    tvFetchVerify.setVisibility(View.VISIBLE);
-                    tvFetchVerify.setText("验证失败");
-                    isFetchCheck = false;
-                    tvFetchAgree.setText("重新发送");
-                }
+//                ToastUtil.showLongToast("非平台用户，需向对方手机发送验证码");
             }
             if (requestCls != GetUserInfoByMobileRequestBean.class) {
                 ToastUtil.showLongToast(responseBean.getMessage());

@@ -76,7 +76,7 @@
             android:id="@+id/tv_hot_phone"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/dialog_box_state_tv"
-            android:text="如有疑问，请致电客服：95138"
+            android:text="如有疑问，请致电客服：4001172518"
             android:textColor="@color/colorPrimary"
             android:textSize="15dp"
             android:textStyle="bold"

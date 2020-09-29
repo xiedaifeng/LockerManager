@@ -143,7 +143,7 @@
             android:id="@+id/tv_phone_tip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="客服热线：98525"
+            android:text="客服热线：4001172518"
             android:textSize="18sp"
             android:textColor="@color/white"
             android:layout_alignParentRight="true"

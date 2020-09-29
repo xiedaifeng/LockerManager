@@ -60,6 +60,7 @@
         <activity android:name=".activity.SaveFirstActivity" android:screenOrientation="landscape" android:windowSoftInputMode="stateHidden"/>
         <activity android:name=".activity.TestActivity" android:screenOrientation="landscape" android:windowSoftInputMode="stateHidden"/>
         <activity android:name=".activity.SettingActivity" android:screenOrientation="landscape" android:windowSoftInputMode="stateHidden"/>
+        <activity android:name=".activity.PushStateDialogActivity" android:screenOrientation="landscape" android:windowSoftInputMode="stateHidden" android:theme="@style/dialog_activity_style" android:launchMode="singleTask"/>
 
         <receiver android:name=".activity.receiver.TimerReceiver"/>
 

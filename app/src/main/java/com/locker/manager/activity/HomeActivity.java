@@ -99,6 +99,9 @@ public class HomeActivity extends BaseUrlView {
         switch (view.getId()) {
             case R.id.iv_left:
 
+
+                skipActivity(PushStateDialogActivity.class);
+
 //                if (dialog == null) {
 //                    dialog = new BoxStateDialog(this);
 //                }

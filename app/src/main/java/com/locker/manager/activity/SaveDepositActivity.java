@@ -282,15 +282,19 @@ public class SaveDepositActivity extends BaseUrlView {
                 orderId = orderInfoBean.getId();
                 LockerApplication.sOrderId = orderId;
 
-                if (mHandler != null) {
-                    mHandler.removeMessages(countDownCode);
-                    tvCountDown.setText(String.format("%ss后返回首页", 30));
-                }
+//                if (mHandler != null) {
+//                    mHandler.removeMessages(countDownCode);
+//                    tvCountDown.setText(String.format("%ss后返回首页", 30));
+//                }
                 mPresenter.getAllBoxDetail(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()));
 
                 if (TextUtils.isEmpty(money) || Float.parseFloat(money) <= 0f) {
 //                    openBoxByOpencode(opencode);
                     return;
+                }
+                if (mHandler != null) {
+                    mHandler.removeMessages(countDownCode);
+                    tvCountDown.setText(String.format("%ss后返回首页", 30));
                 }
 
                 showSaveOverDialog(true);
