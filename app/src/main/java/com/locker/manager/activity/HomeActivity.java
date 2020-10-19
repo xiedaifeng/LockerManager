@@ -1,15 +1,11 @@
 package com.locker.manager.activity;
 
 
-import android.content.DialogInterface;
-import android.os.Looper;
 import android.text.TextUtils;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.alibaba.fastjson.JSON;
@@ -21,16 +17,12 @@ import com.example.http_lib.bean.SystemNoticeRequestBean;
 import com.example.http_lib.response.NoticeBean;
 import com.example.http_lib.utils.UserCacheHelper;
 import com.locker.manager.R;
-import com.locker.manager.app.LockerApplication;
 import com.locker.manager.base.BaseUrlView;
-import com.locker.manager.dialog.BoxStateDialog;
-import com.locker.manager.dialog.SecondaryDialog;
 import com.locker.manager.event.NetworkEvent;
 import com.locker.manager.manager.VibratorManager;
 import com.squareup.picasso.Picasso;
 import com.yidao.module_lib.base.http.ResponseBean;
 import com.yidao.module_lib.manager.PermissionManager;
-import com.yidao.module_lib.utils.LogUtils;
 import com.yidao.module_lib.utils.PhoneInfoUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -75,7 +67,7 @@ public class HomeActivity extends BaseUrlView {
                 initNetData();
             }
         });
-        PermissionManager.getInstance().requestPermissions(this);
+        PermissionManager.getInstance().requestPermissions(getAty());
 
         setCurrentTime(tvTitle, System.currentTimeMillis());
         ivLeft.setVisibility(View.GONE);
@@ -100,7 +92,7 @@ public class HomeActivity extends BaseUrlView {
             case R.id.iv_left:
 
 
-                skipActivity(PushStateDialogActivity.class);
+//                skipActivity(PushStateDialogActivity.class);
 
 //                if (dialog == null) {
 //                    dialog = new BoxStateDialog(this);
@@ -211,7 +203,7 @@ public class HomeActivity extends BaseUrlView {
         super.onResponse(success, requestCls, responseBean);
         if (success) {
             if (requestCls == CreateDeviceQrcodeRequestBean.class) {
-                Picasso.with(this).load(responseBean.getData().replace("https", "http")).into(ivQrcode);
+                Picasso.with(getCtx()).load(responseBean.getData().replace("https", "http")).into(ivQrcode);
             }
             if (requestCls == HotPhoneRequestBean.class) {
                 UserCacheHelper.setHotPhone(responseBean.getData());
