@@ -86,11 +86,9 @@ public class LockerIntentService extends GTIntentService implements SerialPortMe
         mType = object.getString("type");
         String device_id = object.getString("device_id");
 
-        if (!TextUtils.equals(device_id, PhoneInfoUtils.getLocalMacAddressFromWifiInfo(context))) {
+        if (!TextUtils.equals(device_id, PhoneInfoUtils.getLocalMacAddressFromWifiInfo(context)) || !isDeviceOnLine) {
             return;
         }
-
-        updatePushState(mOrder_id);
 
         GetOrderInfoRequestBean requestBean = new GetOrderInfoRequestBean();
         requestBean.order_id = mOrder_id;
@@ -98,10 +96,16 @@ public class LockerIntentService extends GTIntentService implements SerialPortMe
 
             @Override
             public void success(ResponseBean responseBean) {
-                OrderInfoBean orderInfoBean = JSON.parseObject(responseBean.getData(), OrderInfoBean.class);
-                boxno = orderInfoBean.getBoxno();
-                mPost_no = orderInfoBean.getPost_no();
                 try {
+                    if (TextUtils.isEmpty(responseBean.getData())) {
+                        return;
+                    }
+
+                    updatePushState(mOrder_id);
+
+                    OrderInfoBean orderInfoBean = JSON.parseObject(responseBean.getData(), OrderInfoBean.class);
+                    boxno = orderInfoBean.getBoxno();
+                    mPost_no = orderInfoBean.getPost_no();
                     SerialPortOpenSDK.getInstance().send(
                             new CommandProtocol.Builder()
                                     .setCommand(CommandProtocol.COMMAND_OPEN)
@@ -111,6 +115,13 @@ public class LockerIntentService extends GTIntentService implements SerialPortMe
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+
+//                LockerApplication.mMainThreadHandler.post(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        ToastUtil.showLongToast("收到平台的推送消息，打开格口：" + boxno);
+//                    }
+//                });
 
 //                if (TextUtils.equals("qu", mType)) { //取件推送
 //                    if (TextUtils.isEmpty(mPost_no) && TextUtils.equals(mOrder_id, LockerApplication.sQuOrderId)) {
@@ -195,34 +206,38 @@ public class LockerIntentService extends GTIntentService implements SerialPortMe
             String state = commandProtocol.getState();
             LogUtils.e("COMMAND_OPEN");
             String msg = "";
+
+            onOpenBoxSuccessToActivity();
+
             if (TextUtils.equals("00", state)) {
                 msg = "对应的格口:" + boxno + "打开成功";
-                onOpenBoxSuccessToActivity();
+//                onOpenBoxSuccessToActivity();
             } else if (TextUtils.equals("01", state)) {
                 msg = "对应的格口:" + boxno + "打开失败";
-                onOpenBoxFailToActivity(1,boxno);
+//                onOpenBoxFailToActivity(1, boxno);
             } else {
                 msg = "未知状态:" + boxno + "打开失败";
-                onOpenBoxFailToActivity(2,boxno);
+//                onOpenBoxFailToActivity(2, boxno);
             }
         }
     }
 
-    private void updatePushState(String order_id){
+    private void updatePushState(String order_id) {
         UpdatePushRequestBean updatePushRequestBean = new UpdatePushRequestBean();
         updatePushRequestBean.order_id = order_id;
         HttpClient.request(updatePushRequestBean, false, new IHttpCallBack() {
             @Override
             public void success(ResponseBean responseBean) {
             }
+
             @Override
             public void failed(ResponseBean responseBean) {
             }
         });
     }
 
-    private void onOpenBoxSuccessToActivity(){
-        if(TextUtils.isEmpty(mOrder_id)){
+    private void onOpenBoxSuccessToActivity() {
+        if (TextUtils.isEmpty(mOrder_id)) {
             return;
         }
         if (TextUtils.equals("qu", mType)) { //取件推送
@@ -259,7 +274,7 @@ public class LockerIntentService extends GTIntentService implements SerialPortMe
     }
 
 
-    private void onOpenBoxFailToActivity(int state,String boxNo){
+    private void onOpenBoxFailToActivity(int state, String boxNo) {
         Intent intent = new Intent(LockerApplication.getApplication(), PushStateDialogActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(Constant.OpenBoxStateKey, state);
