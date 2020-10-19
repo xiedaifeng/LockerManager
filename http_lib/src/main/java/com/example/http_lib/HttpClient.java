@@ -214,37 +214,51 @@ public class HttpClient {
     }
 
     private void callback(boolean isEncrypt, String result) {
-        ResponseBean responseBean = JSON.parseObject(result, ResponseBean.class);
-        String data = responseBean.getData();
-        // 判断是否加密  如果加密  进行解密操作
-        LogUtils.d("平台返回的数据(解密前):" + mRequestClass.getSimpleName() + "," + responseBean.toString());
-        if (isEncrypt) {
-            if (!TextUtils.isEmpty(data) && !data.equals("{}")) {
-                try {
-                    data = StringUtil.AESToStringForSplit(data, UserCacheHelper.getAESToken(), "UTF-8");
-                    LogUtils.d("平台返回的数据(解密后):" + data);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    onFail(responseBean);
-                    LogUtils.d("平台返回的数据(解密失败):" + data);
-                    return;
+        try {
+            if (TextUtils.isEmpty(result)) {
+                result = "{}";
+            }
+            ResponseBean responseBean = JSON.parseObject(result, ResponseBean.class);
+            String data = responseBean.getData();
+            // 判断是否加密  如果加密  进行解密操作
+            LogUtils.d("平台返回的数据(解密前):" + mRequestClass.getSimpleName() + "," + responseBean.toString());
+            if (isEncrypt) {
+                if (!TextUtils.isEmpty(data) && !data.equals("{}")) {
+                    try {
+                        data = StringUtil.AESToStringForSplit(data, UserCacheHelper.getAESToken(), "UTF-8");
+                        LogUtils.d("平台返回的数据(解密后):" + data);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        onFail(responseBean);
+                        LogUtils.d("平台返回的数据(解密失败):" + data);
+                        return;
+                    }
                 }
             }
-        }
-        if (responseBean.getCode() == null) {
-            responseBean = new ResponseBean();
+            if (responseBean.getCode() == null) {
+                responseBean = new ResponseBean();
+                responseBean.setData(data);
+                responseBean.setErrCode(-1);
+                responseBean.setCode(-1);
+                responseBean.setErrMsg("后台异常");
+                responseBean.setMessage("后台异常");
+                onFail(responseBean);
+                return;
+            }
             responseBean.setData(data);
+            if (responseBean.getCode() == 0) {
+                onSuccess(responseBean);
+            } else {
+                onFail(responseBean);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            ResponseBean responseBean = new ResponseBean();
+            responseBean.setData("");
             responseBean.setErrCode(-1);
             responseBean.setCode(-1);
-            responseBean.setErrMsg("后台异常");
-            responseBean.setMessage("后台异常");
-            onFail(responseBean);
-            return;
-        }
-        responseBean.setData(data);
-        if (responseBean.getCode() == 0) {
-            onSuccess(responseBean);
-        } else {
+            responseBean.setErrMsg("数据异常");
+            responseBean.setMessage("数据异常");
             onFail(responseBean);
         }
     }
