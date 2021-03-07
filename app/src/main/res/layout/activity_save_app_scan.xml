@@ -72,6 +72,16 @@
             android:orientation="vertical"
             android:paddingLeft="40dp">
 
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="108dp"
+                android:layout_marginTop="30dp"
+                android:text="微信扫码存取"
+                android:gravity="center"
+                android:textColor="#000000"
+                android:textSize="24sp" />
+
             <TextView
                 android:id="@+id/tv_hand_save"
                 android:layout_width="245dp"

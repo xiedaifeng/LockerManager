@@ -116,12 +116,12 @@ public class LockerIntentService extends GTIntentService implements SerialPortMe
                     e.printStackTrace();
                 }
 
-//                LockerApplication.mMainThreadHandler.post(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        ToastUtil.showLongToast("收到平台的推送消息，打开格口：" + boxno);
-//                    }
-//                });
+                LockerApplication.mMainThreadHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        ToastUtil.showLongToast("收到平台的推送消息，打开格口：" + boxno);
+                    }
+                });
 
 //                if (TextUtils.equals("qu", mType)) { //取件推送
 //                    if (TextUtils.isEmpty(mPost_no) && TextUtils.equals(mOrder_id, LockerApplication.sQuOrderId)) {

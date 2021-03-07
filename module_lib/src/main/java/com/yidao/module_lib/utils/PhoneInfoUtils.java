@@ -169,6 +169,8 @@ public class PhoneInfoUtils {
 
     public static String getLocalMacAddressFromWifiInfo(Context context) {
 
+//        return "446EE5B067ED";
+
         String serialNumber = android.os.Build.SERIAL;
         LogUtils.e("serialNumber:"+serialNumber);
         String ANDROID_ID = Settings.System.getString(context.getContentResolver(), Settings.System.ANDROID_ID);

@@ -203,7 +203,8 @@
                 android:singleLine="true"
                 android:layout_marginTop="15dp"
                 android:textColorHint="@color/color_999999"
-                android:textColor="@color/color_333333"/>
+                android:textColor="@color/color_333333"
+                android:visibility="gone"/>
 
             <TextView
                 android:id="@+id/tv_next"
@@ -214,7 +215,7 @@
                 android:textColor="@color/white"
                 android:gravity="center"
                 android:background="@drawable/text_shape"
-                android:layout_marginTop="15dp"/>
+                android:layout_marginTop="15dp" />
 
         </LinearLayout>
 

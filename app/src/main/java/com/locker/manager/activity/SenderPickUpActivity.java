@@ -276,6 +276,13 @@ public class SenderPickUpActivity extends BaseUrlView {
                 }
             }
             if (requestCls == DeviceBoxTimeStatusRequestBean.class) {
+
+                if(mHandler!=null){
+                    mHandler.removeMessages(countDownCode);
+                    mTvCountDown.setVisibility(View.GONE);
+                }
+                releaseCountDown();
+
                 // TODO: 2020/7/24  判断取件的快递的状态，是否超时 超时弹出收款码弹框   没有超时则打开相应的箱门
                 String code = responseBean.getData();
                 if (TextUtils.equals("1", code)) { //超时请支付费用
@@ -316,12 +323,11 @@ public class SenderPickUpActivity extends BaseUrlView {
                 mPresenter.getDeviceBoxTimeStatus(PhoneInfoUtils.getLocalMacAddressFromWifiInfo(getCtx()), etPostPhone.getText().toString());
 
 
-                if(mHandler!=null){
-                    mHandler.removeMessages(countDownCode);
-                    mTvCountDown.setVisibility(View.GONE);
-                }
-
-                releaseCountDown();
+//                if(mHandler!=null){
+//                    mHandler.removeMessages(countDownCode);
+//                    mTvCountDown.setVisibility(View.GONE);
+//                }
+//                releaseCountDown();
 
             }
         } else {
