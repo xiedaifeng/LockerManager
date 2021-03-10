@@ -4,6 +4,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.locker.manager.R;
+import com.locker.manager.activity.sender.SenderActivity;
 import com.locker.manager.base.BaseUrlView;
 import com.locker.manager.manager.VibratorManager;
 import com.yidao.module_lib.manager.ViewManager;
@@ -50,7 +51,11 @@ public class SaveHandActivity extends BaseUrlView {
                 if(isFastClick()){
                     return;
                 }
-                skipActivityByFinish(SaveSecondActivity.class);
+                //注释掉该句代码by2021-03-10 22:16
+//                skipActivityByFinish(SaveSecondActivity.class);
+
+                //直接跳转到发起存件的界面，不区分快递员和普通人by2021-03-10 22:16
+                skipActivityByFinish(SenderActivity.class);
                 VibratorManager.getInstance().vibrate(50);
                 break;
             case R.id.rl_sender:
